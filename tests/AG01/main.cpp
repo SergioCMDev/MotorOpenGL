@@ -3,18 +3,36 @@
 
 #include<iostream>
 #include<cstdint>
+#include<stdio.h>
 using namespace std;
 
+#pragma region Cabezeras
+
+void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
+void Render();
+void HandlerInput(GLFWwindow* window);
+void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
+#pragma endregion
+
+
+//Metodos
+void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	glClearColor(R, G, B, A);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
+void Render() {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	Render(0.0f, 0.0f, 1.0f, 0.0f);
+}
 void HandlerInput(GLFWwindow* window) {
+	//Si pulsamos la tecla ESC cerramos la ventana
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
 }
 
-void Render() {
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-}
+
 
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
@@ -47,9 +65,11 @@ int main(int argc, char* argv[]) {
 
 	//cuando la ventana cambie de tamaño
 	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
+
+	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		Render();
+		Render(1.0f, 0.0f, 0.0f, 1.0f);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
