@@ -7,6 +7,9 @@
     <Filter Include="Deps Srcs">
       <UniqueIdentifier>{2CE651D5-9850-064C-E18E-B7F14D38E4A0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{c6ce145d-2163-432a-addb-23e7d84695be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\glad\glad.h">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="..\src\deps\glfw\wgl_context.c">
       <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\AG02\main.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
