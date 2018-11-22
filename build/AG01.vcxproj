@@ -42,14 +42,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>c:\Users\Wesrok\OneDrive\Master VIU\Programacion_I\Project1OpenGL\OpenGLProject\build\obj\x64\debug\AG01\</IntDir>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\AG01\</IntDir>
     <TargetName>AG01_d</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>c:\Users\Wesrok\OneDrive\Master VIU\Programacion_I\Project1OpenGL\OpenGLProject\build\obj\x64\release\AG01\</IntDir>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\AG01\</IntDir>
     <TargetName>AG01_r</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>false</LinkIncremental>

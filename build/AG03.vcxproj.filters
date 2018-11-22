@@ -62,7 +62,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\tests\AG02\main.cpp">
+    <ClCompile Include="..\tests\AG03\main.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\src\deps\glfw\context.c">
