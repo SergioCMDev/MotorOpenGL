@@ -4,6 +4,8 @@
 #include<iostream>
 #include<cstdint>
 #include<stdio.h>
+#include "Headers/Shader.h"
+
 using namespace std;
 
 #pragma region Cabezeras
@@ -19,12 +21,11 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 
 //Devuelve un VAO formado por todos los componentes
 uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
-	float vertices[] = { 0.5f, 0.5f, 0.0f,
-						0.5f, -0.5f, 0.0f,
-						-0.5f, -0.5f,0.0f,
-						-0.5f,0.5f,0.0f };
-	uint32_t indices[] = { 0,3,1,
-						1,3,2 };
+	float vertices[] = { 0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+						0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+						-0.5f, -0.5f,0.0f, 0.0f, 0.0f, 1.0f };
+	uint32_t indices[] = { 0,2,1 };
+
 	uint32_t VAO;
 	glGenVertexArrays(1, &VAO);
 	//Generamos 2 buffer, elementos y objetos
@@ -43,9 +44,11 @@ uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//Lo habilitamos
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glad_glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	//Lo habilitamos
+	glad_glEnableVertexAttribArray(1);
 
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -59,6 +62,14 @@ uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
 	return VAO;
 }
 
+void Render(uint32_t VAO, const Shader& shader) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	glClear(GL_COLOR_BUFFER_BIT);
+	shader.Use();
+	//Bindeamos VAO
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
 
 void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
@@ -96,82 +107,7 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 	glViewport(0, 0, width, height);
 }
 
-//comprobamos que se ha creado el shader correctamente
-bool checkShader(uint32_t shader) {
-	int success;
-	char infoLog[512];
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
-		cout << "Error Compiling Shader" << endl << infoLog << endl;
-		return false;
-	}
-	return true;
-}
 
-//Comprobamos que el programa se ha creado correctamente
-bool CheckProgram(uint32_t program) {
-	int success;
-	char infoLog[512];
-	glGetProgramiv(program, GL_LINK_STATUS, &success);
-
-	if (!success) {
-		glGetProgramInfoLog(program, 512, NULL, infoLog);
-		cout << "Error Compiling Program" << endl << infoLog << endl;
-		return false;
-	}
-	return true;
-}
-
-//Sube los shaders y los compila
-//En GLSL no f en floats
-uint32_t CreateProgram() {
-	//llegan vectores de 3 coordenadas
-	//Gl position: posicion del vertice aPos en espacio normalizado
-	//Coordenadas homogeneas de punto A = 1.0
-	const char *vertexShaderSource = 
-		"#version 330 core\n"
-		"layout (location=0) in vec3 aPos;\n"
-		"void main() {\n"
-		" gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-		"}\0";
-
-	const char *fragmentShaderSource = 
-		"#version 330 core\n"
-		"out vec4 FragColor; \n"
-		"void main() {\n"
-		"    FragColor = vec4(0.7, 0.2, 0.2, 1.0);\n"
-		"}\0";
-
-
-	//// &vertexShaderSource puntero a la cadena de arriba
-	////NULL ya que solo vamos a usar una cadena
-	//Creamos shader en GPU
-	uint32_t vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	//Subimos informacion a la gpu
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-	checkShader(vertexShader);
-
-	////Creacion del FragmentShader
-
-	uint32_t fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-	checkShader(fragmentShader);
-
-	uint32_t shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	CheckProgram(shaderProgram);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-
-	return shaderProgram;
-}
 
 int main(int argc, char* argv[]) {
 	if (!glfwInit()) {
@@ -200,8 +136,8 @@ int main(int argc, char* argv[]) {
 	//cuando la ventana cambie de tamaño
 	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
 
+	Shader shader("../tests/AG03/Shaders/vertex.vs", "../tests/AG03/Shaders/fragment.fs");
 
-	uint32_t program = CreateProgram();
 	uint32_t VBO, EBO;
 	//El VAO Agrupa todos los VBO y EBO
 	uint32_t VAO = createvectexData(&VBO, &EBO);
@@ -209,7 +145,7 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		Render(VAO, program);
+		Render(VAO, shader);
 		//Render(1.0f, 0.0f, 0.0f, 1.0f);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -221,7 +157,6 @@ int main(int argc, char* argv[]) {
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 
-	glDeleteProgram(program);
 
 	glfwTerminate();
 	return 0;

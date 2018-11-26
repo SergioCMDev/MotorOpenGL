@@ -10,6 +10,12 @@
     <Filter Include="Deps Srcs">
       <UniqueIdentifier>{2CE651D5-9850-064C-E18E-B7F14D38E4A0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{5ca96c50-7111-4fc5-856e-4de3afbed9f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{0ac34158-c370-49f9-9140-ec2a680839ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\glad\glad.h">
@@ -60,6 +66,9 @@
     <ClInclude Include="..\src\deps\glfw\wgl_context.h">
       <Filter>Deps Srcs</Filter>
     </ClInclude>
+    <ClInclude Include="..\tests\AG03\Headers\Shader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\AG03\main.cpp">
@@ -109,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="..\src\deps\glfw\wgl_context.c">
       <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\AG03\Source\Shader.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

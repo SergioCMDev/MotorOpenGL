@@ -65,7 +65,8 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PrecompiledHeader></PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(IntDir)AG03_d.compile.pdb</ProgramDataBaseFileName>
@@ -96,9 +97,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PrecompiledHeader></PrecompiledHeader>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat></DebugInformationFormat>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -133,6 +136,7 @@
     <ClInclude Include="..\src\deps\glfw\win32_joystick.h" />
     <ClInclude Include="..\src\deps\glfw\win32_platform.h" />
     <ClInclude Include="..\src\deps\glfw\wgl_context.h" />
+    <ClInclude Include="..\tests\AG03\Headers\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\tests\AG03\main.cpp">
@@ -167,6 +171,7 @@
     </ClCompile>
     <ClCompile Include="..\src\deps\glfw\wgl_context.c">
     </ClCompile>
+    <ClCompile Include="..\tests\AG03\Source\Shader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
