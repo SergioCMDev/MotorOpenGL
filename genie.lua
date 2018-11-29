@@ -2,12 +2,13 @@ local project_list = {
 	"AG01",
 	"AG02",
 	"AG03",
+	"AG04",
 }
 
 local function new_project(name)
 	project(name)
 	kind ("ConsoleApp")
-	includedirs{"include", "src/deps/glfw", "src/deps/glad"}
+	includedirs{"include", "src/deps/glfw", "src/deps/glad", "src/deps/stb"}
 	files {	"tests/" ..name.. "/*.cpp",
 			"tests/" ..name.. "/*.h",
 	"src/*.cpp",
@@ -18,7 +19,8 @@ local function new_project(name)
 	"src/deps/glfw/monitor.c",
 	"src/deps/glfw/window.c",
 	"src/deps/glfw/vulkan.c",
-	"src/deps/glfw/glad.c"}
+	"src/deps/glfw/glad.c",
+	"src/deps/glfw/stb/*"}
 	defines {"_GLFW_USE_OPENGL=1"}
 	vpaths { ["Headers"] = "include/*.h",
 			 ["Source"] = {"src/*.cpp"},
