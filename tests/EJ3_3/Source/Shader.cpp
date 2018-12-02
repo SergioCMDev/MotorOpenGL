@@ -1,84 +1,67 @@
-#include "Shader.h"
+#include "../Headers/Shader.h"
+//#include "glad/glad.h"
+//#include<fstream>
+//#include<iostream>
+//#include <string>
+//#include <sstream>
 
 using namespace std;
 using namespace glm;
 
-const int numberOfElementsLoaded = 1;
 Shader::~Shader() {
 	glDeleteProgram(_id);
-}
-
-Shader::Shader() {
-	//glDeleteProgram(_id);
 }
 
 void Shader::Use() const {
 	glUseProgram(_id);
 }
 
-
-uint32_t Shader::GetIdProgram() {
-	return _id;
-}
-
-uint32_t Shader::CreateShader(const char *vertexPath) {
-	string sVertexCode;
+Shader::Shader(const char * vertexPath, const char * fragmentPath, const char * geometryPath)
+{
+	string sVertexCode, sFragmentCode, sGeometryCode;
 	loadShader(vertexPath, &sVertexCode);
-	const char* VertexCode = sVertexCode.c_str();
-	uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex, numberOfElementsLoaded, &VertexCode, NULL);
-	glCompileShader(vertex);
-	CheckError(vertex, Shader::Type::Vertex);
-	return vertex;
-}
-
-
-uint32_t Shader::CreateFragment(const char *fragmentPath) {
-	string sFragmentCode;
 	loadShader(fragmentPath, &sFragmentCode);
+	if (geometryPath) {
+		loadShader(geometryPath, &sGeometryCode);
+	}
+
+	const char* VertexCode = sVertexCode.c_str();
 	const char* FragmentCode = sFragmentCode.c_str();
+	if (geometryPath) {
+		const char* GeometryCode = sGeometryCode.c_str();
+	}
+
+	// &vertexShaderSource puntero a la cadena de arriba
+	//NULL ya que solo vamos a usar una cadena
+	// Subimos informacion a la gpu
+
+	uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex, 1, &VertexCode, NULL);
+	glCompileShader(vertex);
+	CheckError(vertex, Type::Vertex);
+
 	uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment, numberOfElementsLoaded, &FragmentCode, NULL);
+	glShaderSource(fragment, 1, &FragmentCode, NULL);
 	glCompileShader(fragment);
-	CheckError(fragment, Shader::Type::Fragment);
-	return fragment;
-}
+	CheckError(fragment, Type::Fragment);
 
-uint32_t Shader::CreateGeometry(const char *geometryPath) {
-	string sGeometryCode;
-	loadShader(geometryPath, &sGeometryCode);
-	const char* GeometryCode = sGeometryCode.c_str();
-	uint32_t geometry = glCreateShader(GL_GEOMETRY_SHADER);
-	glShaderSource(geometry, numberOfElementsLoaded, &GeometryCode, NULL);
-	glCompileShader(geometry);
-	CheckError(geometry, Type::Geometry);
-	return geometry;
-}
-
-void Shader::CreateProgram(uint32_t vertex, uint32_t fragment, uint32_t geometry) {
+	uint32_t geometry;
+	if (geometryPath) {
+		const char* geometryCode = sGeometryCode.c_str();
+		geometry = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometry, 1, &geometryCode, NULL);
+		glCompileShader(geometry);
+		CheckError(geometry, Type::Geometry);
+	}
 	_id = glCreateProgram();
+
 	glAttachShader(_id, vertex);
 	glAttachShader(_id, fragment);
-	if (geometry) {
+	if (geometryPath) {
 		glAttachShader(_id, geometry);
 	}
 	glLinkProgram(_id);
 	CheckError(_id, Type::Program);
-
-}
-
-
-
-Shader::Shader(const char * vertexPath, const char * fragmentPath, const char * geometryPath)
-{
-	uint32_t vertex = CreateShader(vertexPath);
-	uint32_t fragment = CreateFragment(fragmentPath);
-	uint32_t geometry = 0;
-	if (geometryPath) {
-		geometry = CreateGeometry(geometryPath);
-	}
-
-	CreateProgram(vertex, fragment, geometry);
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
@@ -86,8 +69,6 @@ Shader::Shader(const char * vertexPath, const char * fragmentPath, const char * 
 		glDeleteShader(geometry);
 	}
 }
-
-
 
 //Cargamos un fichero y lo metemos en la variable stream y devolvemos *code
 void Shader::loadShader(const char * path, string * code)
@@ -156,24 +137,27 @@ void Shader::Set(const char* name, const float value1, const float value2, const
 
 void Shader::Set(const char* name, const vec2& value) const {
 	glUniform2fv(glGetUniformLocation(_id, name), 1, value_ptr(value));
+
 }
 
 void Shader::Set(const char* name, const vec3& value) const {
 	glUniform3fv(glGetUniformLocation(_id, name), 1, value_ptr(value));
-}
 
+}
 void Shader::Set(const char* name, const vec4& value) const {
 	glUniform4fv(glGetUniformLocation(_id, name), 1, value_ptr(value));
+
 }
 
 void Shader::Set(const char* name, const mat2& value) const {
 	glUniformMatrix2fv(glGetUniformLocation(_id, name), 1, GL_FALSE, value_ptr(value));
-}
 
+}
 void Shader::Set(const char* name, const mat3& value) const {
 	glUniformMatrix3fv(glGetUniformLocation(_id, name), 1, GL_FALSE, value_ptr(value));
-}
 
+}
 void Shader::Set(const char* name, const mat4& value) const {
 	glUniformMatrix4fv(glGetUniformLocation(_id, name), 1, GL_FALSE, value_ptr(value));
+
 }

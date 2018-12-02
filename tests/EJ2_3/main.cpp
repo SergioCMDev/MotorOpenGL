@@ -139,10 +139,12 @@ int main(int argc, char* argv[]) {
 	//El VAO Agrupa todos los VBO y EBO
 	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO);
 	Renderer render;
+	//uint32_t numberOfElements = sizeof(vertices1) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
+
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		render.Render(VAOTriangules, shader);
+		render.Render(VAOTriangules, shader, 6);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

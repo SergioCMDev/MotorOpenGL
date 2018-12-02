@@ -17,7 +17,7 @@ Window::Window(const int widht, const int height) {
 		//return -1;
 	}
 	glfwMakeContextCurrent(_window);
-	//glfwSetFramebufferSizeCallback(OnChangeFrameBufferSize);
+	//glfwSetFramebufferSizeCallback(_window, OnChangeFrameBufferSize);
 
 }
 
@@ -32,7 +32,7 @@ void Window::HandlerInput() {
 	}
 }
 
-void Window::OnChangeFrameBufferSize(const int32_t width, const int32_t height) {
+void Window::OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
 	//Cambio de clip scene a view scene
 	glViewport(0, 0, width, height);

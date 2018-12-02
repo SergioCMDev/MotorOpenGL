@@ -22,15 +22,11 @@ class Shader
 	};
 
 public:
-	Shader();
-	//Shader() = delete;
+	Shader() = delete;
 	Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
-	uint32_t CreateShader(const char *vertexPath);
-	uint32_t CreateFragment(const char *fragmentPath);
-	uint32_t CreateGeometry(const char *geometryPath);
-	void CreateProgram(uint32_t vertex,  uint32_t fragment,  uint32_t geometry);
-	uint32_t GetIdProgram();
+
 	~Shader();
+
 	void Use() const;
 	void Set(const char* name, const bool value) const;
 	void Set(const char* name, const int value) const;

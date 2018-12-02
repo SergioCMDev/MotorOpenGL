@@ -11,7 +11,7 @@ public:
 	Window(const int widht, const int height);
 	GLFWwindow* GetWindow();
 	void HandlerInput();
-	void OnChangeFrameBufferSize(const int32_t width, const int32_t height);
 private:
+	void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 	GLFWwindow* _window;
 };

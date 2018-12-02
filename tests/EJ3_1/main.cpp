@@ -15,7 +15,7 @@ Window window;
 Utils utils;
 Renderer render;
 const int widht = 800, height = 600;
-const char* path = "../tests/EJ2_5/";
+const char* path = "../tests/EJ3_1/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -100,25 +100,17 @@ int main(int argc, char* argv[]) {
 	const char* fragmentPath1 = utils.GetFinalPath(path, "Shaders/fragment.fs");
 
 	Shader shader1(vertexpath, fragmentPath1);
-	
+
 	uint32_t VBOTriangulo1, EBO;
 	uint32_t indicesHexagono[] = {
-		6,0,1,
-		6,1,2,
-		6,2,3,
-		3,4,6,
-		4,5,6,
-		6,5,0
+		2,1,0
 	};
 	float vertices1[] = {
-		//Color
--0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
-0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
--0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
--0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
- 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
+									//Color
+		-0.2f, 0.1f, 0.0f,			1.0f, 0.0f, 0.0f, //0
+		0.2f, 0.1f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
+		0.0f,  -0.2f, 0.0f,			1.0f, 0.0f, 0.0f, //2
+
 	};
 
 
