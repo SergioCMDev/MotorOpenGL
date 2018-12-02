@@ -21,10 +21,10 @@ void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A) {
 	glClearColor(R, G, B, A);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
-void Render() {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	Render(0.0f, 0.0f, 1.0f, 0.0f);
-}
+//void Render() {
+//	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+//	Render(1.0f, 0.0f, 1.0f, 0.0f);
+//}
 void HandlerInput(GLFWwindow* window) {
 	//Si pulsamos la tecla ESC cerramos la ventana
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -34,8 +34,8 @@ void HandlerInput(GLFWwindow* window) {
 
 
 
+//redimension de pantalla 
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
-	//redimension de pantalla 
 	//Cambio de clip scene a view scene
 	glViewport(0, 0, width, height);
 }
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		Render(1.0f, 0.0f, 0.0f, 1.0f);
+		Render(1.0f, 1.0f, 0.0f, 1.0f);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

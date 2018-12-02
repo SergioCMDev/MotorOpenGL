@@ -4,6 +4,12 @@
     <Filter Include="Tests">
       <UniqueIdentifier>{5865280E-C479-50BF-8DFB-F31EF9CE4CF0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{56EB95D1-428D-C0A7-2B48-D4FB178947F8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{C196CD9C-2D76-4C38-368E-D70EA2ECB299}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Deep Headers">
       <UniqueIdentifier>{DF5CC0A6-CBBF-4F4B-7445-880160871BCE}</UniqueIdentifier>
     </Filter>
@@ -12,6 +18,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Camera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Renderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Shader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Window.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\glad\glad.h">
       <Filter>Deep Headers</Filter>
     </ClInclude>
@@ -65,6 +86,21 @@
     <ClCompile Include="..\tests\AG04\main.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Renderer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Utils.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Window.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\deps\glfw\context.c">
       <Filter>Deps Srcs</Filter>
     </ClCompile>
@@ -110,6 +146,5 @@
     <ClCompile Include="..\src\deps\glfw\wgl_context.c">
       <Filter>Deps Srcs</Filter>
     </ClCompile>
-    <ClCompile Include="..\tests\AG04\Headers\Shader.cpp" />
   </ItemGroup>
 </Project>

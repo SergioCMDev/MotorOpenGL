@@ -18,7 +18,7 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 #pragma region Metodos
 
 //Devuelve un VAO formado por todos los componentes
-uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
+uint32_t createvertexData(uint32_t *VBO, uint32_t *EBO) {
 	float vertices[] = { 0.5f, 0.5f, 0.0f,
 						0.5f, -0.5f, 0.0f,
 						-0.5f, -0.5f,0.0f,
@@ -140,7 +140,7 @@ uint32_t CreateProgram() {
 		"#version 330 core\n"
 		"out vec4 FragColor; \n"
 		"void main() {\n"
-		"    FragColor = vec4(0.7, 0.2, 0.2, 1.0);\n"
+		"    FragColor = vec4(0.7, 0.2, 0.8, 1.0);\n"
 		"}\0";
 
 
@@ -204,7 +204,7 @@ int main(int argc, char* argv[]) {
 	uint32_t program = CreateProgram();
 	uint32_t VBO, EBO;
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAO = createvectexData(&VBO, &EBO);
+	uint32_t VAO = createvertexData(&VBO, &EBO);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {

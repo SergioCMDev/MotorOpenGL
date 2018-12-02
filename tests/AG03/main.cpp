@@ -20,10 +20,11 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 #pragma region Metodos
 
 //Devuelve un VAO formado por todos los componentes
-uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
-	float vertices[] = { 0.5f, 0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-						0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-						-0.5f, -0.5f,0.0f, 0.0f, 0.0f, 1.0f };
+uint32_t createvertexData(uint32_t *VBO, uint32_t *EBO) {
+					//Vertices del triangulo
+	float vertices[] = { 0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,
+						0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,
+						-0.5f, -0.5f,0.0f,		0.0f, 0.0f, 1.0f };
 	uint32_t indices[] = { 0,2,1 };
 
 	uint32_t VAO;
@@ -136,11 +137,18 @@ int main(int argc, char* argv[]) {
 	//cuando la ventana cambie de tamaño
 	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
 
-	Shader shader("../tests/AG03/Shaders/vertex.vs", "../tests/AG03/Shaders/fragment.fs");
+	const char* path = "../tests/AG03/";
+	char* result = (char*)calloc(strlen(path) + strlen("Shaders/vertex.vs") + 1, sizeof(char));
+	char* result2 = (char*)calloc(strlen(path) + strlen("Shaders/fragment.fs") + 1, sizeof(char));
+	strcpy(result, path); // copy string one into the result.
+	strcpy(result2, path); // copy string one into the result.
+
+	Shader shader(strcat(result, "Shaders/vertex.vs"), strcat(result2, "Shaders/fragment.fs"));
+
 
 	uint32_t VBO, EBO;
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAO = createvectexData(&VBO, &EBO);
+	uint32_t VAO = createvertexData(&VBO, &EBO);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {

@@ -9,6 +9,18 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AG03", "AG03.vcxproj", "{90
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AG04", "AG04.vcxproj", "{91E8817C-7D1F-830D-260C-69101222FF0E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EJ2_1", "EJ2_1.vcxproj", "{1610090D-8224-31BE-4BA6-D41DB7792DEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EJ2_2", "EJ2_2.vcxproj", "{1710090D-8324-31BE-4CA6-D41DB8792DEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EJ2_3", "EJ2_3.vcxproj", "{1810090D-8424-31BE-4DA6-D41DB9792DEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EJ2_4", "EJ2_4.vcxproj", "{1910090D-8524-31BE-4EA6-D41DBA792DEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EJ2_5", "EJ2_5.vcxproj", "{1A10090D-8624-31BE-4FA6-D41DBB792DEF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EJ2_6", "EJ2_6.vcxproj", "{1B10090D-8724-31BE-50A6-D41DBC792DEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		debug|x64 = debug|x64
@@ -31,6 +43,30 @@ Global
 		{91E8817C-7D1F-830D-260C-69101222FF0E}.debug|x64.Build.0 = debug|x64
 		{91E8817C-7D1F-830D-260C-69101222FF0E}.release|x64.ActiveCfg = release|x64
 		{91E8817C-7D1F-830D-260C-69101222FF0E}.release|x64.Build.0 = release|x64
+		{1610090D-8224-31BE-4BA6-D41DB7792DEF}.debug|x64.ActiveCfg = debug|x64
+		{1610090D-8224-31BE-4BA6-D41DB7792DEF}.debug|x64.Build.0 = debug|x64
+		{1610090D-8224-31BE-4BA6-D41DB7792DEF}.release|x64.ActiveCfg = release|x64
+		{1610090D-8224-31BE-4BA6-D41DB7792DEF}.release|x64.Build.0 = release|x64
+		{1710090D-8324-31BE-4CA6-D41DB8792DEF}.debug|x64.ActiveCfg = debug|x64
+		{1710090D-8324-31BE-4CA6-D41DB8792DEF}.debug|x64.Build.0 = debug|x64
+		{1710090D-8324-31BE-4CA6-D41DB8792DEF}.release|x64.ActiveCfg = release|x64
+		{1710090D-8324-31BE-4CA6-D41DB8792DEF}.release|x64.Build.0 = release|x64
+		{1810090D-8424-31BE-4DA6-D41DB9792DEF}.debug|x64.ActiveCfg = debug|x64
+		{1810090D-8424-31BE-4DA6-D41DB9792DEF}.debug|x64.Build.0 = debug|x64
+		{1810090D-8424-31BE-4DA6-D41DB9792DEF}.release|x64.ActiveCfg = release|x64
+		{1810090D-8424-31BE-4DA6-D41DB9792DEF}.release|x64.Build.0 = release|x64
+		{1910090D-8524-31BE-4EA6-D41DBA792DEF}.debug|x64.ActiveCfg = debug|x64
+		{1910090D-8524-31BE-4EA6-D41DBA792DEF}.debug|x64.Build.0 = debug|x64
+		{1910090D-8524-31BE-4EA6-D41DBA792DEF}.release|x64.ActiveCfg = release|x64
+		{1910090D-8524-31BE-4EA6-D41DBA792DEF}.release|x64.Build.0 = release|x64
+		{1A10090D-8624-31BE-4FA6-D41DBB792DEF}.debug|x64.ActiveCfg = debug|x64
+		{1A10090D-8624-31BE-4FA6-D41DBB792DEF}.debug|x64.Build.0 = debug|x64
+		{1A10090D-8624-31BE-4FA6-D41DBB792DEF}.release|x64.ActiveCfg = release|x64
+		{1A10090D-8624-31BE-4FA6-D41DBB792DEF}.release|x64.Build.0 = release|x64
+		{1B10090D-8724-31BE-50A6-D41DBC792DEF}.debug|x64.ActiveCfg = debug|x64
+		{1B10090D-8724-31BE-50A6-D41DBC792DEF}.debug|x64.Build.0 = debug|x64
+		{1B10090D-8724-31BE-50A6-D41DBC792DEF}.release|x64.ActiveCfg = release|x64
+		{1B10090D-8724-31BE-50A6-D41DBC792DEF}.release|x64.Build.0 = release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

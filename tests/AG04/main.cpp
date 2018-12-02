@@ -21,7 +21,7 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 #pragma region Metodos
 
 //Devuelve un VAO formado por todos los componentes
-uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
+uint32_t createvertexData(uint32_t *VBO, uint32_t *EBO) {
 	float vertices[] = { 0.5f,  0.5f,  0.0f,	1.0f, 0.0f, 0.0f,		1.0f, 10.f,
 						 0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
 						-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,		0.0f, 0.0f,
@@ -194,7 +194,7 @@ int main(int argc, char* argv[]) {
 
 	uint32_t VBO, EBO;
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAO = createvectexData(&VBO, &EBO);
+	uint32_t VAO = createvertexData(&VBO, &EBO);
 
 	uint32_t texture1 = createTexture("../tests/AG04/Textures/texture1.jpg");
 	uint32_t texture2 = createTexture("../tests/AG04/Textures/texture2.jpg");
