@@ -62,7 +62,7 @@ void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
 
 void Renderer::CambiarColorUniform(Shader& shader, char* uniformName) {
 	float timeValue = glfwGetTime();
-	float colorValue = sin(timeValue) / 2.0f + (rand() % 10);	float colorValue2 = cos(timeValue) / 2.0f + (rand() % 50);	float colorValue3 = sin(timeValue) / 2.0f + (rand() % 10);
+	float colorValue = sin(timeValue);	float colorValue2 = cos(timeValue);	float colorValue3 = sin(timeValue);
 	int idProgram = shader.GetIdProgram();
 	//si es -1 es error
 	int vertexColorLocation = glGetUniformLocation(idProgram, uniformName);
@@ -70,5 +70,18 @@ void Renderer::CambiarColorUniform(Shader& shader, char* uniformName) {
 		cout << "Error al cargar Uniform " << uniformName << endl;
 	}
 
-	glUniform4f(vertexColorLocation, colorValue, colorValue2, colorValue3, 1.0f);
+	glUniform3f(vertexColorLocation, colorValue, colorValue2, colorValue3);
+}
+
+void Renderer::CambiarColorUniform(Shader& shader, char* uniformName, float colorValue1, float colorValue2, float colorValue3) {
+	float timeValue = glfwGetTime();
+	//float colorValue = sin(timeValue);	//float colorValue2 = cos(timeValue);	//float colorValue3 = sin(timeValue);
+	int idProgram = shader.GetIdProgram();
+	//si es -1 es error
+	int vertexColorLocation = glGetUniformLocation(idProgram, uniformName);
+	if (vertexColorLocation < 0) {
+		cout << "Error al cargar Uniform " << uniformName << endl;
+	}
+
+	glUniform3f(vertexColorLocation, colorValue1, colorValue2, colorValue3);
 }
