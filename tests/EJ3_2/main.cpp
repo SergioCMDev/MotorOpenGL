@@ -23,7 +23,7 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 #pragma region Metodos
 
 //Devuelve un VAO formado por todos los componentes
-uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
+uint32_t createvertexDataFigura(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
 	float vertices[], uint32_t sizeOfVertices, Shader* shader) {
 	uint32_t VAO;
 	glGenVertexArrays(1, &VAO);
@@ -118,7 +118,7 @@ int main(int argc, char* argv[]) {
 	uint32_t sizeOfVertices = sizeof(vertices1);  //42 floats * sizeoffloat(4) = 168
 	uint32_t numberOfElements = sizeof(indicesHexagono) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesHexagono, sizeOfIndices, vertices1, sizeOfVertices, &shader1);
+	uint32_t VAOTriangules = createvertexDataFigura(&VBOTriangulo1, &EBO, indicesHexagono, sizeOfIndices, vertices1, sizeOfVertices, &shader1);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {

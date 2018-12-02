@@ -11,5 +11,5 @@ public:
 	void Render();
 	void Render(uint32_t VAO, uint32_t program);
 	void CambiarColorUniform(Shader& shader, char* uniformName);
-	void CambiarPosicionUniform(Shader& shader, char* uniformName);
+	void ChangePosicionUniform(Shader& shader, char* uniformName);
 };

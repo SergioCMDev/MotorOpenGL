@@ -18,6 +18,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Buffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -85,6 +88,9 @@
   <ItemGroup>
     <ClCompile Include="..\tests\EJ2_6\main.cpp">
       <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Buffer.cpp">
+      <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Camera.cpp">
       <Filter>Source</Filter>
