@@ -72,6 +72,17 @@ void Renderer::CambiarColorUniform(Shader& shader, char* uniformName) {
 
 	glUniform3f(vertexColorLocation, colorValue, colorValue2, colorValue3);
 }
+//
+//glGetUniformfv Renderer::GetValorUniform(Shader& shader, char* uniformName) {
+//	int idProgram = shader.GetIdProgram();
+//	//si es -1 es error
+//	int uniformPosition = glGetUniformLocation(idProgram, uniformName);
+//	if (uniformPosition < 0) {
+//		cout << "Error al cargar Uniform " << uniformName << endl;
+//	}
+//	/*gl.getUniform(program, loc);
+//	return glGetUniform(idProgram, uniformPosition,0);*/
+//}
 
 void Renderer::CambiarColorUniform(Shader& shader, char* uniformName, float colorValue1, float colorValue2, float colorValue3) {
 	float timeValue = glfwGetTime();

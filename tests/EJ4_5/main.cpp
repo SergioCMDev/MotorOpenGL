@@ -15,7 +15,7 @@ Window window;
 Utils utils;
 //Renderer render;
 const int widht = 800, height = 600;
-const char* path = "../tests/EJ3_3/";
+const char* path = "../tests/EJ3_4/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
 
 	};
 
-	 Buffer buffer = Buffer();
+	Buffer buffer = Buffer();
 	uint32_t sizeOfIndices = sizeof(indicesHexagono); //3 uint32_t * sizeofuint32_t(4) = 12
 	uint32_t sizeOfVertices = sizeof(vertices1);  //42 floats * sizeoffloat(4) = 168
 	uint32_t numberOfElements = sizeof(indicesHexagono) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
@@ -86,6 +86,7 @@ int main(int argc, char* argv[]) {
 
 		render.ChangePosicionUniform(shader1, "nuevaPosUniform");
 		render.CambiarColorUniform(shader1, "myColorUniform");
+		render.GetValorUniform(shader1, "position");
 		render.Render(VAOTriangules, shader1, numberOfElements);
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

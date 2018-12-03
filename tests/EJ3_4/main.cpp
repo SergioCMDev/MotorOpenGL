@@ -15,7 +15,7 @@ Window window;
 Utils utils;
 //Renderer render;
 const int widht = 800, height = 600;
-const char* path = "../tests/EJ3_4/";
+const char* path = "../tests/EJ4_1/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -23,48 +23,6 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 
 #pragma region Metodos
 
-////Devuelve un VAO formado por todos los componentes
-//uint32_t createvertexDataFigura(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
-//	float vertices[], uint32_t sizeOfVertices, Shader* shader) {
-//	uint32_t VAO;
-//	glGenVertexArrays(1, &VAO);
-//	//Generamos 2 buffer, elementos y objetos
-//	glGenBuffers(1, VBO);
-//	glGenBuffers(1, EBO);
-//
-//	//Bindeamos el VAO
-//	glBindVertexArray(VAO);
-//
-//
-//	//Bindeamos buffer vertices
-//	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
-//	//Subida de vertices al buffer
-//	glBufferData(GL_ARRAY_BUFFER, sizeOfVertices, vertices, GL_STATIC_DRAW);
-//
-//	//Bindeo buffer indices
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndices, indices, GL_STATIC_DRAW);
-//
-//	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-//	glad_glEnableVertexAttribArray(0);
-//
-//	//Vertices de color
-//	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-//	//////Lo habilitamos
-//	//glad_glEnableVertexAttribArray(1);
-//
-//	//desbindeamos buffer objetos
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//
-//	//Desbindeo
-//	glBindVertexArray(0);
-//
-//	//desbindeamos buffer elements
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//
-//	return VAO;
-//}
 
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
@@ -108,9 +66,9 @@ int main(int argc, char* argv[]) {
 	};
 	float vertices1[] = {
 		//Color
--0.2f, 0.1f, 0.0f,		1.0f, 0.0f, 0.0f,
-0.2f,  0.1f, 0.0f,		0.0f, 1.0f, 0.0f,
-0.0f, -0.2f, 0.0f,		0.0f, 0.0f, 1.0f
+-0.2f, 0.1f, 0.0f,		1.0f, 0.0f,0.0f,
+0.2f, 0.1f, 0.0f,		1.0f, 0.0f,0.0f,
+0.0f, -0.2f, 0.0f,		1.0f, 0.0f,0.0f
 
 	};
 
@@ -125,6 +83,10 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
+
+		render.ChangePosicionUniform(shader1, "nuevaPosUniform");
+		render.CambiarColorUniform(shader1, "myColorUniform");
+		//render.GetValorUniform(shader1, "position");
 		render.Render(VAOTriangules, shader1, numberOfElements);
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
