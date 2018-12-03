@@ -12,6 +12,7 @@ public:
 	Buffer();
 	Buffer(long sizeOfIndices, long sizeOfVertices);
 	uint32_t GetElementsPerLine();
+	uint32_t GetElementsToDraw();
 
 
 	uint32_t CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
@@ -25,6 +26,6 @@ public:
 		float vertices[], uint32_t sizeOfVertices, Shader* shader);
 
 private:
-	uint32_t *VBO,  *EBO, _sizeOfVertices, _sizeOfIndices, _numberOfLines, _numberOfElementsPerLine, _numberOfElements;
+	uint32_t *VBO,  *EBO, _sizeOfVertices, _sizeOfIndices, _numberOfLines, _numberOfElementsPerLine, _numberOfElements, _elementsToDraw;
 
 };
