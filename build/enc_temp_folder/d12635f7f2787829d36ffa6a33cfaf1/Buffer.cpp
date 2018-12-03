@@ -1,10 +1,5 @@
 #include "Buffer.h"
 
-static struct sizesGeometria{
-	int Triangulo = 3;
-	int Cuadrado = 6;
-};
-
 uint32_t Buffer::GetElementsPerLine() {
 	return _numberOfElementsPerLine;
 }
@@ -20,16 +15,16 @@ Buffer::Buffer() {
 Buffer::Buffer(long sizeOfIndices, long sizeOfVertices) {
 
 	//uint32_t sizeOfIndices = sizeof(indicesQuad); //3 uint32_t * sizeofuint32_t(4) = 12
-	sizesGeometria sizes;
+
 	_sizeOfIndices = sizeOfIndices;
 	_sizeOfVertices = sizeOfVertices;
-	if (sizeOfIndices / sizeof(float) == sizes.Triangulo) {
+	if (sizeOfIndices / sizeof(float) == 3) {
 		cout << "Triangulo" << endl;
 		_numberOfLines = 3; //72 vertices / sizeoffloat(4) = 18
 	_elementsToDraw = sizeOfIndices / _numberOfLines;  //Cuadrado 24/4 = 6, Triangulo 12/
 
 	}
-	else if (sizeOfIndices / sizeof(float) == sizes.Cuadrado) {
+	else if (sizeOfIndices / sizeof(float) == 6) {
 		cout << "Cuadrado" << endl;
 		_numberOfLines = 4; //72 vertices / sizeoffloat(4) = 18
 	}
