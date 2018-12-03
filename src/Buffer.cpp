@@ -3,6 +3,7 @@
 static struct sizesGeometria{
 	int Triangulo = 3;
 	int Cuadrado = 6;
+	int Cubo = 36;
 };
 
 uint32_t Buffer::GetElementsPerLine() {
@@ -26,12 +27,16 @@ Buffer::Buffer(long sizeOfIndices, long sizeOfVertices) {
 	if (sizeOfIndices / sizeof(float) == sizes.Triangulo) {
 		cout << "Triangulo" << endl;
 		_numberOfLines = 3; //72 vertices / sizeoffloat(4) = 18
-	_elementsToDraw = sizeOfIndices / _numberOfLines;  //Cuadrado 24/4 = 6, Triangulo 12/
+	//_elementsToDraw = sizeOfIndices / _numberOfLines;  //Cuadrado 24/4 = 6, Triangulo 12/
 
 	}
 	else if (sizeOfIndices / sizeof(float) == sizes.Cuadrado) {
 		cout << "Cuadrado" << endl;
 		_numberOfLines = 4; //72 vertices / sizeoffloat(4) = 18
+	}
+	else if (sizeOfIndices / sizeof(float) == sizes.Cubo) {
+		cout << "Cubo" << endl;
+		_numberOfLines = 24; //72 vertices / sizeoffloat(4) = 18
 	}
 
 	_elementsToDraw = sizeOfIndices / sizeof(float);

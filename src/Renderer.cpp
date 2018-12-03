@@ -7,10 +7,30 @@
 void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shader.Use();
-	//Bindeamos VAO
 	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+	glm::mat4 view = glm::mat4(1.0f);
+	//alejamos el mundo 3
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	float angle = 10.0f + (cos(glfwGetTime()) +  (sin(glfwGetTime())));
+	model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+
+	//glm::mat4 transform = glm::mat4(1.0f);
+	//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	//transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
+	
+	shader.Set("view", view);
+	shader.Set("model", model);
+	shader.Set("projection", projection);
+
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
