@@ -24,6 +24,9 @@
     <ClInclude Include="..\include\Camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Image.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Renderer.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -93,6 +96,9 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Image.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Renderer.cpp">

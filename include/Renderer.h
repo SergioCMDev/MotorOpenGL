@@ -13,6 +13,4 @@ public:
 	void CambiarColorUniform(Shader& shader, char* uniformName);
 	void ChangePosicionUniform(Shader& shader, char* uniformName);
 	void CambiarColorUniform(Shader& shader, char* uniformName, float colorValue1, float colorValue2, float colorValue3);
-	//glGetUniformfv GetValorUniform(Shader& shader, char* uniformName);
-
 };

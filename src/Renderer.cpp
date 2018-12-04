@@ -116,3 +116,4 @@ void Renderer::CambiarColorUniform(Shader& shader, char* uniformName, float colo
 
 	glUniform3f(vertexColorLocation, colorValue1, colorValue2, colorValue3);
 }
+
