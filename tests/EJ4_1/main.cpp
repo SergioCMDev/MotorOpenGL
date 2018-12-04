@@ -49,6 +49,12 @@ int Inicializacion() {
 		cout << "Error initializing GLAD" << endl;
 		return -1;
 	}
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	//cuando la ventana cambie de tamaño
 	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
@@ -65,64 +71,56 @@ int main(int argc, char* argv[]) {
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	int program = shader.GetIdProgram();
-	uint32_t VBOTriangulo1, EBO;
+	uint32_t VBOFigura, EBO;
 
-
-	float verticesCuadrado[] = {
-		// positions	// colors			// texture coords
-	0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f, // top right
-	0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 0.0f, // bottom right
-	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f, // bottom left
-	-0.5f, 0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f // top left
-	};
 
 	float verticesQuad[] = {
 		// Position					// UVs
-		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		1.0f,1.0f,//Front
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		1.0f,0.0f,
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		0.0f,0.0f,
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		0.0f,1.0f,
+		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		//1.0f,1.0f,//Front
+		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		//1.0f,0.0f,
+		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		//0.0f,0.0f,
+		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		//0.0f,1.0f,
 
-		//0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
-		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		//0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		//0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
+		0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
+		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
+		0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
 
-		//-0.5f, -0.5f, -0.5f,		1.0f, 0.0f, //Back
-		//-0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		//0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		//0.5f, -0.5f, -0.5f,			0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,		1.0f, 0.0f, //Back
+		-0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
+		0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,			0.0f, 0.0f,
 
-		//-0.5f, -0.5f, 0.5f,			1.0f, 0.0f, //Left
-		//-0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		//-0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		//-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
+		-0.5f, -0.5f, 0.5f,			1.0f, 0.0f, //Left
+		-0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
 
-		//-0.5f, -0.5f, 0.5f,			0.0f, 1.0f, //Bottom
-		//-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		//0.5f, -0.5f, 0.5f,			1.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f,			0.0f, 1.0f, //Bottom
+		-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
+		0.5f, -0.5f, 0.5f,			1.0f, 1.0f,
 
-		//-0.5f, 0.5f, 0.5f,			0.0f, 0.0f, //Top
-		//0.5f, 0.5f, 0.5f,			1.0f, 0.0f,
-		//0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		//-0.5f, 0.5f, -0.5f,			0.0f, 1.0f
+		-0.5f, 0.5f, 0.5f,			0.0f, 0.0f, //Top
+		0.5f, 0.5f, 0.5f,			1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f,			0.0f, 1.0f
 	};
 
 	uint32_t indicesQuad[] = {
 		0, 1, 2, 0, 2, 3 //Front
-		//,4, 5, 6, 4, 6, 7 //Right
-		//,8, 9, 10, 8, 10, 11 //Back
-		//,12, 13, 14, 12, 14, 15 //Left
-		//,16, 17, 18, 16, 18, 19 //Bottom
-		//,20, 21, 22, 20, 22, 23 //Top
+		,4, 5, 6, 4, 6, 7 //Right
+		,8, 9, 10, 8, 10, 11 //Back
+		,12, 13, 14, 12, 14, 15 //Left
+		,16, 17, 18, 16, 18, 19 //Bottom
+		,20, 21, 22, 20, 22, 23 //Top
 	};
 
-	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesCuadrado));
+	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesQuad));
 
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesQuad, verticesCuadrado, &shader);
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
 
 	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
@@ -132,22 +130,14 @@ int main(int argc, char* argv[]) {
 	Image image2 = Image(pathFinalImagen2, 1024, 1024, 1, 0);
 	image2.LoadTexture();
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
 
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
 
-		//render.ChangePosicionUniform(shader1, "nuevaPosUniform");
-		//render.CambiarColorUniform(shader1, "myColorUniform");
+		render.ChangePosicionUniform(shader, "nuevaPosUniform");
 		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
-
-		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -155,9 +145,10 @@ int main(int argc, char* argv[]) {
 
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBOTriangulo1);
+	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
 	image1.ReleaseTexture();
+	image2.ReleaseTexture();
 
 	glfwTerminate();
 	return 0;

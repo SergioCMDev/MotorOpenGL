@@ -49,7 +49,7 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 void Renderer::Projection3D(const Shader & shader)
 {
 	glm::mat4 view = glm::mat4(1.0f);
-	//alejamos el mundo 3
+	//alejamos el mundo 3D
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
 	glm::mat4 projection = glm::mat4(1.0f);
@@ -110,7 +110,7 @@ void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
 		cout << "Error al cargar Uniform " << uniformName << endl;
 	}
 
-	glUniform3f(vertexPositionLocation, posValue1 , posValue2, 0);
+	glUniform3f(vertexPositionLocation, posValue1 , posValue2, posValue2 + posValue1);
 }
 
 
@@ -140,7 +140,7 @@ void Renderer::CambiarColorUniform(Shader& shader, char* uniformName) {
 
 void Renderer::CambiarColorUniform(Shader& shader, char* uniformName, float colorValue1, float colorValue2, float colorValue3) {
 	float timeValue = glfwGetTime();
-	//float colorValue = sin(timeValue);	//float colorValue2 = cos(timeValue);	//float colorValue3 = sin(timeValue);
+
 	int idProgram = shader.GetIdProgram();
 	//si es -1 es error
 	int vertexColorLocation = glGetUniformLocation(idProgram, uniformName);
