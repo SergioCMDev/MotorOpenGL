@@ -11,6 +11,7 @@ public:
 	void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture);
+	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2);
 
 	void CambiarColorUniform(Shader& shader, char* uniformName);
 	void ChangePosicionUniform(Shader& shader, char* uniformName);

@@ -12,7 +12,7 @@
 #include "Buffer.h"
 #include "Image.h"
 
-	Utils utils;
+Utils utils;
 
 
 
@@ -123,13 +123,14 @@ int main(int argc, char* argv[]) {
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesQuad, verticesCuadrado, &shader);
-	char* pathFinal = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 
-	Image image1 = Image(pathFinal, 1024, 1024, 1, 0);
+	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
 
-	//char* pathFinal = utils.GetFinalPath(path, "Textures/texture1.jpg");
-	//image1.AddTextura(pathFinal, 1024, 1024, 1, 0);
+	Image image1 = Image(pathFinalImagen1, 1024, 1024, 1, 0);
 	image1.LoadTexture();
+	Image image2 = Image(pathFinalImagen2, 1024, 1024, 1, 0);
+	image2.LoadTexture();
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glEnable(GL_CULL_FACE);
@@ -144,12 +145,10 @@ int main(int argc, char* argv[]) {
 
 		//render.ChangePosicionUniform(shader1, "nuevaPosUniform");
 		//render.CambiarColorUniform(shader1, "myColorUniform");
-		if (image1.GetTexture()) {
-			render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture());
-		}
-		else {
-			render.Render(VAO, shader, numberOfElementsToDraw);
-		}
+		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
+
+		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture());
+
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}

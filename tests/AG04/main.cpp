@@ -4,156 +4,30 @@
 #include<iostream>
 #include<cstdint>
 #include<stdio.h>
-#include "Headers/Shader.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
+#include "Shader.h"
+#include "Renderer.h"
+#include "Utils.h"
+#include "Window.h"
+#include "Buffer.h"
+#include "Image.h"
+
+Utils utils;
+
+
+
 using namespace std;
+Window window;
 
+const int widht = 800, height = 600;
+const char* pathProyecto = "../tests/EJ4_1/";
 #pragma region Cabezeras
-
-void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
-void Render();
-void HandlerInput(GLFWwindow* window);
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
 
 
 #pragma region Metodos
 
-//Devuelve un VAO formado por todos los componentes
-uint32_t createvertexData(uint32_t *VBO, uint32_t *EBO) {
-	float vertices[] = { 0.5f,  0.5f,  0.0f,	1.0f, 0.0f, 0.0f,		1.0f, 10.f,
-						 0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
-						-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,		0.0f, 0.0f,
-						-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f,		0.0f, 1.0f };
-	uint32_t indices[] = { 0, 3, 1,
-						   1, 3, 2 };
-
-	uint32_t VAO;
-	glGenVertexArrays(1, &VAO);
-	//Generamos 2 buffer, elementos y objetos
-	glGenBuffers(1, VBO);
-	glGenBuffers(1, EBO);
-
-	//Bindeamos el VAO
-	glBindVertexArray(VAO);
-
-	//Bindeamos buffer vertices
-	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
-	//Subida de vertices al buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//Bindeo buffer indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glad_glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	//Lo habilitamos
-	glad_glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	//Lo habilitamos
-	glad_glEnableVertexAttribArray(2);
-
-	//desbindeamos buffer objetos
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//Desbindeo
-	glBindVertexArray(0);
-
-	//desbindeamos buffer elements
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	return VAO;
-}
-
-uint32_t createTexture(const char* path) {
-	uint32_t texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, nChannel;
-	unsigned char* data = stbi_load(path, &width, &height, &nChannel, 0);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		cout << "Failed to load texture " << path << endl;
-	}
-	return texture;
-}
-
-void Render(uint32_t VAO, const Shader& shader, const uint32_t texture1, const uint32_t texture2) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-	shader.Use();
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-
-	glBindVertexArray(GL_TEXTURE0);
-	//Subimos a GPU
-	glBindTexture(GL_TEXTURE_2D, texture1);
-
-	glBindVertexArray(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	shader.Set("texture1", 0);
- 	shader.Set("texture2", 1);
-
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
-
-
-
-void Render(uint32_t VAO, const Shader& shader) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-	shader.Use();
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
-
-void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(R, G, B, A);
-}
-
-void Render() {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	Render(0.0f, 0.0f, 1.0f, 0.0f);
-}
-
-void Render(uint32_t VAO, uint32_t program) {
-	glClear(GL_COLOR_BUFFER_BIT);
-	glUseProgram(program);
-
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-}
-
-void HandlerInput(GLFWwindow* window) {
-	//Si pulsamos la tecla ESC cerramos la ventana
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}
-}
 
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
@@ -163,24 +37,13 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 
 
 
-int main(int argc, char* argv[]) {
+int Inicializacion() {
 	if (!glfwInit()) {
 		cout << "Error initializing GLFW" << endl;
 		glfwTerminate();
 		return -1;
 	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Window 1", NULL, NULL);
-	if (!window) {
-		cout << "Error creating window" << endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
+	window = Window(widht, height);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		cout << "Error initializing GLAD" << endl;
@@ -188,43 +51,121 @@ int main(int argc, char* argv[]) {
 	}
 
 	//cuando la ventana cambie de tamaño
-	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
+	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
+	return 1;
+}
 
-	Shader shader("../tests/AG04/Shaders/vertex.vs", "../tests/AG04/Shaders/fragment.fs");
+int main(int argc, char* argv[]) {
+	if (!Inicializacion()) {
+		return -1;
+	}
+	Renderer render;
+	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
-	uint32_t VBO, EBO;
-	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAO = createvertexData(&VBO, &EBO);
+	Shader shader = Shader(vertexpath, fragmentPath1);
+	int program = shader.GetIdProgram();
+	uint32_t VBOTriangulo1, EBO;
 
-	uint32_t texture1 = createTexture("../tests/AG04/Textures/texture1.jpg");
-	uint32_t texture2 = createTexture("../tests/AG04/Textures/texture2.jpg");
-	//Bucle inicial donde se realiza toda la accion del motor
 
+	float verticesCuadrado[] = {
+		// positions	// colors			// texture coords
+	0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f, // top right
+	0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 0.0f, // bottom right
+	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f, // bottom left
+	-0.5f, 0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f // top left
+	};
+
+	float verticesQuad[] = {
+		// Position					// UVs
+		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		1.0f,1.0f,//Front
+		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		1.0f,0.0f,
+		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		0.0f,0.0f,
+		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		0.0f,1.0f,
+
+		//0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
+		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
+		//0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
+		//0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
+
+		//-0.5f, -0.5f, -0.5f,		1.0f, 0.0f, //Back
+		//-0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
+		//0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
+		//0.5f, -0.5f, -0.5f,			0.0f, 0.0f,
+
+		//-0.5f, -0.5f, 0.5f,			1.0f, 0.0f, //Left
+		//-0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
+		//-0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
+		//-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
+
+		//-0.5f, -0.5f, 0.5f,			0.0f, 1.0f, //Bottom
+		//-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
+		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
+		//0.5f, -0.5f, 0.5f,			1.0f, 1.0f,
+
+		//-0.5f, 0.5f, 0.5f,			0.0f, 0.0f, //Top
+		//0.5f, 0.5f, 0.5f,			1.0f, 0.0f,
+		//0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
+		//-0.5f, 0.5f, -0.5f,			0.0f, 1.0f
+	};
+
+	uint32_t indicesQuad[] = {
+		0, 1, 2, 0, 2, 3 //Front
+		//,4, 5, 6, 4, 6, 7 //Right
+		//,8, 9, 10, 8, 10, 11 //Back
+		//,12, 13, 14, 12, 14, 15 //Left
+		//,16, 17, 18, 16, 18, 19 //Bottom
+		//,20, 21, 22, 20, 22, 23 //Top
+	};
+
+	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesCuadrado));
+
+	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
+
+	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesQuad, verticesCuadrado, &shader);
+
+	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
+
+	Image image1 = Image(pathFinalImagen1, 1024, 1024, 1, 0);
+	image1.LoadTexture();
+	Image image2 = Image(pathFinalImagen2, 1024, 1024, 1, 0);
+	image2.LoadTexture();
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	//Bucle inicial donde se realiza toda la accion del motor
+	while (!glfwWindowShouldClose(window.GetWindow())) {
+		window.HandlerInput();
+
+		//render.ChangePosicionUniform(shader1, "nuevaPosUniform");
+		//render.CambiarColorUniform(shader1, "myColorUniform");
+		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
 
 
-	while (!glfwWindowShouldClose(window)) {
-		HandlerInput(window);
-		Render(VAO, shader, texture1, texture2);
-		//Render(1.0f, 0.0f, 0.0f, 1.0f);
-		glfwSwapBuffers(window);
+		//if (image1.GetTexture()) {
+		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture());
+		//}
+		//else {
+		//	render.Render(VAO, shader, numberOfElementsToDraw);
+		//}
+		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
 
-	//Crear metodo para esto
-//Si se han linkado bien los shaders, los borramos ya que estan linkados
+	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &VBOTriangulo1);
 	glDeleteBuffers(1, &EBO);
-
-	glDeleteBuffers(1, &texture1);
-	glDeleteBuffers(2, &texture2);
+	image1.ReleaseTexture();
 
 	glfwTerminate();
 	return 0;
 }
 #pragma endregion
+

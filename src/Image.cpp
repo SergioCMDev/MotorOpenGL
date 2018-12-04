@@ -14,7 +14,8 @@ Image::Image(char* path, int weight, int  height, int nchannels, char* uniformNa
 	_uniformName = uniformName;
 	_textureData = stbi_load(path
 		, &weight, &height, &nchannels, 0);
-	AddTextura(path, 1024, 1024, 1, 0);
+	stbi_set_flip_vertically_on_load(true);
+	//AddTextura(path, 1024, 1024, 1, 0);
 }
 
 void Image::AddTextura(char * path, int weight, int  height, int nchannels, char* uniformName)
@@ -60,8 +61,8 @@ void Image::ReleaseTexture() {
 
 void Image::LoadTexture() {
 	uint32_t texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glGenTextures(1, &_texture);
+	glBindTexture(GL_TEXTURE_2D, _texture);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
