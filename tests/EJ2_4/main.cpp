@@ -13,7 +13,7 @@ using namespace std;
 GLFWwindow* window;
 Utils utils;
 Renderer render;
-const char* path = "../tests/EJ2_4/";
+const char* pathProyecto = "../tests/EJ2_4/";
 #pragma region Cabezeras
 
 void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
@@ -116,9 +116,9 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	const char* vertexpath = utils.GetFinalPath(path, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(path, "Shaders/fragment1.fs");
-	const char* fragmentPath2 = utils.GetFinalPath(path, "Shaders/fragment2.fs");
+	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment1.fs");
+	const char* fragmentPath2 = utils.GetFinalPath(pathProyecto, "Shaders/fragment2.fs");
 
 	Shader shader1(vertexpath, fragmentPath1);
 	Shader shader2(vertexpath, fragmentPath2);

@@ -6,6 +6,17 @@ Image::Image() {
 
 }
 
+Image::Image(char* path, int weight, int  height, int nchannels, char* uniformName) {
+	_widht = weight;
+	_height = height;
+	_nchannels = nchannels;
+	_path = path;
+	_uniformName = uniformName;
+	_textureData = stbi_load(path
+		, &weight, &height, &nchannels, 0);
+	AddTextura(path, 1024, 1024, 1, 0);
+}
+
 void Image::AddTextura(char * path, int weight, int  height, int nchannels, char* uniformName)
 {
 	_widht = weight;
@@ -36,6 +47,10 @@ int Image::GetNumberOfChannels() {
 
 unsigned char * Image::GetTextureData() {
 	return _textureData;
+}
+
+ uint32_t Image::GetTexture() {
+	return _texture;
 }
 void Image::ReleaseTexture() {
 	stbi_image_free(_textureData);

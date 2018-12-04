@@ -166,6 +166,9 @@ uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[],
 	//////Lo habilitamos
 	glad_glEnableVertexAttribArray(1);
 
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float),	(void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

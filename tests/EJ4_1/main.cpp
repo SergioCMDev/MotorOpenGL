@@ -4,24 +4,23 @@
 #include<iostream>
 #include<cstdint>
 #include<stdio.h>
+
 #include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
 #include "Window.h"
 #include "Buffer.h"
+#include "Image.h"
 
-//
-//#include <glm/glm.hpp>
-//#include<glm/gtc/matrix_transform.hpp>
-//#include<glm/gtc/type_precision.hpp>
+	Utils utils;
+
 
 
 using namespace std;
 Window window;
-Utils utils;
-//Renderer render;
+
 const int widht = 800, height = 600;
-const char* path = "../tests/EJ4_1/";
+const char* pathProyecto = "../tests/EJ4_1/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -61,19 +60,28 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	Renderer render;
-	const char* vertexpath = utils.GetFinalPath(path, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(path, "Shaders/fragment.fs");
+	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	int program = shader.GetIdProgram();
 	uint32_t VBOTriangulo1, EBO;
 
+
+	float verticesCuadrado[] = {
+		// positions	// colors			// texture coords
+	0.5f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f, // top right
+	0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 0.0f, // bottom right
+	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f, // bottom left
+	-0.5f, 0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f // top left
+	};
+
 	float verticesQuad[] = {
 		// Position					// UVs
-		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Front
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		1.0f,1.0f,//Front
+		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		1.0f,0.0f,
+		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		0.0f,0.0f,
+		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		0.0f,1.0f,
 
 		//0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
 		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
@@ -110,11 +118,18 @@ int main(int argc, char* argv[]) {
 		//,20, 21, 22, 20, 22, 23 //Top
 	};
 
-	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesQuad));
+	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesCuadrado));
 
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesQuad, verticesQuad, &shader);
+	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesQuad, verticesCuadrado, &shader);
+	char* pathFinal = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+
+	Image image1 = Image(pathFinal, 1024, 1024, 1, 0);
+
+	//char* pathFinal = utils.GetFinalPath(path, "Textures/texture1.jpg");
+	//image1.AddTextura(pathFinal, 1024, 1024, 1, 0);
+	image1.LoadTexture();
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glEnable(GL_CULL_FACE);
@@ -129,7 +144,12 @@ int main(int argc, char* argv[]) {
 
 		//render.ChangePosicionUniform(shader1, "nuevaPosUniform");
 		//render.CambiarColorUniform(shader1, "myColorUniform");
-		render.Render(VAO, shader, numberOfElementsToDraw);
+		if (image1.GetTexture()) {
+			render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture());
+		}
+		else {
+			render.Render(VAO, shader, numberOfElementsToDraw);
+		}
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
@@ -138,7 +158,7 @@ int main(int argc, char* argv[]) {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBOTriangulo1);
 	glDeleteBuffers(1, &EBO);
-
+	image1.ReleaseTexture();
 
 	glfwTerminate();
 	return 0;

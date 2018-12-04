@@ -15,7 +15,7 @@ Window window;
 Utils utils;
 //Renderer render;
 const int widht = 800, height = 600;
-const char* path = "../tests/EJ3_4/";
+const char* pathProyecto = "../tests/EJ3_4/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -55,8 +55,8 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 	Renderer render;
-	const char* vertexpath = utils.GetFinalPath(path, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(path, "Shaders/fragment.fs");
+	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
 	Shader shader1 = Shader(vertexpath, fragmentPath1);
 	int program = shader1.GetIdProgram();
