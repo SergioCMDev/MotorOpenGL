@@ -60,7 +60,6 @@ void Image::ReleaseTexture() {
 
 
 void Image::LoadTexture() {
-	uint32_t texture;
 	glGenTextures(1, &_texture);
 	glBindTexture(GL_TEXTURE_2D, _texture);
 

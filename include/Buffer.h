@@ -24,8 +24,14 @@ public:
 
 	uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
 		float vertices[], uint32_t sizeOfVertices, Shader* shader);
-
+	 void Buffer::SetStatusVerticesColor(bool cond);
+	 void Buffer::SetStatusVerticesTextura(bool cond);
+	 void Buffer::SetSizeVerticesTextura(uint32_t size);
+	 void Buffer::SetSizeVerticesColor(uint32_t size);
 private:
 	uint32_t *VBO,  *EBO, _sizeOfVertices, _sizeOfIndices, _numberOfLines, _numberOfElementsPerLine, _numberOfElements, _elementsToDraw;
-
+	bool _verticesColor = false;
+	bool _verticesTextura = false;
+	uint32_t _sizeVerticesTextura = 2;
+	uint32_t _sizeVerticesColor = 2;
 };

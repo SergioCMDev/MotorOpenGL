@@ -20,7 +20,7 @@ using namespace std;
 Window window;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ4_1/";
+const char* pathProyecto = "../tests/AG04/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -76,40 +76,9 @@ int main(int argc, char* argv[]) {
 	-0.5f, 0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f // top left
 	};
 
-	float verticesQuad[] = {
-		// Position					// UVs
-		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		1.0f,1.0f,//Front
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		1.0f,0.0f,
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		0.0f,0.0f,
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		0.0f,1.0f,
+	
 
-		//0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
-		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		//0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		//0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
-
-		//-0.5f, -0.5f, -0.5f,		1.0f, 0.0f, //Back
-		//-0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		//0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		//0.5f, -0.5f, -0.5f,			0.0f, 0.0f,
-
-		//-0.5f, -0.5f, 0.5f,			1.0f, 0.0f, //Left
-		//-0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		//-0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		//-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-
-		//-0.5f, -0.5f, 0.5f,			0.0f, 1.0f, //Bottom
-		//-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-		//0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		//0.5f, -0.5f, 0.5f,			1.0f, 1.0f,
-
-		//-0.5f, 0.5f, 0.5f,			0.0f, 0.0f, //Top
-		//0.5f, 0.5f, 0.5f,			1.0f, 0.0f,
-		//0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		//-0.5f, 0.5f, -0.5f,			0.0f, 1.0f
-	};
-
-	uint32_t indicesQuad[] = {
+	uint32_t indicesCuadrado[] = {
 		0, 1, 2, 0, 2, 3 //Front
 		//,4, 5, 6, 4, 6, 7 //Right
 		//,8, 9, 10, 8, 10, 11 //Back
@@ -118,11 +87,11 @@ int main(int argc, char* argv[]) {
 		//,20, 21, 22, 20, 22, 23 //Top
 	};
 
-	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesCuadrado));
+	Buffer buffer = Buffer(sizeof(indicesCuadrado), sizeof(verticesCuadrado));
 
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesQuad, verticesCuadrado, &shader);
+	uint32_t VAO = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesCuadrado, verticesCuadrado, &shader);
 
 	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");

@@ -15,7 +15,7 @@ Window window;
 Utils utils;
 //Renderer render;
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ4_1/";
+const char* pathProyecto = "../tests/EJ3_4/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -79,7 +79,8 @@ int main(int argc, char* argv[]) {
 	//El VAO Agrupa todos los VBO y EBO
 	uint32_t VAOTriangules = buffer.CreateVAO(&VBOTriangulo1, &EBO, indicesHexagono, sizeOfIndices, vertices1,
 		sizeOfVertices, &shader1);
-
+	buffer.SetStatusVerticesColor(false);
+	buffer.SetStatusVerticesTextura(false);
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();

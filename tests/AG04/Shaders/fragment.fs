@@ -1,6 +1,6 @@
 #version 330 core
 
-in vec3 myColor;
+//in vec3 myColor;
 in vec2 textCoord;
 
 uniform sampler2D texture1;

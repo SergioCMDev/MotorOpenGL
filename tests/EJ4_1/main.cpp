@@ -76,10 +76,10 @@ int main(int argc, char* argv[]) {
 
 	float verticesQuad[] = {
 		// Position					// UVs
-		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,		//1.0f,1.0f,//Front
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		//1.0f,0.0f,
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		//0.0f,0.0f,
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		//0.0f,1.0f,
+		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,	//Front	
+		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		
+		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		
+		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		
 
 		0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
 		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
@@ -117,7 +117,9 @@ int main(int argc, char* argv[]) {
 	};
 
 	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesQuad));
-
+	buffer.SetStatusVerticesColor(false);
+	buffer.SetStatusVerticesTextura(true);
+	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
