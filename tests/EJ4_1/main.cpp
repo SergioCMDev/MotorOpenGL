@@ -8,9 +8,16 @@
 #include "Shader.h"
 #include "Renderer.h"
 #include "Utils.h"
+#include "Figure.h"
 #include "Window.h"
 #include "Buffer.h"
 #include "Image.h"
+
+//enum Figuras {
+//	Triangulo,
+//	Cuadrado,
+//	Cubo,
+//};
 
 Utils utils;
 
@@ -59,7 +66,10 @@ int Inicializacion() {
 	//cuando la ventana cambie de tamaño
 	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
 	return 1;
-}
+};
+
+
+
 
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
@@ -73,13 +83,15 @@ int main(int argc, char* argv[]) {
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
+	//Figure cuadrado = Figure(Figuras::Cubo);
 
+	//cuadrado.GetVertexs;
 	float verticesQuad[] = {
 		// Position					// UVs
 		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,	//Front	
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,		
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,		
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,		
+		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
 
 		0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
 		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
@@ -115,7 +127,10 @@ int main(int argc, char* argv[]) {
 		,16, 17, 18, 16, 18, 19 //Bottom
 		,20, 21, 22, 20, 22, 23 //Top
 	};
+	//uint32_t* indicesCuadrado = cuadrado.GetIndexs();
+	//float* verticesCuadrado = cuadrado.GetVertexs();
 
+	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesQuad));
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
