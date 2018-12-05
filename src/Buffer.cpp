@@ -24,7 +24,9 @@ void Buffer::SetStatusVerticesColor(bool cond) {
 void Buffer::SetStatusVerticesTextura(bool cond) {
 	_verticesTextura = cond;
 }
-
+/*
+Seteamos el valor del tamaño de los vertices de la textura
+*/
 void Buffer::SetSizeVerticesTextura(uint32_t size) {
 	_sizeVerticesTextura = size;
 

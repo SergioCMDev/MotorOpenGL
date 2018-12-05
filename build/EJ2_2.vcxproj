@@ -120,9 +120,9 @@
     <ClInclude Include="..\include\Buffer.h" />
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Figure.h" />
-    <ClInclude Include="..\include\Image.h" />
     <ClInclude Include="..\include\Renderer.h" />
     <ClInclude Include="..\include\Shader.h" />
+    <ClInclude Include="..\include\Texture.h" />
     <ClInclude Include="..\include\Utils.h" />
     <ClInclude Include="..\include\Window.h" />
     <ClInclude Include="..\include\glad\glad.h" />
@@ -151,11 +151,11 @@
     </ClCompile>
     <ClCompile Include="..\src\Figure.cpp">
     </ClCompile>
-    <ClCompile Include="..\src\Image.cpp">
-    </ClCompile>
     <ClCompile Include="..\src\Renderer.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Shader.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Texture.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Utils.cpp">
     </ClCompile>

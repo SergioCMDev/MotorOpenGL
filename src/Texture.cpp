@@ -1,22 +1,13 @@
-#include "Image.h"
+#include "Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-Image::Image() {
+
+Texture::Texture() {
 
 }
 
-Image::Image(char* path, int weight, int  height, int nchannels, char* uniformName) {
-	_widht = weight;
-	_height = height;
-	_nchannels = nchannels;
-	_path = path;
-	_uniformName = uniformName;
-	_textureData = stbi_load(path
-		, &weight, &height, &nchannels, 0);
-	stbi_set_flip_vertically_on_load(true);}
-
-void Image::AddTextura(char * path, int weight, int  height, int nchannels, char* uniformName)
+Texture::Texture(char* path, int weight, int  height, int nchannels, char* uniformName, bool flip) 
 {
 	_widht = weight;
 	_height = height;
@@ -25,39 +16,54 @@ void Image::AddTextura(char * path, int weight, int  height, int nchannels, char
 	_uniformName = uniformName;
 	_textureData = stbi_load(path
 		, &weight, &height, &nchannels, 0);
+
+	stbi_set_flip_vertically_on_load(flip);}
+
+void Texture::AddTextura(char * path, int weight, int  height, int nchannels, char* uniformName)
+{
+	//_widht = weight;
+	//_height = height;
+	//_nchannels = nchannels;
+	//_path = path;
+	//_uniformName = uniformName;
+	//_textureData = stbi_load(path
+	//	, &weight, &height, &nchannels, 0);
 }
 
-char*Image::GetPath() {
+char*Texture::GetPath() {
 	return _path;
 }
-char* Image::GetUniformName() {
+
+char* Texture::GetUniformName() {
 	return _uniformName;
 }
-int Image::GetWidht() {
+int Texture::GetWidht() {
 	return _widht;
 }
-int Image::GetHeight() {
+
+int Texture::GetHeight() {
 	return _height;
 }
 
-int Image::GetNumberOfChannels() {
+int Texture::GetNumberOfChannels() {
 	return _nchannels;
 }
 
-unsigned char * Image::GetTextureData() {
+unsigned char * Texture::GetTextureData() {
 	return _textureData;
 }
 
- uint32_t Image::GetTexture() {
+ uint32_t Texture::GetTexture() {
 	return _texture;
 }
-void Image::ReleaseTexture() {
+
+void Texture::ReleaseTexture() {
 	stbi_image_free(_textureData);
 }
 
 
 
-void Image::LoadTexture() {
+void Texture::LoadTexture() {
 	glGenTextures(1, &_texture);
 	glBindTexture(GL_TEXTURE_2D, _texture);
 

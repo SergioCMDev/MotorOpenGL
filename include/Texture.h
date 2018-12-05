@@ -1,12 +1,13 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 
-class Image
+
+class Texture
 {
 public:
-	void Image::AddTextura(char * path, int weight, int  height, int  nchannels, char* uniformName);
-	Image();
-	Image::Image(char* path, int weight, int  height, int nchannels, char* uniformName);
+	void Texture::AddTextura(char * path, int weight, int  height, int  nchannels, char* uniformName);
+	Texture();
+	Texture::Texture(char* path, int weight, int  height, int nchannels, char* uniformName, bool flip);
 	unsigned char * GetTextureData();
 	char* GetPath();
 	char* GetUniformName();

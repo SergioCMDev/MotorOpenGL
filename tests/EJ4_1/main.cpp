@@ -11,13 +11,8 @@
 #include "Figure.h"
 #include "Window.h"
 #include "Buffer.h"
-#include "Image.h"
+#include "Texture.h"
 
-//enum Figuras {
-//	Triangulo,
-//	Cuadrado,
-//	Cubo,
-//};
 
 Utils utils;
 
@@ -109,9 +104,9 @@ int main(int argc, char* argv[]) {
 	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
 
-	Image image1 = Image(pathFinalImagen1, 1024, 1024, 1, 0);
+	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0,true);
 	image1.LoadTexture();
-	Image image2 = Image(pathFinalImagen2, 1024, 1024, 1, 0);
+	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
 	image2.LoadTexture();
 
 

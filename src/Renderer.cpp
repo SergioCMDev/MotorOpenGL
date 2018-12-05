@@ -12,7 +12,7 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);	glBindVertexArray(VAO);
 
-	Projection3D(shader);
+	Projection3D(shader, true);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
@@ -26,12 +26,29 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
 
-	Projection3D(shader);
+	Projection3D(shader, true);
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
+
+void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+	//Bindeamos VAO
+	glBindVertexArray(VAO);
+
+	Projection3D(shader, movimiento);
+	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
 
 void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
@@ -41,12 +58,12 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	glBindVertexArray(VAO);
 	//Bindeamos VAO
 
-	Projection3D(shader);
+	Projection3D(shader, true);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::Projection3D(const Shader & shader)
+void Renderer::Projection3D(const Shader & shader, bool movimiento)
 {
 	glm::mat4 view = glm::mat4(1.0f);
 	//alejamos el mundo 3D
@@ -56,8 +73,11 @@ void Renderer::Projection3D(const Shader & shader)
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
 
 	glm::mat4 model = glm::mat4(1.0f);
-	float angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-	model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+	float angle;
+	if (movimiento) {
+		angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+	}
 
 	//glm::mat4 transform = glm::mat4(1.0f);
 	//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -102,7 +122,7 @@ void Renderer::Render(uint32_t VAO, uint32_t program) {
 
 void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
 	float timeValue = glfwGetTime();
-	float posValue1 = sin(timeValue);	float posValue2 = cos(timeValue) ;
+	float posValue1 = sin(timeValue);	float posValue2 = cos(timeValue);
 	int idProgram = shader.GetIdProgram();
 	//si es -1 es error
 	int vertexPositionLocation = glGetUniformLocation(idProgram, uniformName);
@@ -110,7 +130,7 @@ void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
 		cout << "Error al cargar Uniform " << uniformName << endl;
 	}
 
-	glUniform3f(vertexPositionLocation, posValue1 , posValue2, posValue2 + posValue1);
+	glUniform3f(vertexPositionLocation, posValue1, posValue2, posValue2 + posValue1);
 }
 
 
