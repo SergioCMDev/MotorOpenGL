@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
 
-		render.ChangePosicionUniform(shader, "nuevaPosUniform");
+		render.ChangePosicionUniformRandom(shader, "nuevaPosUniform");
 		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());

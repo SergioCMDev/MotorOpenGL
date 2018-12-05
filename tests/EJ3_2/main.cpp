@@ -49,9 +49,9 @@ uint32_t createvertexDataFigura(uint32_t *VBO, uint32_t *EBO, uint32_t indices[]
 	glad_glEnableVertexAttribArray(0);
 
 	//Vertices de color
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	//////Lo habilitamos
-	//glad_glEnableVertexAttribArray(1);
+	glad_glEnableVertexAttribArray(1);
 
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -123,7 +123,7 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
-		render.CambiarColorUniform(shader1, "myColor");
+		render.CambiarColorUniformRandom(shader1, "myColor");
 		render.Render(VAOTriangules, shader1, numberOfElements);
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

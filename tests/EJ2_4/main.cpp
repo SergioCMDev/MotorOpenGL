@@ -51,9 +51,9 @@ uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO, uint32_t indic
 	glad_glEnableVertexAttribArray(0);
 
 	////Vertices de color
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	////Lo habilitamos
-	//glad_glEnableVertexAttribArray(1);
+	glad_glEnableVertexAttribArray(1);
 
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
 		  //Segundo triangulo
 		  0.0f, 0.0f, 0.0f,			//1.0f, 0.0f, 1.0f,
 		  0.4f, 0.0f, 0.0f,			//1.0f, 0.0f, 1.0f,
-		  0.2f, 0.3f, 0.0f		  	//0.0f, 1.0f, 0.0f,
+		  0.2f, 0.3f, 0.0f,		  	//0.0f, 1.0f, 0.0f,
 	};
 	uint32_t sizeOfIndices = sizeof(indicesTriangulo1); //3 uint32_t * sizeofuint32_t(4) = 12
 	uint32_t sizeOfVertices = sizeof(vertices1);  //18 floats * sizeoffloat(4) = 18
@@ -148,8 +148,8 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		render.Render(VAOTriangules, shader1, numberOfElements);
-		render.Render(VAOTriangules2, shader2, numberOfElements);
+		render.Render(VAOTriangules, shader1, numberOfElements, false);
+		render.Render(VAOTriangules2, shader2, numberOfElements, false);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

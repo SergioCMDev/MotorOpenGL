@@ -13,9 +13,10 @@ public:
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento);
-
-	void CambiarColorUniform(Shader& shader, char* uniformName);
-	void ChangePosicionUniform(Shader& shader, char* uniformName);
+	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool limpiarPantalla);
+	void ChangePosicionUniformRandom(Shader& shader, char* uniformName);
+	void ChangePosicionUniform(Shader& shader, char* uniformName, float posX, float posY, float posZ);
+	void CambiarColorUniformRandom(Shader& shader, char* uniformName);
 	void CambiarColorUniform(Shader& shader,  char* uniformName, float colorValue1, float colorValue2, float colorValue3);
 	void ChangeInterpolationUniform(Shader& shader, char* uniformName, float value);
 private:

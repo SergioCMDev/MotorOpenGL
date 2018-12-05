@@ -26,12 +26,12 @@ uint32_t createvertexData(uint32_t *VBO, uint32_t *EBO) {
 	float vertices[] = { -0.4f, 0.0f, 0.0f,			1.0f, 0.0f, 0.0f,
 						 -0.2f, 0.3f, 0.0f,		  	0.0f, 1.0f, 0.0f,
 						  0.0f, 0.0f, 0.0f,			0.0f, 0.0f, 1.0f,
-						/*  0.2f, 0.3f, 0.0f,			1.0f, 0.0f, 0.0f,
-						  0.4f, 0.0f, 0.0f,		  	0.0f, 1.0f, 0.0f,*/
+						  0.2f, 0.3f, 0.0f,			1.0f, 0.0f, 0.0f,
+						  0.4f, 0.0f, 0.0f,		  	0.0f, 1.0f, 0.0f,
 	};
 	//Orden en el que pintar cada conjunto, basandonos en los vertices de arriba
-	uint32_t indices[] = { 0,2,1 };
-		//,2,3,4};
+	uint32_t indices[] = { 0,2,1 
+		,2,3,4};
 
 	uint32_t VAO;
 	glGenVertexArrays(1, &VAO);

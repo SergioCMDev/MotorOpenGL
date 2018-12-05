@@ -69,6 +69,7 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
+	printf("Pulsa 1 o 0 para alterar el valor de la interpolación");
 	Renderer render;
 	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
 	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");

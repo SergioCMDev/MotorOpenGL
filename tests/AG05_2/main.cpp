@@ -7,11 +7,11 @@
 #include<iostream>
 #include<cstdint>
 #include<stdio.h>
-#include "Shader.h"
-#include "Camera.h"
+#include <Camera.h>
+#include <Shader.h>
+#include<Figure.h>
+#include<Texture.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 using namespace std;
 
 uint32_t screenWidth = 800;
@@ -309,7 +309,7 @@ int main(int argc, char* argv[]) {
 
 	glfwSetCursorPosCallback(window, OnMouse);
 	glfwSetScrollCallback(window, onScroll);
-	
+
 
 	const char* path = "../tests/AG05_2/";
 	char* result = (char*)calloc(strlen(path) + strlen("Shaders/vertex.vs") + 1, sizeof(char));

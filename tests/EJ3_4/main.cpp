@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
 
-		render.ChangePosicionUniform(shader1, "nuevaPosUniform");
+		render.ChangePosicionUniformRandom(shader1, "nuevaPosUniform");
 		render.CambiarColorUniform(shader1, "myColorUniform");
 		//render.GetValorUniform(shader1, "position");
 		render.Render(VAOTriangules, shader1, numberOfElements);

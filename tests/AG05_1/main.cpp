@@ -7,9 +7,9 @@
 #include<iostream>
 #include<cstdint>
 #include<stdio.h>
-#include "Headers/Shader.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <Shader.h>
+#include<Figure.h>
+#include<Texture.h>
 using namespace std;
 
 glm::vec3 cubePositions[] = {

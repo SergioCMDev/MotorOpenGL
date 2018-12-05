@@ -49,11 +49,28 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
-
 void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+	Projection3D(shader, true);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
+void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool limpiarPantalla) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	if (limpiarPantalla) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
 	shader.Use();
 	glBindVertexArray(VAO);
 	//Bindeamos VAO
@@ -120,9 +137,14 @@ void Renderer::Render(uint32_t VAO, uint32_t program) {
 
 }
 
-void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
+void Renderer::ChangePosicionUniformRandom(Shader& shader, char* uniformName) {
 	float timeValue = glfwGetTime();
 	float posValue1 = sin(timeValue);	float posValue2 = cos(timeValue);
+	Renderer::ChangePosicionUniform(shader, uniformName, posValue1, posValue2, 0);
+}
+
+void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName, float posX, float posY, float posZ) {
+
 	int idProgram = shader.GetIdProgram();
 	//si es -1 es error
 	int vertexPositionLocation = glGetUniformLocation(idProgram, uniformName);
@@ -130,7 +152,7 @@ void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
 		cout << "Error al cargar Uniform " << uniformName << endl;
 	}
 
-	glUniform3f(vertexPositionLocation, posValue1, posValue2, posValue2 + posValue1);
+	glUniform3f(vertexPositionLocation, posX, posY, posZ);
 }
 
 
@@ -147,19 +169,11 @@ void Renderer::ChangeInterpolationUniform(Shader& shader, char* uniformName, flo
 }
 
 
-void Renderer::CambiarColorUniform(Shader& shader, char* uniformName) {
+void Renderer::CambiarColorUniformRandom(Shader& shader, char* uniformName) {
 	float timeValue = glfwGetTime();
-	float colorValue = sin(timeValue);	float colorValue2 = cos(timeValue);	float colorValue3 = sin(timeValue);
-	int idProgram = shader.GetIdProgram();
-	//si es -1 es error
-	int vertexColorLocation = glGetUniformLocation(idProgram, uniformName);
-	if (vertexColorLocation < 0) {
-		cout << "Error al cargar Uniform " << uniformName << endl;
-	}
-
-	glUniform3f(vertexColorLocation, colorValue, colorValue2, colorValue3);
+	float colorValue = sin(timeValue);	float colorValue2 = cos(timeValue);	float colorValue3 = sin(timeValue);	CambiarColorUniform(shader, uniformName, colorValue, colorValue2, colorValue3);
 }
-//
+
 //glGetUniformfv Renderer::GetValorUniform(Shader& shader, char* uniformName) {
 //	int idProgram = shader.GetIdProgram();
 //	//si es -1 es error
