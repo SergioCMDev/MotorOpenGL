@@ -16,7 +16,8 @@ public:
 
 	void CambiarColorUniform(Shader& shader, char* uniformName);
 	void ChangePosicionUniform(Shader& shader, char* uniformName);
-	void CambiarColorUniform(Shader& shader, char* uniformName, float colorValue1, float colorValue2, float colorValue3);
+	void CambiarColorUniform(Shader& shader,  char* uniformName, float colorValue1, float colorValue2, float colorValue3);
+	void ChangeInterpolationUniform(Shader& shader, char* uniformName, float value);
 private:
 	void Projection3D(const Shader & shader, bool movimiento);
 };

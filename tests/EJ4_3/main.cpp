@@ -103,9 +103,9 @@ int main(int argc, char* argv[]) {
 	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
 
-	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0);
+	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0,true);
 	image1.LoadTexture();
-	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0);
+	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
 	image2.LoadTexture();
 
 
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]) {
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
 
-		render.ChangePosicionUniform(shader, "nuevaPosUniform");
+		//render.ChangePosicionUniform(shader, "nuevaPosUniform");
 		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());

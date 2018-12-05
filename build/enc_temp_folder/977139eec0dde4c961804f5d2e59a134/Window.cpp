@@ -32,6 +32,7 @@ void Window::HandlerInput() {
 	}
 
 	if (glfwGetKey(_window, GLFW_KEY_0) == GLFW_PRESS) {
+		printf("PRESS");
 		_buttonMoreShiny = true;
 	}
 	else

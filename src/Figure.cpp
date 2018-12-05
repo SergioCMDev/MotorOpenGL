@@ -41,18 +41,6 @@ void Figure::InitVertices(Figuras figura)
 				-0.5f, 0.5f, 0.5f,		0.0f, 1.0f };
 		_elementsIndexes = 6;
 
-		//Original
-	//0.0f, 0.0f,	//Front	
-	//	 1.0f, 0.0f,
-	//		1.0f, 1.0f,
-	//		 0.0f, 1.0f
-	//};
-		//Girado 90º
-		//-0.5f, -0.5f, 0.5f, 1.0f, 1.0f,	//Front	
-		//	0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		//	0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-		//	-0.5f, 0.5f, 0.5f, 0.0f, 1.0f
-	//};
 		_indexes = new uint32_t[_elementsIndexes]{
 		0, 1, 2, 0, 2, 3 };
 

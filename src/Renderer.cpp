@@ -134,6 +134,19 @@ void Renderer::ChangePosicionUniform(Shader& shader, char* uniformName) {
 }
 
 
+void Renderer::ChangeInterpolationUniform(Shader& shader, char* uniformName, float value) {
+
+	int idProgram = shader.GetIdProgram();
+	//si es -1 es error
+	int vertexPositionLocation = glGetUniformLocation(idProgram, uniformName);
+	if (vertexPositionLocation < 0) {
+		cout << "Error al cargar Uniform " << uniformName << endl;
+	}
+
+	glUniform1f(vertexPositionLocation, value);
+}
+
+
 void Renderer::CambiarColorUniform(Shader& shader, char* uniformName) {
 	float timeValue = glfwGetTime();
 	float colorValue = sin(timeValue);	float colorValue2 = cos(timeValue);	float colorValue3 = sin(timeValue);

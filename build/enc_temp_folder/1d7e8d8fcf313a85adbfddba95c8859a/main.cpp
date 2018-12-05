@@ -21,7 +21,7 @@ using namespace std;
 Window window;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ4_4/";
+const char* pathProyecto = "../tests/EJ4_5/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -109,10 +109,23 @@ int main(int argc, char* argv[]) {
 	image2.LoadTexture();
 
 
+	float interpolationValue = 0.6;
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
+		//Si pulsamos 0 añade interpolacion
+		if (window.GetButtonMoreShiny()) {
+			printf("0");
+			interpolationValue += 0.1;
+		}
+		//Si pulsamos 1 quita interpolacion
+		if (window.GetButtonLessShiny()) {
+			printf("1");
 
+			interpolationValue -= 0.1;
+		}
+
+		render.ChangeInterpolationUniform(shader, "interpolationValue", interpolationValue);
 		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());
