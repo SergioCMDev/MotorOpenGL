@@ -19,11 +19,11 @@ uint32_t* Figure::GetIndexs()
 	return _indexes;
 }
 
-uint32_t Figure::GetSizeIndexs() {
-	return  _sizeIndexes;
+uint32_t Figure::GetNumberOfElementsIndexs() {
+	return  _elementsIndexes;
 }
-uint32_t Figure::GetSizeVertexs() {
-	return _sizeVertexs;;
+uint32_t Figure::GetNumberOfElementsVertexs() {
+	return _elementsVertexs;;
 
 }
 
@@ -32,22 +32,22 @@ void Figure::InitVertices(Figuras figura)
 	switch (figura)
 	{
 	case Figuras::Cuadrado:
-		_sizeVertexs = 20;
-		_vertex = new float[_sizeVertexs] {
+		_elementsVertexs = 20;
+		_vertex = new float[_elementsVertexs] {
 			// Position					// UVs
 			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
 				0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
 				0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
 				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
-		_sizeIndexes = 6;
-		_indexes = new uint32_t[_sizeIndexes]{
+		_elementsIndexes = 6;
+		_indexes = new uint32_t[_elementsIndexes]{
 		0, 1, 2, 0, 2, 3 };
 
 		break;
 	case Figuras::Cubo:
-		_sizeVertexs = 120;
+		_elementsVertexs = 120;
 
-		_vertex = new float[_sizeVertexs] {
+		_vertex = new float[_elementsVertexs] {
 			// Position					// UVs
 			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
 				0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
@@ -79,9 +79,9 @@ void Figure::InitVertices(Figuras figura)
 				0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
 				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 		};
-		_sizeIndexes = 36;
+		_elementsIndexes = 36;
 
-		_indexes = new uint32_t[_sizeIndexes]{
+		_indexes = new uint32_t[_elementsIndexes]{
 			0, 1, 2, 0, 2, 3 //Front
 			,4, 5, 6, 4, 6, 7 //Right
 			,8, 9, 10, 8, 10, 11 //Back
@@ -91,15 +91,15 @@ void Figure::InitVertices(Figuras figura)
 		};
 		break;
 	case Figuras::Triangulo:
-		_sizeVertexs = 5;
+		_elementsVertexs = 5;
 
-		_vertex = new float[_sizeVertexs] {
+		_vertex = new float[_elementsVertexs] {
 			// Position					// UVs
 			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f };	//Front	
 
-		_sizeIndexes = 3;
+		_elementsIndexes = 3;
 
-		_indexes = new uint32_t[_sizeIndexes]{
+		_indexes = new uint32_t[_elementsIndexes]{
 		0, 1, 2 };
 
 		break;

@@ -90,11 +90,21 @@ uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uin
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, *elementsPerLine * sizeof(float), (void*)0);
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glad_glEnableVertexAttribArray(0);
-
-	//Vertices de color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, *elementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
-	//////Lo habilitamos
-	glad_glEnableVertexAttribArray(1);
+	uint32_t stride = 3;
+	//En caso de tener vertices de color
+	if (_verticesColor) {
+		//Vertices de color
+		glVertexAttribPointer(1, _sizeVerticesColor, GL_FLOAT, GL_FALSE, *elementsPerLine * sizeof(float), (void*)(stride * sizeof(float)));
+		//////Lo habilitamos
+		glad_glEnableVertexAttribArray(1);
+		stride += _sizeVerticesColor;
+	}
+	//En caso ded tener vertices de textura
+	if (_verticesTextura) {
+		//Vertices de textura
+		glVertexAttribPointer(2, _sizeVerticesTextura, GL_FLOAT, GL_FALSE, *elementsPerLine * sizeof(float), (void*)(stride * sizeof(float)));
+		glEnableVertexAttribArray(2);
+	}
 
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -134,12 +144,21 @@ uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uin
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, elementsPerLine * sizeof(float), (void*)0);
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glad_glEnableVertexAttribArray(0);
-
-	//Vertices de color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, elementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
-	//////Lo habilitamos
-	glad_glEnableVertexAttribArray(1);
-
+	uint32_t stride = 3;
+	//En caso de tener vertices de color
+	if (_verticesColor) {
+		//Vertices de color
+		glVertexAttribPointer(1, _sizeVerticesColor, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(stride * sizeof(float)));
+		//////Lo habilitamos
+		glad_glEnableVertexAttribArray(1);
+		stride += _sizeVerticesColor;
+	}
+	//En caso ded tener vertices de textura
+	if (_verticesTextura) {
+		//Vertices de textura
+		glVertexAttribPointer(2, _sizeVerticesTextura, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(stride * sizeof(float)));
+		glEnableVertexAttribArray(2);
+	}
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 

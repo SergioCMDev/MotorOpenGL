@@ -83,61 +83,28 @@ int main(int argc, char* argv[]) {
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
-	//Figure cuadrado = Figure(Figuras::Cubo);
+	Figure cuadrado = Figure(Figuras::Cubo);
 
-	//cuadrado.GetVertexs;
-	float verticesQuad[] = {
-		// Position					// UVs
-		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,	//Front	
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
+	uint32_t* indicesQuad = cuadrado.GetIndexs();
+	float* verticesQuad = cuadrado.GetVertexs();
 
-		0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
-		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
+	long sizeOfIndices, sizeOfVertices;
 
-		-0.5f, -0.5f, -0.5f,		1.0f, 0.0f, //Back
-		-0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,			0.0f, 0.0f,
+	sizeOfIndices = cuadrado.GetNumberOfElementsIndexs() * sizeof(float);
+	sizeOfVertices = cuadrado.GetNumberOfElementsVertexs() * sizeof(float);
 
-		-0.5f, -0.5f, 0.5f,			1.0f, 0.0f, //Left
-		-0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.5f,			0.0f, 1.0f, //Bottom
-		-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f,			1.0f, 1.0f,
-
-		-0.5f, 0.5f, 0.5f,			0.0f, 0.0f, //Top
-		0.5f, 0.5f, 0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f,			0.0f, 1.0f
-	};
-
-	uint32_t indicesQuad[] = {
-		0, 1, 2, 0, 2, 3 //Front
-		,4, 5, 6, 4, 6, 7 //Right
-		,8, 9, 10, 8, 10, 11 //Back
-		,12, 13, 14, 12, 14, 15 //Left
-		,16, 17, 18, 16, 18, 19 //Bottom
-		,20, 21, 22, 20, 22, 23 //Top
-	};
-	//uint32_t* indicesCuadrado = cuadrado.GetIndexs();
-	//float* verticesCuadrado = cuadrado.GetVertexs();
 
 	//float verticesQuad = cuadrado.GetVertexs();
-	Buffer buffer = Buffer(sizeof(indicesQuad), sizeof(verticesQuad));
+	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
 	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
+	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
+	uint32_t elementsPerLine = 5;
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, sizeOfIndices, verticesQuad, 
+		sizeOfVertices, &shader, &elementsPerLine);
 
 	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");

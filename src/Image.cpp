@@ -14,9 +14,7 @@ Image::Image(char* path, int weight, int  height, int nchannels, char* uniformNa
 	_uniformName = uniformName;
 	_textureData = stbi_load(path
 		, &weight, &height, &nchannels, 0);
-	stbi_set_flip_vertically_on_load(true);
-	//AddTextura(path, 1024, 1024, 1, 0);
-}
+	stbi_set_flip_vertically_on_load(true);}
 
 void Image::AddTextura(char * path, int weight, int  height, int nchannels, char* uniformName)
 {
