@@ -13,6 +13,7 @@ public:
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento);
+	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool limpiarPantalla);
 	void ChangePosicionUniformRandom(Shader& shader, char* uniformName);
 	void ChangePosicionUniform(Shader& shader, char* uniformName, float posX, float posY, float posZ);
@@ -21,4 +22,7 @@ public:
 	void ChangeInterpolationUniform(Shader& shader, char* uniformName, float value);
 private:
 	void Projection3D(const Shader & shader, bool movimiento);
+	void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions);
+	void Renderer::DrawElements(uint32_t numberOfElements);
+	uint32_t _numberOfElementsToDraw;
 };

@@ -3,7 +3,7 @@
 enum Figuras {
 	Triangulo,
 	Cuadrado,
-	Cubo,
+	Cubo
 };
 class Figure {
 

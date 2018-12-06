@@ -1,28 +1,19 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_precision.hpp>
 
 #include<iostream>
 #include<cstdint>
 #include<stdio.h>
-#include <Camera.h>
-#include <Shader.h>
-#include<Figure.h>
-#include<Texture.h>
 
-using namespace std;
+#include "Shader.h"
+#include "Renderer.h"
+#include "Utils.h"
+#include "Figure.h"
+#include "Window.h"
+#include "Buffer.h"
+#include "Texture.h"
 
-uint32_t screenWidth = 800;
-uint32_t screenHeigth = 600;
-float lastFrame = 0.0f;
-float lastX = (float)screenWidth / 2.0f;
-float lastY = (float)screenHeigth / 2.0f;
-bool firstMouse = true;
-
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-
+Utils utils;
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
  glm::vec3(2.0f, 5.0f, -15.0f),
@@ -36,302 +27,40 @@ glm::vec3 cubePositions[] = {
  glm::vec3(-1.3f, 1.0f, -1.5f)
 };
 
-#pragma region Cabezeras
 
-void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
-void Render();
-void HandlerInput(GLFWwindow* window);
+using namespace std;
+Window window;
+
+const int widht = 800, height = 600;
+const char* pathProyecto = "../tests/AG05_2/";
+#pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
 
 
 #pragma region Metodos
 
-//Devuelve un VAO formado por todos los componentes
-uint32_t createvectexData(uint32_t *VBO, uint32_t *EBO) {
-	float vertices[] = {
-		// Position					// UVs
-		-0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Front
-		0.5f, -0.5f, 0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
 
-		0.5f, -0.5f, 0.5f,			0.0f, 0.0f, //Right
-		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		0.5f, 0.5f, 0.5f,			0.0f, 1.0f,
-
-		-0.5f, -0.5f, -0.5f,		1.0f, 0.0f, //Back
-		-0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,			0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.5f,			1.0f, 0.0f, //Left
-		-0.5f, 0.5f, 0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f,			0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-
-		-0.5f, -0.5f, 0.5f,			0.0f, 1.0f, //Bottom
-		-0.5f, -0.5f, -0.5f,		0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,			1.0f, 0.0f,
-		0.5f, -0.5f, 0.5f,			1.0f, 1.0f,
-
-		-0.5f, 0.5f, 0.5f,			0.0f, 0.0f, //Top
-		0.5f, 0.5f, 0.5f,			1.0f, 0.0f,
-		0.5f, 0.5f, -0.5f,			1.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f,			0.0f, 1.0f
-	};
-	uint32_t indices[] = {
-	 0, 1, 2, 0, 2, 3, //Front
-	 4, 5, 6, 4, 6, 7, //Right
-	 8, 9, 10, 8, 10, 11, //Back
-	 12, 13, 14, 12, 14, 15, //Left
-	 16, 17, 18, 16, 18, 19, //Bottom
-	 20, 21, 22, 20, 22, 23 //Top
-	};
-
-
-	uint32_t VAO;
-	glGenVertexArrays(1, &VAO);
-	//Generamos 2 buffer, elementos y objetos
-	glGenBuffers(1, VBO);
-	glGenBuffers(1, EBO);
-
-	//Bindeamos el VAO
-	glBindVertexArray(VAO);
-
-	//Bindeamos buffer vertices
-	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
-	//Subida de vertices al buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//Bindeo buffer indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glad_glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	//Lo habilitamos
-	glad_glEnableVertexAttribArray(1);
-
-	//desbindeamos buffer objetos
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	//Desbindeo
-	glBindVertexArray(0);
-
-	//desbindeamos buffer elements
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	return VAO;
-}
-
-uint32_t createTexture(const char* path) {
-	uint32_t texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, nChannel;
-	unsigned char* data = stbi_load(path, &width, &height, &nChannel, 0);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		cout << "Failed to load texture " << path << endl;
-	}
-	return texture;
-}
-
-void Render(uint32_t VAO, const Shader& shader, const uint32_t texture1, const uint32_t texture2) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	shader.Use();
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-
-	glBindVertexArray(GL_TEXTURE0);
-	//Subimos a GPU
-	glBindTexture(GL_TEXTURE_2D, texture1);
-
-	glBindVertexArray(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	shader.Set("texture1", 0);
-	shader.Set("texture2", 1);
-
-	//generamos una matriz para las texturas
-
-
-	glm::mat4 view = glm::mat4(1.0f);
-	//alejamos el mundo 3
-	glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
-
-	//glm::mat4 transform = glm::mat4(1.0f);
-	//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
-	shader.Set("view", camera.getViewMatrix());
-	shader.Set("projection", projection);
-
-	for (uint32_t i = 0; i < 10; ++i) {
-
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, cubePositions[i]);
-		float angle = 10.0f + (20.0f * i);
-		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-
-		shader.Set("model", model);
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	}
-
-
-}
-
-
-
-void Render(uint32_t VAO, const Shader& shader) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-	shader.Use();
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-}
-
-void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(R, G, B, A);
-}
-
-void Render() {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	Render(0.0f, 0.0f, 1.0f, 0.0f);
-}
-
-void Render(uint32_t VAO, uint32_t program) {
-	glClear(GL_COLOR_BUFFER_BIT);
-	glUseProgram(program);
-
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-}
-
-void HandlerInput(GLFWwindow* window, const float deltaTime) {
-	//Si pulsamos la tecla ESC cerramos la ventana
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		camera.handleKeyboard(Camera::Movement::Forward, deltaTime);
-	}
-
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		camera.handleKeyboard(Camera::Movement::Backward, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		camera.handleKeyboard(Camera::Movement::Right, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		camera.handleKeyboard(Camera::Movement::Left, deltaTime);
-	}
-
-}
-
-void onScroll(GLFWwindow* window, double xoffset, double yoffset) {
-	camera.handleMouseScroll(yoffset);
-}
-
-
-void OnMouse(GLFWwindow* window, double xpos, double ypos) {
-	if (firstMouse) {
-		firstMouse = false;
-		lastX = xpos;
-		lastY = ypos;
-	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = ypos - lastY;
-	lastX = xpos;
-	lastY = ypos;
-	camera.handleMouseMovement(xoffset, yoffset);
-}
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
 	//Cambio de clip scene a view scene
-	screenWidth = width;
-	screenHeigth = height;
 	glViewport(0, 0, width, height);
 }
 
 
 
-int main(int argc, char* argv[]) {
+int Inicializacion() {
 	if (!glfwInit()) {
 		cout << "Error initializing GLFW" << endl;
 		glfwTerminate();
 		return -1;
 	}
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeigth, "Window 1", NULL, NULL);
-	if (!window) {
-		cout << "Error creating window" << endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(window);
+	window = Window(widht, height);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		cout << "Error initializing GLAD" << endl;
 		return -1;
 	}
-
-	//cuando la ventana cambie de tamaño
-	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
-
-
-	glfwSetCursorPosCallback(window, OnMouse);
-	glfwSetScrollCallback(window, onScroll);
-
-
-	const char* path = "../tests/AG05_2/";
-	char* result = (char*)calloc(strlen(path) + strlen("Shaders/vertex.vs") + 1, sizeof(char));
-	char* result2 = (char*)calloc(strlen(path) + strlen("Shaders/fragment.fs") + 1, sizeof(char));
-	strcpy(result, path); // copy string one into the result.
-	strcpy(result2, path); // copy string one into the result.
-	Shader shader(strcat(result, "Shaders/vertex.vs"), strcat(result2, "Shaders/fragment.fs"));
-
-	uint32_t VBO, EBO;
-	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAO = createvectexData(&VBO, &EBO);
-
-	result = (char*)calloc(strlen(path) + strlen("Textures/texture1.jpg") + 1, sizeof(char));
-	result2 = (char*)calloc(strlen(path) + strlen("Textures/texture2.jpg") + 1, sizeof(char));
-	strcpy(result, path); // copy string one into the result.
-	strcpy(result2, path); // copy string one into the result.
-
-	uint32_t texture1 = createTexture(strcat(result, "Textures/texture1.jpg"));
-	uint32_t texture2 = createTexture(strcat(result2, "Textures/texture2.jpg"));
-	//Bucle inicial donde se realiza toda la accion del motor
-
-
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -339,29 +68,86 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	while (!glfwWindowShouldClose(window)) {
+	//cuando la ventana cambie de tamaño
+	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
+	return 1;
+};
 
-		float currentFrame = glfwGetTime();
-		float deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
 
-		HandlerInput(window, deltaTime);
-		Render(VAO, shader, texture1, texture2);
-		//Render(1.0f, 0.0f, 0.0f, 1.0f);
-		glfwSwapBuffers(window);
+
+
+int main(int argc, char* argv[]) {
+	if (!Inicializacion()) {
+		return -1;
+	}
+	Renderer render;
+	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+
+	Shader shader = Shader(vertexpath, fragmentPath1);
+	int program = shader.GetIdProgram();
+	uint32_t VBOFigura, EBO;
+
+	Figure cuadrado = Figure(Figuras::Cubo);
+
+	uint32_t* indicesQuad = cuadrado.GetIndexs();
+	float* verticesQuad = cuadrado.GetVertexs();
+
+	long sizeOfIndices, sizeOfVertices;
+
+	sizeOfIndices = cuadrado.GetNumberOfElementsIndexs() * sizeof(float);
+	sizeOfVertices = cuadrado.GetNumberOfElementsVertexs() * sizeof(float);
+
+
+	//float verticesQuad = cuadrado.GetVertexs();
+	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
+	buffer.SetStatusVerticesColor(false);
+	buffer.SetStatusVerticesTextura(true);
+	buffer.SetSizeVerticesTextura(2);
+	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
+
+	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
+	uint32_t elementsPerLine = 5;
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, sizeOfIndices, verticesQuad,
+		sizeOfVertices, &shader, &elementsPerLine);
+
+	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
+
+	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
+	image1.LoadTexture();
+	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
+	image2.LoadTexture();
+
+
+	float interpolationValue = 0.6;
+	//Bucle inicial donde se realiza toda la accion del motor
+	while (!glfwWindowShouldClose(window.GetWindow())) {
+		window.HandlerInput();
+		//Si pulsamos 0 añade interpolacion
+		if (window.GetButtonMoreShiny()) {
+			interpolationValue += 0.1;
+		}
+		//Si pulsamos 1 quita interpolacion
+		if (window.GetButtonLessShiny()) {
+			interpolationValue -= 0.1;
+		}
+		render.ChangeInterpolationUniform(shader, "interpolationValue", interpolationValue);
+		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture(), true, 10, cubePositions);
+
+		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
 
-	//Crear metodo para esto
-//Si se han linkado bien los shaders, los borramos ya que estan linkados
+	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
-
-	glDeleteBuffers(1, &texture1);
-	glDeleteBuffers(2, &texture2);
+	image1.ReleaseTexture();
+	image2.ReleaseTexture();
 
 	glfwTerminate();
 	return 0;
 }
 #pragma endregion
+

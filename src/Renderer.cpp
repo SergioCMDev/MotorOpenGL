@@ -49,6 +49,22 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
+void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
+	uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	_numberOfElementsToDraw = numberOfElements;
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+	//Bindeamos VAO
+	glBindVertexArray(VAO);
+	Projection3D(shader, movimiento, numeroRepeticionesElementos, cubePositions);
+	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
 void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
@@ -103,6 +119,39 @@ void Renderer::Projection3D(const Shader & shader, bool movimiento)
 	shader.Set("view", view);
 	shader.Set("model", model);
 	shader.Set("projection", projection);
+}
+
+
+void Renderer::Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions)
+{
+
+	glm::mat4 view = glm::mat4(1.0f);
+	//alejamos el mundo 3D
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
+
+	if (numeroRepeticionesElemento > 0) {
+		for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
+			glm::mat4 model = glm::mat4(1.0f);
+			glm::vec3 vector = cubePositions[i];
+			model = glm::translate(model, vector);
+			float angle;
+			if (movimiento) {
+				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+			}
+			shader.Set("model", model);
+			DrawElements(_numberOfElementsToDraw);
+		}
+	}
+	shader.Set("view", view);
+	shader.Set("projection", projection);
+}
+
+void Renderer::DrawElements(uint32_t numberOfElements) {
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
 void Renderer::Render(uint32_t VAO, const Shader& shader) {
