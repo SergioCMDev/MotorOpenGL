@@ -5,18 +5,18 @@
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
-#include "Renderer.h"
 
 using namespace std;
-//const float verticesTriangulo1[] = {
-//						 -0.4f, 0.0f, 0.0f,			1.0f, 0.0f, 0.0f,
-//						 -0.2f, 0.3f, 0.0f,		  	0.0f, 1.0f, 0.0f,
-//						  0.0f, 0.0f, 0.0f,			0.0f, 0.0f, 1.0f
-//};
-//
-//
-//
-//const uint32_t indicesTriangulos[] = { 0,2,1 };
+float vertices1[] = {
+						 -0.4f, 0.0f, 0.0f,			1.0f, 0.0f, 0.0f,
+						 -0.2f, 0.3f, 0.0f,		  	0.0f, 1.0f, 0.0f,
+						  0.0f, 0.0f, 0.0f,			0.0f, 0.0f, 1.0f,
+						  0.4f, 0.0f, 0.0f,			1.0f, 0.0f, 0.0f,
+						  0.2f, 0.3f, 0.0f,		  	0.0f, 1.0f, 0.0f,
+};
+
+uint32_t indices[] = { 0,2,1,
+					   2,3,4 };
 
 
 #pragma region Cabezeras
@@ -34,16 +34,7 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO) {
 	//Vertices del triangulo
 
-	float vertices1[] = {
-							 -0.4f, 0.0f, 0.0f,			1.0f, 0.0f, 0.0f,
-							 -0.2f, 0.3f, 0.0f,		  	0.0f, 1.0f, 0.0f,
-							  0.0f, 0.0f, 0.0f,			0.0f, 0.0f, 1.0f,
-						      0.4f, 0.0f, 0.0f,			1.0f, 0.0f, 0.0f,
-							  0.2f, 0.3f, 0.0f,		  	0.0f, 1.0f, 0.0f,
-	};
 
-	uint32_t indices[] = { 0,2,1,
-						   2,3,4};
 
 	uint32_t VAO;
 	glGenVertexArrays(1, &VAO);
@@ -99,6 +90,19 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 
 
 
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
 int main(int argc, char* argv[]) {
 	if (!glfwInit()) {
 		cout << "Error initializing GLFW" << endl;
@@ -138,13 +142,12 @@ int main(int argc, char* argv[]) {
 	uint32_t VBOTriangulo1, EBO;
 	//El VAO Agrupa todos los VBO y EBO
 	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO);
-	Renderer render;
 	//uint32_t numberOfElements = sizeof(vertices1) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		render.Render(VAOTriangules, shader, 6);
+		Render(VAOTriangules, shader, 6);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

@@ -5,14 +5,12 @@
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
 
 using namespace std;
 
 GLFWwindow* window;
 Utils utils;
-Renderer render;
 const char* pathProyecto = "../tests/EJ2_4/";
 #pragma region Cabezeras
 
@@ -20,6 +18,19 @@ void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
 void Render();
 void HandlerInput(GLFWwindow* window);
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
+
+uint32_t indicesTriangulo1[] = { 0, 2, 1 };
+uint32_t indicesTriangulo2[] = { 3, 4, 5 };
+float vertices1[] = {
+	//Primer triangulo			//Color
+	 -0.4f, 0.0f, 0.0f,			//1.0f, 0.0f, 0.0f,
+	 -0.2f, 0.3f, 0.0f,		  	//0.0f, 1.0f, 0.0f,
+	  0.0f, 0.0f, 0.0f,			//0.0f, 0.0f, 1.0f,
+	  //Segundo triangulo
+	  0.0f, 0.0f, 0.0f,			//1.0f, 0.0f, 1.0f,
+	  0.4f, 0.0f, 0.0f,			//1.0f, 0.0f, 1.0f,
+	  0.2f, 0.3f, 0.0f,		  	//0.0f, 1.0f, 0.0f,
+};
 #pragma endregion
 
 
@@ -111,6 +122,22 @@ int Inicializacion() {
 	return 1;
 }
 
+
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool limpiarPantalla) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	if (limpiarPantalla) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
@@ -125,18 +152,7 @@ int main(int argc, char* argv[]) {
 
 
 	uint32_t VBOTriangulo1, EBO;
-	uint32_t indicesTriangulo1[] = { 0, 2, 1 };
-	uint32_t indicesTriangulo2[] = { 3, 4, 5 };
-	float vertices1[] = {
-		//Primer triangulo			//Color
-		 -0.4f, 0.0f, 0.0f,			//1.0f, 0.0f, 0.0f,
-		 -0.2f, 0.3f, 0.0f,		  	//0.0f, 1.0f, 0.0f,
-		  0.0f, 0.0f, 0.0f,			//0.0f, 0.0f, 1.0f,
-		  //Segundo triangulo
-		  0.0f, 0.0f, 0.0f,			//1.0f, 0.0f, 1.0f,
-		  0.4f, 0.0f, 0.0f,			//1.0f, 0.0f, 1.0f,
-		  0.2f, 0.3f, 0.0f,		  	//0.0f, 1.0f, 0.0f,
-	};
+
 	uint32_t sizeOfIndices = sizeof(indicesTriangulo1); //3 uint32_t * sizeofuint32_t(4) = 12
 	uint32_t sizeOfVertices = sizeof(vertices1);  //18 floats * sizeoffloat(4) = 18
 	uint32_t numberOfElements = sizeof(indicesTriangulo1) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
@@ -148,8 +164,8 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		render.Render(VAOTriangules, shader1, numberOfElements, false);
-		render.Render(VAOTriangules2, shader2, numberOfElements, false);
+		Render(VAOTriangules, shader1, numberOfElements, false);
+		Render(VAOTriangules2, shader2, numberOfElements, false);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

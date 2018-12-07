@@ -5,15 +5,32 @@
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
 
 using namespace std;
 
 GLFWwindow* window;
 Utils utils;
-Renderer render;
 const char* pathProyecto = "../tests/EJ2_5/";
+uint32_t indicesHexagono[] = {
+	6,0,1,
+	6,1,2,
+	6,2,3,
+	3,4,6,
+	4,5,6,
+	6,5,0
+};
+float vertices1[] = {
+	//Color
+-0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
+0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
+0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
+0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
+-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
+-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
+ 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
+};
+
 #pragma region Cabezeras
 
 void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
@@ -111,6 +128,20 @@ int Inicializacion() {
 	return 1;
 }
 
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
@@ -123,24 +154,6 @@ int main(int argc, char* argv[]) {
 
 
 	uint32_t VBOTriangulo1, EBO;
-	uint32_t indicesHexagono[] = {
-		6,0,1,
-		6,1,2,
-		6,2,3,
-		3,4,6,
-		4,5,6,
-		6,5,0
-	};
-	float vertices1[] = {
-								//Color
-		-0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
-		0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
-		0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
-		0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
-	   -0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
-	   -0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
-		0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
-	};
 
 
 
@@ -154,7 +167,7 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		render.Render(VAOTriangules, shader1, numberOfElements);
+		Render(VAOTriangules, shader1, numberOfElements);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

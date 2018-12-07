@@ -6,17 +6,15 @@
 #include<stdio.h>
 
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
-#include "Figure.h"
 #include "Window.h"
 #include "Buffer.h"
 #include "Texture.h"
 #include "Camera.h"
 
 Utils utils;
-
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+glm::vec3 lightPos(-1.2f, 1.0f, 2.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -28,9 +26,50 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
+uint32_t _elementsVertexs = 144;
+
+float vertex[]{
+	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, //Front
+				0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,//Right
+				0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+				0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+				0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,//Back
+				-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+				0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+				0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+				-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,//Left
+				-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+				-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+				-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+				-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,//Bottom
+				-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+				0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+				0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,//Top
+				0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+				0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f };
+
+
+uint32_t elementsIndexes = 36;
+
+uint32_t indexes[]{
+	0, 1, 2, 0, 2, 3 //Front
+	,4, 5, 6, 4, 6, 7 //Right
+	,8, 9, 10, 8, 10, 11 //Back
+	,12, 13, 14, 12, 14, 15 //Left
+	,16, 17, 18, 16, 18, 19 //Bottom
+	,20, 21, 22, 20, 22, 23 //Top
+};
+
+
+
 
 using namespace std;
-//Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 const char* pathProyecto = "../tests/AG06/";
 #pragma region Cabezeras
@@ -111,41 +150,84 @@ int Inicializacion() {
 	return 1;
 };
 
+void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
+	const uint32_t numberOfElements, Camera camera) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	glm::mat4 view = camera.GetViewMatrix();
+
+
+	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
+
+	shaderlight.Use();
+	shaderlight.Set("projection", projection);
+	shaderlight.Set("view", view);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, lightPos);
+	model = glm::scale(model, glm::vec3(0.2f));
+	shaderlight.Set("model", model);
+	glBindVertexArray(VAO);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+
+	shaderCube.Use();
+	shaderCube.Set("projection", projection);
+	shaderCube.Set("view", view);
+
+	shaderCube.Set("model", glm::mat4(1.0f));
+	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
+	shaderCube.Set("normalMat", normalMat);
+	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.3f);
+	shaderCube.Set("lightColor", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("ambientStrenght", 0.1f);
+	shaderCube.Set("lightPos", lightPos);
+	shaderCube.Set("viewPos", camera.GetPosition());
+	shaderCube.Set("shininess", 32);
+	shaderCube.Set("specularStrenght", 0.6f);
+	glBindVertexArray(VAO);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
 
 
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	Renderer render;
 	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
 	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
+	const char* vertexpathLight = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
+	const char* fragmentPathLight = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+
 	Shader shader = Shader(vertexpath, fragmentPath1);
+	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
-	Figure cubo = Figure(Figuras::Cubo, false);
 
-	uint32_t* indicesQuad = cubo.GetIndexs();
-	float* verticesQuad = cubo.GetVertexs();
 
 	long sizeOfIndices, sizeOfVertices;
 
-	sizeOfIndices = cubo.GetNumberOfElementsIndexs() * sizeof(float);
-	sizeOfVertices = cubo.GetNumberOfElementsVertexs() * sizeof(float);
+	sizeOfIndices = elementsIndexes * sizeof(float);
+	sizeOfVertices = _elementsVertexs * sizeof(float);
 
 
 	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(false);
+	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t elementsPerLine = 3;
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, sizeOfIndices, verticesQuad,
-		sizeOfVertices, &shader, &elementsPerLine);
+	//uint32_t elementsPerLine = 6;
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
+		sizeOfVertices, &shader);
 
 
 
@@ -160,7 +242,7 @@ int main(int argc, char* argv[]) {
 		window.HandlerInput();
 		//Si pulsamos 0 añade interpolacion
 
-		render.RenderConMovimiento(VAO, shader, numberOfElementsToDraw, false, camera);
+		Render(VAO, shader, shaderlight, numberOfElementsToDraw,camera);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

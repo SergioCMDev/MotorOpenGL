@@ -5,16 +5,27 @@
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
 #include "Window.h"
 
 using namespace std;
 Window window;
 Utils utils;
-//Renderer render;
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/EJ3_2/";
+
+uint32_t indicesHexagono[] = {
+	2,1,0
+};
+float vertices1[] = {
+	//Color
+-0.2f, 0.1f, 0.0f,
+0.2f, 0.1f, 0.0f,
+0.0f,  -0.2f, 0.0f
+
+};
+
+
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -91,27 +102,49 @@ int Inicializacion() {
 	return 1;
 }
 
+void CambiarColorUniform(Shader& shader, char* uniformName, float colorValue1, float colorValue2, float colorValue3) {
+	float timeValue = glfwGetTime();
+
+	int idProgram = shader.GetIdProgram();
+	//si es -1 es error
+	int vertexColorLocation = glGetUniformLocation(idProgram, uniformName);
+	if (vertexColorLocation < 0) {
+		cout << "Error al cargar Uniform " << uniformName << endl;
+	}
+
+	glUniform3f(vertexColorLocation, colorValue1, colorValue2, colorValue3);
+}
+
+void CambiarColorUniformRandom(Shader& shader, char* uniformName) {
+	float timeValue = glfwGetTime();
+	float colorValue = sin(timeValue);	float colorValue2 = cos(timeValue);	float colorValue3 = sin(timeValue);	CambiarColorUniform(shader, uniformName, colorValue, colorValue2, colorValue3);
+}
+
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
+
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	Renderer render;
 	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
 	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
 	Shader shader1 = Shader(vertexpath, fragmentPath1);
 	int program = shader1.GetIdProgram();
 	uint32_t VBOTriangulo1, EBO;
-	uint32_t indicesHexagono[] = {
-		2,1,0
-	};
-	float vertices1[] = {
-		//Color
--0.2f, 0.1f, 0.0f,
-0.2f, 0.1f, 0.0f,
-0.0f,  -0.2f, 0.0f
 
-	};
 
 
 	uint32_t sizeOfIndices = sizeof(indicesHexagono); //3 uint32_t * sizeofuint32_t(4) = 12
@@ -123,8 +156,8 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
-		render.CambiarColorUniformRandom(shader1, "myColor");
-		render.Render(VAOTriangules, shader1, numberOfElements);
+		CambiarColorUniformRandom(shader1, "myColor");
+		Render(VAOTriangules, shader1, numberOfElements);
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}

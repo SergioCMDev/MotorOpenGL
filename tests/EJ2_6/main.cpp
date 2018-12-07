@@ -5,18 +5,37 @@
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
-#include "Window.h"
 
 using namespace std;
 
-Window window;
+GLFWwindow* window;
 Utils utils;
-Renderer render;
-const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/EJ2_5/";
+uint32_t indicesHexagono[] = {
+	6,0,1,
+	6,1,2,
+	6,2,3,
+	3,4,6,
+	4,5,6,
+	6,5,0
+};
+float vertices1[] = {
+	//Color
+-0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
+0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
+0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
+0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
+-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
+-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
+ 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
+};
+
 #pragma region Cabezeras
+
+void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
+void Render();
+void HandlerInput(GLFWwindow* window);
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
 
@@ -65,6 +84,13 @@ uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO, uint32_t indic
 	return VAO;
 }
 
+void HandlerInput(GLFWwindow* window) {
+	//Si pulsamos la tecla ESC cerramos la ventana
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
 	//Cambio de clip scene a view scene
@@ -79,7 +105,18 @@ int Inicializacion() {
 		glfwTerminate();
 		return -1;
 	}
-	window = Window(widht, height);
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	window = glfwCreateWindow(800, 600, "Window 1", NULL, NULL);
+	if (!window) {
+		cout << "Error creating window" << endl;
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		cout << "Error initializing GLAD" << endl;
@@ -87,8 +124,22 @@ int Inicializacion() {
 	}
 
 	//cuando la ventana cambie de tamaño
-	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
+	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
 	return 1;
+}
+
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
 int main(int argc, char* argv[]) {
@@ -100,26 +151,11 @@ int main(int argc, char* argv[]) {
 	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
 	Shader shader1(vertexpath, fragmentPath1);
-	
+
+
 	uint32_t VBOTriangulo1, EBO;
-	uint32_t indicesHexagono[] = {
-		6,0,1,
-		6,1,2,
-		6,2,3,
-		3,4,6,
-		4,5,6,
-		6,5,0
-	};
-	float vertices1[] = {
-		//Color
--0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
-0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
--0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
--0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
- 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
-	};
+
+
 
 
 	uint32_t sizeOfIndices = sizeof(indicesHexagono); //3 uint32_t * sizeofuint32_t(4) = 12
@@ -129,11 +165,11 @@ int main(int argc, char* argv[]) {
 	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesHexagono, sizeOfIndices, vertices1, sizeOfVertices);
 
 	//Bucle inicial donde se realiza toda la accion del motor
-	while (!glfwWindowShouldClose(window.GetWindow())) {
-		window.HandlerInput();
-		render.Render(VAOTriangules, shader1, numberOfElements);
-		glfwSwapBuffers(window.GetWindow());
-		glfwPollEvents();
+	while (!glfwWindowShouldClose(window)) {
+		//HandlerInput(window);
+		//Render(VAOTriangules, shader1, numberOfElements);
+		//glfwSwapBuffers(window);
+		//glfwPollEvents();
 	}
 
 	//Crear metodo para esto

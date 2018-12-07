@@ -6,9 +6,7 @@
 #include<stdio.h>
 
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
-#include "Figure.h"
 #include "Window.h"
 #include "Buffer.h"
 #include "Texture.h"
@@ -22,6 +20,21 @@ Window window;
 
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/EJ4_5/";
+uint32_t elementsVertexs = 20;
+
+float vertexs[]{
+	// Position					// UVs
+	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
+
+
+uint32_t elementsIndexes = 6;
+
+uint32_t indexes[]{
+0, 1, 2, 0, 2, 3 };
+
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -62,14 +75,38 @@ int Inicializacion() {
 	return 1;
 };
 
+void ChangeInterpolationUniform(Shader& shader, char* uniformName, float value) {
+
+	int idProgram = shader.GetIdProgram();
+	//si es -1 es error
+	int vertexPositionLocation = glGetUniformLocation(idProgram, uniformName);
+	if (vertexPositionLocation < 0) {
+		cout << "Error al cargar Uniform " << uniformName << endl;
+	}
+
+	glUniform1f(vertexPositionLocation, value);
+}
 
 
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+	//Bindeamos VAO
+	glBindVertexArray(VAO);
+
+	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
 
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	Renderer render;
 	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
 	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
@@ -77,27 +114,23 @@ int main(int argc, char* argv[]) {
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
-	Figure cuadrado = Figure(Figuras::Cubo);
-
-	uint32_t* indicesQuad = cuadrado.GetIndexs();
-	float* verticesQuad = cuadrado.GetVertexs();
-
 	long sizeOfIndices, sizeOfVertices;
 
-	sizeOfIndices = cuadrado.GetNumberOfElementsIndexs() * sizeof(float);
-	sizeOfVertices = cuadrado.GetNumberOfElementsVertexs() * sizeof(float);
+	sizeOfIndices = elementsIndexes * sizeof(float);
+	sizeOfVertices = elementsVertexs * sizeof(float);
 
 
 	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
+	buffer.SetStatusVerticesNormal(false);
 	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
 	uint32_t elementsPerLine = 5;
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, sizeOfIndices, verticesQuad,
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertexs,
 		sizeOfVertices, &shader, &elementsPerLine);
 
 	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
@@ -122,8 +155,8 @@ int main(int argc, char* argv[]) {
 			interpolationValue -= 0.1;
 		}
 
-		render.ChangeInterpolationUniform(shader, "interpolationValue", interpolationValue);
-		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
+		ChangeInterpolationUniform(shader, "interpolationValue", interpolationValue);
+		Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

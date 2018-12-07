@@ -27,4 +27,4 @@ private:
 	int _widht, _height, _nchannels;
 	uint32_t _texture;
 };
-#endif // !1
+#endif //

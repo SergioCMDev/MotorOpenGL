@@ -6,13 +6,9 @@ Figure::Figure()
 
 Figure::Figure(Figuras figura)
 {
-	InitVertices(figura,true);
+	InitVertices(figura);
 }
 
-Figure::Figure(Figuras figura, bool texture)
-{
-	InitVertices(figura, texture);
-}
 
 float* Figure::GetVertexs()
 {
@@ -32,108 +28,158 @@ uint32_t Figure::GetNumberOfElementsVertexs() {
 
 }
 
-void Figure::InitVertices(Figuras figura, bool texture = false)
+void Figure::InitVertices(Figuras figura)
 {
 	switch (figura)
 	{
 	case Figuras::Cuadrado:
 		_elementsVertexs = 20;
-		if (texture) {
-			_vertex = new float[_elementsVertexs] {
-				// Position					// UVs
-				-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
-					0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-					0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-					-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
-		}
-		else {
-			_vertex = new float[_elementsVertexs] {
-				// Position					// UVs
-				-0.5f, -0.5f, 0.5f,
-					0.5f, -0.5f, 0.5f,
-					0.5f, 0.5f, 0.5f,
-					-0.5f, 0.5f, 0.5f };
-		}
-			_elementsIndexes = 6;
-
-			_indexes = new uint32_t[_elementsIndexes]{
-			0, 1, 2, 0, 2, 3 };
-
-			break;
-	case Figuras::Cubo:
-		if (texture) {
-
-		_elementsVertexs = 120;
 
 		_vertex = new float[_elementsVertexs] {
 			// Position					// UVs
 			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
 				0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
 				0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
 
-				0.5f, -0.5f, 0.5f, 0.0f, 0.0f, //Right
-				0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-				0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-				0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
 
-				-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, //Back
-				-0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-				0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-				0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+		_elementsIndexes = 6;
 
-				-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, //Left
-				-0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+		_indexes = new uint32_t[_elementsIndexes]{
+		0, 1, 2, 0, 2, 3 };
 
-				-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //Bottom
-				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-				0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-				0.5f, -0.5f, 0.5f, 1.0f, 1.0f,
+		break;
+	case Figuras::Cubo:
+		_elementsVertexs = 144;
+		//_elementsVertexs = 192;
+		//_vertex = new float[_elementsVertexs] {
+		////	 Position					// UVs
+		//	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, //Front
+		//		0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+		//		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		//		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 
-				-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, //Top
-				0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-				0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-		};
-		}
-		else {
-			_elementsVertexs = 72;
+		//		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,//Right
+		//		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		//		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		//		0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f
 
-			_vertex = new float[_elementsVertexs] {
-				// Position					// UVs
-					-0.5f, -0.5f, 0.5f,//Front	
-					0.5f, -0.5f, 0.5f,
-					0.5f, 0.5f, 0.5f,
-					-0.5f, 0.5f, 0.5f,
+		//		- 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f,//Back
+		//		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+		//		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+		//		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f,
 
-					0.5f, -0.5f, 0.5f,  //Right
-					0.5f, -0.5f, -0.5f, 
-					0.5f, 0.5f, -0.5f, 
-					0.5f, 0.5f, 0.5f,
+		//		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,//Leftt
+		//		-0.5f, 0.5f, 0.5f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		//		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+		//		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-					-0.5f, -0.5f, -0.5f,  //Back
-					-0.5f, 0.5f, -0.5f,
-					0.5f, 0.5f, -0.5f,
-					0.5f, -0.5f, -0.5f, 
+		//		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f,//Bottom
+		//		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+		//		0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+		//		0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 0.0f, -1.0f, 0.0f,
 
-					-0.5f, -0.5f, 0.5f,  //Left
-					-0.5f, 0.5f, 0.5f, 
-					-0.5f, 0.5f, -0.5f, 
-					-0.5f, -0.5f, -0.5f, 
+		//		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,//Top
+		//		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0,
+		//		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+		//		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f
+		//};
 
-					-0.5f, -0.5f, 0.5f,  //Bottom
-					-0.5f, -0.5f, -0.5f, 
-					0.5f, -0.5f, -0.5f, 
-					0.5f, -0.5f, 0.5f, 
 
-					-0.5f, 0.5f, 0.5f,  //Top
-					0.5f, 0.5f, 0.5f,
-					0.5f, 0.5f, -0.5f, 
-					-0.5f, 0.5f, -0.5f, 
-			};
-		}
+		_vertex = new float[_elementsVertexs] {
+			////	 Position					// UVs
+			//-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, //Front
+			//	0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			//	0.5f, 0.5f, 0.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			//	-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+
+			//	0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,//Right
+			//	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+			//	0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			//	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f
+
+			//	- 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f,//Back
+			//	-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+			//	0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f,
+			//	0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f,
+
+			//	-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, -1.0f, 0.0f, 0.0f,//Leftt
+			//	-0.5f, 0.5f, 0.5f, 1.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+			//	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f,
+			//	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+
+			//	-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, -1.0f, 0.0f,//Bottom
+			//	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+			//	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f,
+			//	0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 0.0f, -1.0f, 0.0f,
+
+			//	-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,//Top
+			//	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0,
+			//	0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+			//	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f
+		//};
+
+			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, //Front
+				0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+				0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,//Right
+				0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+				0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+				0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,//Back
+				-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+				0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+				0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+				-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,//Left
+				-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+				-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+				-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+				-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,//Bottom
+				-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+				0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+				0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,//Top
+				0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+				0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f};
+
+
+		//_elementsVertexs = 120;
+
+		//_vertex = new float[_elementsVertexs] {
+		//	// Position					// UVs
+		//	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
+		//		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+		//		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+		//		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+
+		//		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, //Right
+		//		0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+		//		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+		//		0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+
+		//		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, //Back
+		//		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+		//		0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+		//		0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+		//		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, //Left
+		//		-0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+		//		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+		//		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+		//		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //Bottom
+		//		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+		//		0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+		//		0.5f, -0.5f, 0.5f, 1.0f, 1.0f,
+
+		//		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, //Top
+		//		0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+		//		0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+		//		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+		//};
+
 		_elementsIndexes = 36;
 
 		_indexes = new uint32_t[_elementsIndexes]{
@@ -150,7 +196,7 @@ void Figure::InitVertices(Figuras figura, bool texture = false)
 
 		_vertex = new float[_elementsVertexs] {
 			// Position					// UVs
-			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f };	//Front	
+			-0.5f, -0.5f, 0.5f, 0.0f, 0.0f };
 
 		_elementsIndexes = 3;
 
@@ -160,5 +206,5 @@ void Figure::InitVertices(Figuras figura, bool texture = false)
 		break;
 	default:
 		break;
-		}
 	}
+}

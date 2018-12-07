@@ -25,13 +25,18 @@ public:
 		float vertices[], uint32_t sizeOfVertices, Shader* shader);
 	 void Buffer::SetStatusVerticesColor(bool cond);
 	 void Buffer::SetStatusVerticesTextura(bool cond);
+	 void Buffer::SetStatusVerticesNormal(bool cond);
 	 void Buffer::SetSizeVerticesTextura(uint32_t size);
 	 void Buffer::SetSizeVerticesColor(uint32_t size);
+	 void Buffer::SetSizeVerticesNormal(uint32_t size);
 private:
 	uint32_t *VBO,  *EBO, _sizeOfVertices, _sizeOfIndices, _numberOfLines, _numberOfElementsPerLine, _numberOfElements, _elementsToDraw;
 	bool _verticesColor = false;
 	bool _verticesTextura = false;
+	bool _verticesNormal = false;
 	uint32_t _sizeVerticesTextura = 2;
 	uint32_t _sizeVerticesColor = 2;
+	uint32_t _sizeVerticesNormal = 3;
+	
 };
 #endif
