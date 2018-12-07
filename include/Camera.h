@@ -1,4 +1,11 @@
+#ifndef CAMERA_H     
+#define  CAMERA_H
+
 #include <glm/glm.hpp>
+#include<GLFW/glfw3.h>
+#include<glm/gtc/matrix_transform.hpp>
+#include<glm/gtc/type_precision.hpp>
+
 //Default Camera Values
 const float k_Yaw = -90.0f;
 const float k_Pitch = 0.0f;
@@ -13,8 +20,9 @@ public:
 		Left = 2,
 		Right = 3,
 	};
-	Camera(); //Empty Constructor
+	 Camera(); //Empty Constructor
 	~Camera(); //Destructor
+
 	//Constructor with Vectors
 	Camera(const glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
 		const glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
@@ -25,7 +33,7 @@ public:
 		const float yaw, const float pitch);
 
 	//returns current view matrix
-	glm::mat4 getViewMatrix() const; 
+	glm::mat4 GetViewMatrix() const;
 
 	//returns the fov
 	float GetFOV() const;
@@ -33,7 +41,7 @@ public:
 	glm::vec3 GetPosition() const;
 
 	//Process input from keyboard
-	void handleKeyboard(const Movement direction, const float deltaTime);
+	void HandleKeyboard(const Movement direction, const float deltaTime);
 	//Process mouse movement
 	void handleMouseMovement(const float xoffset, const float yoffset,
 		const bool constrainPitch = true);
@@ -52,3 +60,4 @@ private:
 	//calculate the lookAt View matrix
 	glm::mat4 LookAt() const;
 };
+#endif

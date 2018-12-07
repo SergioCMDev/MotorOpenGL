@@ -1,7 +1,6 @@
-//#include<glad/glad.h>
-//#include<GLFW/glfw3.h>
+#ifndef BUFFER_h     
+#define  BUFFER_h
 
-//#include<iostream>
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
@@ -35,3 +34,4 @@ private:
 	uint32_t _sizeVerticesTextura = 2;
 	uint32_t _sizeVerticesColor = 2;
 };
+#endif

@@ -5,6 +5,7 @@ local project_list = {
 	"AG04",
 	"AG05_1",
 	"AG05_2",
+	"AG06",
 	"EJ2_1",
 	"EJ2_2",
 	"EJ2_3",

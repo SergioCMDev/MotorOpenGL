@@ -1,3 +1,5 @@
+#ifndef FIGURE_H
+#define FIGURE_H
 #include<iostream>
 #include <string>
 enum Figuras {
@@ -22,3 +24,4 @@ private:
 	uint32_t _elementsIndexes;
 	uint32_t _elementsVertexs;
 };
+#endif

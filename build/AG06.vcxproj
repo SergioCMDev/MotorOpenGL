@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1910090D-8524-31BE-4EA6-D41DBA792DEF}</ProjectGuid>
-    <RootNamespace>EJ2_4</RootNamespace>
+    <ProjectGuid>{93E8817C-7F1F-830D-280C-69101422FF0E}</ProjectGuid>
+    <RootNamespace>AG06</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -42,15 +42,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\EJ2_4\</IntDir>
-    <TargetName>EJ2_4_d</TargetName>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\AG06\</IntDir>
+    <TargetName>AG06_d</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\EJ2_4\</IntDir>
-    <TargetName>EJ2_4_r</TargetName>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\AG06\</IntDir>
+    <TargetName>AG06_r</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -68,7 +68,7 @@
       <PrecompiledHeader></PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(IntDir)EJ2_4_d.compile.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)AG06_d.compile.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -77,10 +77,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)EJ2_4_d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)AG06_d.pdb</ProgramDatabaseFile>
       <AdditionalDependencies>OpenGL32.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)EJ2_4_d.exe</OutputFile>
+      <OutputFile>$(OutDir)AG06_d.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -111,7 +111,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>OpenGL32.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)EJ2_4_r.exe</OutputFile>
+      <OutputFile>$(OutDir)AG06_r.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -144,7 +144,7 @@
     <ClInclude Include="..\src\deps\glfw\wgl_context.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\tests\EJ2_4\main.cpp">
+    <ClCompile Include="..\tests\AG06\main.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Buffer.cpp">
     </ClCompile>

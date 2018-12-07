@@ -1,6 +1,6 @@
 #pragma once
-#ifndef _SHADER_H__
-#define __SHADER_H_ 1
+#ifndef SHADER_H__
+#define SHADER_H_ 
 #include <glm/glm.hpp>
 #include <string>
 #include <vector>
@@ -52,4 +52,5 @@ private:
 	void loadShader(const char* path, string* code);
 	uint32_t _id;
 };
-#endif // !_SHADER_H__
+#endif 
+

@@ -1,6 +1,9 @@
+#ifndef RENDERER_H
+#define RENDERER_H
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
 #include "Shader.h"
+#include "Camera.h"
 
 class Renderer
 {
@@ -13,6 +16,7 @@ public:
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento);
+	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions, Camera camera);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions);
 	void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool limpiarPantalla);
 	void ChangePosicionUniformRandom(Shader& shader, char* uniformName);
@@ -23,6 +27,8 @@ public:
 private:
 	void Projection3D(const Shader & shader, bool movimiento);
 	void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions);
+	void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions, Camera camera);
 	void Renderer::DrawElements(uint32_t numberOfElements);
 	uint32_t _numberOfElementsToDraw;
 };
+#endif

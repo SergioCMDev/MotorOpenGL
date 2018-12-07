@@ -5,15 +5,31 @@
 #include<cstdint>
 #include<stdio.h>
 
-#include "Shader.h"
-#include "Renderer.h"
-#include "Utils.h"
-#include "Figure.h"
-#include "Window.h"
-#include "Buffer.h"
-#include "Texture.h"
+#include <Shader.h>
+#include <Renderer.h>
+#include <Utils.h>
+#include <Figure.h>
+#include <Window.h>
+#include <Buffer.h>
+#include <Texture.h>
+#include "Camera.h"
+//#include <UtilsHandlers.h>
 
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastFrame = 0.0f;
+bool firstMouse = true;
+
+const uint32_t screen_width = 800, screen_height = 600;
+float lastX = (float)screen_width / 2.0f;
+float lastY = (float)screen_height / 2.0f;
+Window window;
 Utils utils;
+//UtilsHandlers handlers;
+
+bool _firstMouse = false;
+double _lastX, _lastY, _xoffset, _yoffset;
+
+
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
  glm::vec3(2.0f, 5.0f, -15.0f),
@@ -29,23 +45,56 @@ glm::vec3 cubePositions[] = {
 
 
 using namespace std;
-Window window;
 
-const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/AG05_2/";
 #pragma region Cabezeras
-void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
+//void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
 
 
 #pragma region Metodos
-
 
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
 	//Cambio de clip scene a view scene
 	glViewport(0, 0, width, height);
 }
+
+void OnMouse(GLFWwindow* window, double xpos, double ypos) {
+	if (_firstMouse) {
+		_firstMouse = false;
+		_lastX = xpos;
+		_lastY = ypos;
+	}
+
+	_xoffset = xpos - _lastX;
+	_yoffset = ypos - _lastY;
+	_lastX = xpos;
+	_lastY = ypos;
+	camera.handleMouseMovement(_xoffset, _yoffset);
+}
+
+
+void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
+	camera.handleMouseScroll(yoffset);
+}
+
+void HandlerInput(GLFWwindow* window, const double deltaTime) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Forward, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Backward, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Left, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
+	}
+	//Window::HandlerInput();
+}
+
 
 
 
@@ -55,12 +104,15 @@ int Inicializacion() {
 		glfwTerminate();
 		return -1;
 	}
-	window = Window(widht, height);
+
+	window = Window(screen_width, screen_height);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		cout << "Error initializing GLAD" << endl;
 		return -1;
 	}
+	//handlers = UtilsHandlers(window, camera);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -69,7 +121,10 @@ int Inicializacion() {
 	glDepthFunc(GL_LESS);
 
 	//cuando la ventana cambie de tamaño
+	glfwSetCursorPosCallback(window.GetWindow(), OnMouse);
 	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
+	glfwSetScrollCallback(window.GetWindow(), OnScroll);
+	glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	return 1;
 };
 
@@ -77,6 +132,7 @@ int Inicializacion() {
 
 
 int main(int argc, char* argv[]) {
+
 	if (!Inicializacion()) {
 		return -1;
 	}
@@ -120,20 +176,15 @@ int main(int argc, char* argv[]) {
 	image2.LoadTexture();
 
 
-	float interpolationValue = 0.6;
+	//float interpolationValue = 0.6;
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
-		window.HandlerInput();
-		//Si pulsamos 0 añade interpolacion
-		if (window.GetButtonMoreShiny()) {
-			interpolationValue += 0.1;
-		}
-		//Si pulsamos 1 quita interpolacion
-		if (window.GetButtonLessShiny()) {
-			interpolationValue -= 0.1;
-		}
-		render.ChangeInterpolationUniform(shader, "interpolationValue", interpolationValue);
-		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture(), true, 10, cubePositions);
+		float currentFrame = glfwGetTime();
+		float deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+		HandlerInput(window.GetWindow(),deltaTime);
+
+		render.Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture(), true, 10, cubePositions, camera);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -149,5 +200,9 @@ int main(int argc, char* argv[]) {
 	glfwTerminate();
 	return 0;
 }
+
+
+
+
 #pragma endregion
 

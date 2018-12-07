@@ -124,6 +124,7 @@
     <ClInclude Include="..\include\Shader.h" />
     <ClInclude Include="..\include\Texture.h" />
     <ClInclude Include="..\include\Utils.h" />
+    <ClInclude Include="..\include\UtilsHandlers.h" />
     <ClInclude Include="..\include\Window.h" />
     <ClInclude Include="..\include\glad\glad.h" />
     <ClInclude Include="..\include\GLFW\glfw3.h" />
@@ -158,6 +159,8 @@
     <ClCompile Include="..\src\Texture.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Utils.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\UtilsHandler.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Window.cpp">
     </ClCompile>

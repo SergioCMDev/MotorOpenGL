@@ -1,17 +1,12 @@
-#include<glad/glad.h>
 #include "Camera.h"
-#include<GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include<glm/gtc/matrix_transform.hpp>
-#include<glm/gtc/type_precision.hpp>
 
+Camera::~Camera() {}
 Camera::Camera() :
 	_position(glm::vec3(0.0f, 0.0f, 0.0f)),
 	_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	_yaw(k_Yaw), _pitch(k_Pitch), _fov(k_FOV) {
 	updateCameraVectors();
 }
-Camera::~Camera() {}
 
 Camera::Camera(const glm::vec3 position, const glm::vec3 up, const float yaw, const float pitch) :
 	_position(position),
@@ -31,7 +26,7 @@ Camera::Camera(const float posX, const float posY, const float posZ,
 
 }
 
-glm::mat4 Camera::getViewMatrix() const {
+glm::mat4 Camera::GetViewMatrix() const {
 	return LookAt();
 }
 
@@ -59,7 +54,7 @@ void Camera::updateCameraVectors() {
 }
 
 
-void Camera::handleKeyboard(const Movement direction, const float deltaTime) {
+void Camera::HandleKeyboard(const Movement direction, const float deltaTime) {
 	float velocity = k_Speed * deltaTime;
 	float prev_y = _position.y;
 	switch (direction) {
@@ -94,6 +89,6 @@ void Camera::handleMouseMovement(const float xoffset, const float yoffset,
 
 void Camera::handleMouseScroll(const float yoffset) {
 	if (_fov >= 1.0f && _fov <= 45.0f) _fov -= yoffset;
-	if (_fov <= 1.0f) _fov -= 1.0f;
-	if (_fov >= 1.0f) _fov -= 45.0f;
+	if (_fov <=- 1.0f) _fov = 1.0f;
+	if (_fov >= 45.0f) _fov = 45.0f;
 }
