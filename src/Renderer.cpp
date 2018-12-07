@@ -97,6 +97,21 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
+void Renderer::RenderConMovimiento(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool movimiento, Camera camera) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	shader.Use();
+	glBindVertexArray(VAO);
+	//Bindeamos VAO
+
+	Projection3D(shader, movimiento, camera);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
 void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, bool limpiarPantalla) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
@@ -113,11 +128,13 @@ void Renderer::Render(uint32_t VAO, const Shader& shader, const uint32_t numberO
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
-void Renderer::Projection3D(const Shader & shader, bool movimiento)
+void Renderer::Projection3D(const Shader & shader, bool movimiento = false)
 {
+
 	glm::mat4 view = glm::mat4(1.0f);
 	//alejamos el mundo 3D
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
@@ -138,6 +155,28 @@ void Renderer::Projection3D(const Shader & shader, bool movimiento)
 	shader.Set("projection", projection);
 }
 
+void Renderer::Projection3D(const Shader & shader, bool movimiento, Camera camera)
+{
+
+
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	float angle;
+	if (movimiento) {
+		angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+	}
+
+	//glm::mat4 transform = glm::mat4(1.0f);
+	//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	//transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
+
+	shader.Set("view", camera.GetViewMatrix());
+	shader.Set("model", model);
+	shader.Set("projection", projection);
+}
 
 void Renderer::Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions)
 {

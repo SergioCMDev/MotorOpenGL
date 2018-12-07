@@ -6,7 +6,12 @@ Figure::Figure()
 
 Figure::Figure(Figuras figura)
 {
-	InitVertices(figura);
+	InitVertices(figura,true);
+}
+
+Figure::Figure(Figuras figura, bool texture)
+{
+	InitVertices(figura, texture);
 }
 
 float* Figure::GetVertexs()
@@ -27,25 +32,37 @@ uint32_t Figure::GetNumberOfElementsVertexs() {
 
 }
 
-void Figure::InitVertices(Figuras figura)
+void Figure::InitVertices(Figuras figura, bool texture = false)
 {
 	switch (figura)
 	{
 	case Figuras::Cuadrado:
 		_elementsVertexs = 20;
-		_vertex = new float[_elementsVertexs] {
-			// Position					// UVs
-			-0.5f, -0.5f, 0.5f,			0.0f, 0.0f,	//Front	
-				0.5f, -0.5f, 0.5f,		1.0f, 0.0f,
-				0.5f, 0.5f, 0.5f,		1.0f, 1.0f,
-				-0.5f, 0.5f, 0.5f,		0.0f, 1.0f };
-		_elementsIndexes = 6;
+		if (texture) {
+			_vertex = new float[_elementsVertexs] {
+				// Position					// UVs
+				-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
+					0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+					0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+					-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
+		}
+		else {
+			_vertex = new float[_elementsVertexs] {
+				// Position					// UVs
+				-0.5f, -0.5f, 0.5f,
+					0.5f, -0.5f, 0.5f,
+					0.5f, 0.5f, 0.5f,
+					-0.5f, 0.5f, 0.5f };
+		}
+			_elementsIndexes = 6;
 
-		_indexes = new uint32_t[_elementsIndexes]{
-		0, 1, 2, 0, 2, 3 };
+			_indexes = new uint32_t[_elementsIndexes]{
+			0, 1, 2, 0, 2, 3 };
 
-		break;
+			break;
 	case Figuras::Cubo:
+		if (texture) {
+
 		_elementsVertexs = 120;
 
 		_vertex = new float[_elementsVertexs] {
@@ -80,6 +97,43 @@ void Figure::InitVertices(Figuras figura)
 				0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
 				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 		};
+		}
+		else {
+			_elementsVertexs = 72;
+
+			_vertex = new float[_elementsVertexs] {
+				// Position					// UVs
+					-0.5f, -0.5f, 0.5f,//Front	
+					0.5f, -0.5f, 0.5f,
+					0.5f, 0.5f, 0.5f,
+					-0.5f, 0.5f, 0.5f,
+
+					0.5f, -0.5f, 0.5f,  //Right
+					0.5f, -0.5f, -0.5f, 
+					0.5f, 0.5f, -0.5f, 
+					0.5f, 0.5f, 0.5f,
+
+					-0.5f, -0.5f, -0.5f,  //Back
+					-0.5f, 0.5f, -0.5f,
+					0.5f, 0.5f, -0.5f,
+					0.5f, -0.5f, -0.5f, 
+
+					-0.5f, -0.5f, 0.5f,  //Left
+					-0.5f, 0.5f, 0.5f, 
+					-0.5f, 0.5f, -0.5f, 
+					-0.5f, -0.5f, -0.5f, 
+
+					-0.5f, -0.5f, 0.5f,  //Bottom
+					-0.5f, -0.5f, -0.5f, 
+					0.5f, -0.5f, -0.5f, 
+					0.5f, -0.5f, 0.5f, 
+
+					-0.5f, 0.5f, 0.5f,  //Top
+					0.5f, 0.5f, 0.5f,
+					0.5f, 0.5f, -0.5f, 
+					-0.5f, 0.5f, -0.5f, 
+			};
+		}
 		_elementsIndexes = 36;
 
 		_indexes = new uint32_t[_elementsIndexes]{
@@ -106,5 +160,5 @@ void Figure::InitVertices(Figuras figura)
 		break;
 	default:
 		break;
+		}
 	}
-}
