@@ -8,11 +8,10 @@
 class Texture
 {
 public:
-	void Texture::AddTextura(char * path, int weight, int  height, int  nchannels, char* uniformName);
 	Texture();
-	Texture::Texture(char* path, int weight, int  height, int nchannels, char* uniformName, bool flip);
+	Texture::Texture(const char* path, int weight, int  height, int nchannels, char* uniformName, bool flip);
 	unsigned char * GetTextureData();
-	char* GetPath();
+	const char* GetPath();
 	char* GetUniformName();
 	int GetWidht();
 	int GetHeight();
@@ -22,7 +21,7 @@ public:
 	void ReleaseTexture();
 private:
 	unsigned char *_textureData;
-	char* _path;
+	const char* _path;
 	char*_uniformName;
 	int _widht, _height, _nchannels;
 	uint32_t _texture;

@@ -5,6 +5,9 @@
 #include<cstdint>
 #include<stdio.h>
 #include "Shader.h"
+#include "Utils.h"
+
+const char* pathProyecto = "../tests/EJ2_3/";
 
 using namespace std;
 float vertices1[] = {
@@ -129,14 +132,15 @@ int main(int argc, char* argv[]) {
 
 	//cuando la ventana cambie de tamaño
 	glfwSetFramebufferSizeCallback(window, OnChangeFrameBufferSize);
+	Utils utils;
 
-	const char* path = "../tests/AG03/";
-	char* result = (char*)calloc(strlen(path) + strlen("Shaders/vertex.vs") + 1, sizeof(char));
-	char* result2 = (char*)calloc(strlen(path) + strlen("Shaders/fragment.fs") + 1, sizeof(char));
-	strcpy(result, path); // copy string one into the result.
-	strcpy(result2, path); // copy string one into the result.
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
 
-	Shader shader(strcat(result, "Shaders/vertex.vs"), strcat(result2, "Shaders/fragment.fs"));
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
+
+	Shader shader(vertexpath, fragmentPath1);
 
 
 	uint32_t VBOTriangulo1, EBO;

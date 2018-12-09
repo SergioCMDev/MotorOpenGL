@@ -11,10 +11,11 @@
 #include "Buffer.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "string.h"
 
 Utils utils;
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-glm::vec3 lightPos(-1.2f, 1.0f, 2.0f);
+Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
+glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -26,33 +27,39 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
-uint32_t _elementsVertexs = 144;
+uint32_t _elementsVertexs = 192;
 
 float vertex[]{
-	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, //Front
-				0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-				0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-				-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-				0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,//Right
-				0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-				0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-				0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-				-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,//Back
-				-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-				0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-				0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-				-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,//Left
-				-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-				-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-				-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-				-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,//Bottom
-				-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-				0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-				0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-				-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,//Top
-				0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-				0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f };
+	-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
+	0.5f, -0.5f, 0.5f,	1.0f, 0.0f,					0.0f, 0.0f, 1.0f,
+	0.5f, 0.5f, 0.5f,	1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
+	-0.5f, 0.5f, 0.5f,	0.0f, 1.0f,							0.0f, 0.0f, 1.0f,
+
+	0.5f, -0.5f, 0.5f,			 0.0f, 0.0f,							1.0f, 0.0f, 0.0f,//Right
+	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,								1.0f, 0.0f, 0.0f,
+	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,							1.0f, 0.0f, 0.0f,
+	0.5f, 0.5f, 0.5f,		0.0f, 1.0f,					1.0f, 0.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,	1.0f, 0.0f,						0.0f, 0.0f, -1.0f,//Back
+	-0.5f, 0.5f, -0.5f,		1.0f, 1.0f,					0.0f, 0.0f, -1.0f,
+	0.5f, 0.5f, -0.5f,			0.0f, 1.0f,					0.0f, 0.0f, -1.0f,
+	0.5f, -0.5f, -0.5f,		 0.0f, 0.0f,				0.0f, 0.0f, -1.0f,
+
+	-0.5f, -0.5f, 0.5f,		1.0f, 0.0f,					-1.0f, 0.0f, 0.0f,//Left
+	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f,					-1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,							-1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,					 -1.0f, 0.0f, 0.0f,
+
+	-0.5f, -0.5f, 0.5f,		0.0f, 1.0f,						0.0f, -1.0f, 0.0f,//Bottom
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,					 0.0f, -1.0f, 0.0f,
+	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,					0.0f, -1.0f, 0.0f,
+	0.5f, -0.5f, 0.5f,		1.0f, 1.0f,					0.0f, -1.0f, 0.0f,
+
+	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,					0.0f, 1.0f, 0.0f,//Top
+	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,					0.0f, 1.0f, 0.0f,
+	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,					0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,						0.0f, 1.0f, 0.0f };
+
 
 
 uint32_t elementsIndexes = 36;
@@ -71,7 +78,8 @@ uint32_t indexes[]{
 
 using namespace std;
 
-const char* pathProyecto = "../tests/AG06/";
+const string pathProyecto = "../tests/AG07_2/";
+const char* pathProyecto2 = "../tests/AG07_2/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -151,7 +159,7 @@ int Inicializacion() {
 };
 
 void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
-	const uint32_t numberOfElements, Camera camera) {
+	const uint32_t numberOfElements, Camera camera, uint32_t textureAlbedo, uint32_t textureSpecular) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
@@ -178,17 +186,27 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Use();
 	shaderCube.Set("projection", projection);
 	shaderCube.Set("view", view);
-
 	shaderCube.Set("model", glm::mat4(1.0f));
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
-	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.3f);
-	shaderCube.Set("lightColor", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("ambientStrenght", 0.1f);
-	shaderCube.Set("lightPos", lightPos);
+
 	shaderCube.Set("viewPos", camera.GetPosition());
-	shaderCube.Set("shininess", 32);
-	shaderCube.Set("specularStrenght", 0.6f);
+	shaderCube.Set("light.position", lightPos);
+	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
+
+	shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
+	shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
+	shaderCube.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
+	shaderCube.Set("material.shininess", 25.6f);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureAlbedo);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textureSpecular);
+
 	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
@@ -199,11 +217,28 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
 
-	const char* vertexpathLight = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
-	const char* fragmentPathLight = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
+
+	string vertexpathLightString = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
+	const char* vertexpathLight = vertexpathLightString.c_str();
+
+	string fragmentPathLightString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+	const char* fragmentPathLight = fragmentPathLightString.c_str();
+
+	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
+	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
+
+	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
+	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
+
+	Texture textDiffuse = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
+	textDiffuse.LoadTexture();
+	Texture textureSpecular = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
+	textureSpecular.LoadTexture();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
@@ -221,18 +256,12 @@ int main(int argc, char* argv[]) {
 	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
-	buffer.SetStatusVerticesTextura(false);
+	buffer.SetStatusVerticesTextura(true);
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	//uint32_t elementsPerLine = 6;
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
-		sizeOfVertices, &shader);
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
 
-
-
-
-	//float interpolationValue = 0.6;
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		float currentFrame = glfwGetTime();
@@ -242,7 +271,8 @@ int main(int argc, char* argv[]) {
 		window.HandlerInput();
 		//Si pulsamos 0 añade interpolacion
 
-		Render(VAO, shader, shaderlight, numberOfElementsToDraw, camera);
+		Render(VAO, shader, shaderlight, numberOfElementsToDraw, camera, textDiffuse.GetTexture(), textureSpecular.GetTexture());
+
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -252,6 +282,8 @@ int main(int argc, char* argv[]) {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
+	textDiffuse.ReleaseTexture();
+	textureSpecular.ReleaseTexture();
 
 
 	glfwTerminate();

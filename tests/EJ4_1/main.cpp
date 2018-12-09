@@ -97,8 +97,17 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
+
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
+
+	string textureString1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+	const char* pathFinalImagen1 = textureString1.c_str();
+
+	string textureString2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
+	const char* pathFinalImagen2 = textureString2.c_str();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	int program = shader.GetIdProgram();
@@ -119,13 +128,11 @@ int main(int argc, char* argv[]) {
 	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
-	uint32_t elementsPerLine = 5;
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertexs,
-		sizeOfVertices, &shader, &elementsPerLine);
 
-	char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
-	char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertexs,
+		sizeOfVertices, &shader);
+
+
 
 	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0,true);
 	image1.LoadTexture();

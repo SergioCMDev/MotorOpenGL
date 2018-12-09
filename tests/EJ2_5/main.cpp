@@ -12,7 +12,7 @@ using namespace std;
 GLFWwindow* window;
 Utils utils;
 const char* pathProyecto = "../tests/EJ2_5/";
-uint32_t indicesHexagono[] = {
+uint32_t indicesFigura[] = {
 	6,0,1,
 	6,1,2,
 	6,2,3,
@@ -147,8 +147,11 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
+
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
 
 	Shader shader1(vertexpath, fragmentPath1);
 
@@ -158,11 +161,11 @@ int main(int argc, char* argv[]) {
 
 
 
-	uint32_t sizeOfIndices = sizeof(indicesHexagono); //3 uint32_t * sizeofuint32_t(4) = 12
+	uint32_t sizeOfIndices = sizeof(indicesFigura); //3 uint32_t * sizeofuint32_t(4) = 12
 	uint32_t sizeOfVertices = sizeof(vertices1);  //42 floats * sizeoffloat(4) = 168
-	uint32_t numberOfElements = sizeof(indicesHexagono) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
+	uint32_t numberOfElements = sizeof(indicesFigura) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesHexagono, sizeOfIndices, vertices1, sizeOfVertices);
+	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesFigura, sizeOfIndices, vertices1, sizeOfVertices);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {

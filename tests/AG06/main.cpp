@@ -178,10 +178,10 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Use();
 	shaderCube.Set("projection", projection);
 	shaderCube.Set("view", view);
-
 	shaderCube.Set("model", glm::mat4(1.0f));
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
+
 	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.3f);
 	shaderCube.Set("lightColor", 1.0f, 1.0f, 1.0f);
 	shaderCube.Set("ambientStrenght", 0.1f);
@@ -199,11 +199,20 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 
-	const char* vertexpathLight = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
-	const char* fragmentPathLight = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
+
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
+
+	string vertexpathLightString = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
+	const char* vertexpathLight = vertexpathLightString.c_str();
+
+	string fragmentPathLightString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+	const char* fragmentPathLight = fragmentPathLightString.c_str();
+
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
@@ -229,10 +238,7 @@ int main(int argc, char* argv[]) {
 	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
 		sizeOfVertices, &shader);
 
-
-
-
-	//float interpolationValue = 0.6;
+	   
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		float currentFrame = glfwGetTime();

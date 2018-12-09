@@ -143,9 +143,14 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment1.fs");
-	const char* fragmentPath2 = utils.GetFinalPath(pathProyecto, "Shaders/fragment2.fs");
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
+
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment1.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
+
+	string fragmentPathString2 = utils.GetFinalPath(pathProyecto, "Shaders/fragment2.fs");
+	const char* fragmentPath2 = fragmentPathString.c_str();
 
 	Shader shader1(vertexpath, fragmentPath1);
 	Shader shader2(vertexpath, fragmentPath2);

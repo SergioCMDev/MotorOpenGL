@@ -13,8 +13,8 @@
 #include "Camera.h"
 
 Utils utils;
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-glm::vec3 lightPos(-1.2f, 1.0f, 2.0f);
+Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
+glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -71,7 +71,7 @@ uint32_t indexes[]{
 
 using namespace std;
 
-const char* pathProyecto = "../tests/AG06/";
+const string pathProyecto = "../tests/AG07_1/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -178,17 +178,21 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Use();
 	shaderCube.Set("projection", projection);
 	shaderCube.Set("view", view);
-
 	shaderCube.Set("model", glm::mat4(1.0f));
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
-	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.3f);
-	shaderCube.Set("lightColor", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("ambientStrenght", 0.1f);
-	shaderCube.Set("lightPos", lightPos);
+
 	shaderCube.Set("viewPos", camera.GetPosition());
-	shaderCube.Set("shininess", 32);
-	shaderCube.Set("specularStrenght", 0.6f);
+	shaderCube.Set("light.position", lightPos);
+	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
+
+	shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
+	shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
+	shaderCube.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
+	shaderCube.Set("material.shininess", 25.6f);
+
 	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
@@ -199,11 +203,18 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+	const char* vertexpath = vertexpathStr.c_str();
 
-	const char* vertexpathLight = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
-	const char* fragmentPathLight = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+	const char* fragmentPath1 = fragmentPathString.c_str();
+
+	string vertexpathLightString = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
+	const char* vertexpathLight = vertexpathLightString.c_str();
+
+	string fragmentPathLightString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
+	const char* fragmentPathLight = fragmentPathLightString.c_str();
+
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
@@ -230,9 +241,6 @@ int main(int argc, char* argv[]) {
 		sizeOfVertices, &shader);
 
 
-
-
-	//float interpolationValue = 0.6;
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		float currentFrame = glfwGetTime();

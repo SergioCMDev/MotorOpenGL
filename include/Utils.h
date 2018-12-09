@@ -1,11 +1,15 @@
 #ifndef UTILS_H
 #define UTILS_H
 #include<iostream>
-#include <string>
+#include "string.h"
+#include<iostream>
+
+#include<stdio.h>
+using namespace std;
 
 class Utils {
 
 public:
-	char* GetFinalPath(const char* pathInicial, const char* pathFinal);
+	string GetFinalPath(const string pathInicial, const string pathFinal);
 };
 #endif

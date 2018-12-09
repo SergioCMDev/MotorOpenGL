@@ -6,22 +6,33 @@
 #include<stdio.h>
 
 #include "Shader.h"
-#include "Renderer.h"
 #include "Utils.h"
-#include "Figure.h"
 #include "Window.h"
 #include "Buffer.h"
 #include "Texture.h"
 
 Utils utils;
-
-
-
 using namespace std;
 Window window;
 
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/EJ4_4/";
+uint32_t elementsVertexs = 20;
+
+float vertexs[]{
+	// Position					// UVs
+	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
+		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
+
+
+uint32_t elementsIndexes = 6;
+
+uint32_t indexes[]{
+0, 1, 2, 0, 2, 3 };
+
+
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -110,23 +121,27 @@ void Projection3D(const Shader & shader, bool movimiento = false)
 		if (!Inicializacion()) {
 			return -1;
 		}
-		Renderer render;
-		const char* vertexpath = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-		const char* fragmentPath1 = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+		string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
+		const char* vertexpath = vertexpathStr.c_str();
+
+		string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
+		const char* fragmentPath1 = fragmentPathString.c_str();
+
+		string textureString1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+		const char* pathFinalImagen1 = textureString1.c_str();
+
+		string textureString2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
+		const char* pathFinalImagen2 = textureString2.c_str();
 
 		Shader shader = Shader(vertexpath, fragmentPath1);
 		int program = shader.GetIdProgram();
 		uint32_t VBOFigura, EBO;
 
-		Figure cuadrado = Figure(Figuras::Cubo);
-
-		uint32_t* indicesQuad = cuadrado.GetIndexs();
-		float* verticesQuad = cuadrado.GetVertexs();
 
 		long sizeOfIndices, sizeOfVertices;
 
-		sizeOfIndices = cuadrado.GetNumberOfElementsIndexs() * sizeof(float);
-		sizeOfVertices = cuadrado.GetNumberOfElementsVertexs() * sizeof(float);
+		sizeOfIndices = elementsIndexes * sizeof(float);
+		sizeOfVertices = elementsVertexs * sizeof(float);
 
 
 		//float verticesQuad = cuadrado.GetVertexs();
@@ -137,12 +152,9 @@ void Projection3D(const Shader & shader, bool movimiento = false)
 		uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 		//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
-		uint32_t elementsPerLine = 5;
-		uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, sizeOfIndices, verticesQuad,
-			sizeOfVertices, &shader, &elementsPerLine);
-
-		char* pathFinalImagen1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
-		char* pathFinalImagen2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
+		//uint32_t elementsPerLine = 5;
+		uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertexs,
+			sizeOfVertices, &shader);
 
 		Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
 		image1.LoadTexture();

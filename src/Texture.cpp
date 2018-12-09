@@ -7,7 +7,7 @@ Texture::Texture() {
 
 }
 
-Texture::Texture(char* path, int weight, int  height, int nchannels, char* uniformName, bool flip) 
+Texture::Texture(const char* path, int weight, int  height, int nchannels, char* uniformName, bool flip) 
 {
 	_widht = weight;
 	_height = height;
@@ -19,18 +19,18 @@ Texture::Texture(char* path, int weight, int  height, int nchannels, char* unifo
 
 	stbi_set_flip_vertically_on_load(flip);}
 
-void Texture::AddTextura(char * path, int weight, int  height, int nchannels, char* uniformName)
-{
-	//_widht = weight;
-	//_height = height;
-	//_nchannels = nchannels;
-	//_path = path;
-	//_uniformName = uniformName;
-	//_textureData = stbi_load(path
-	//	, &weight, &height, &nchannels, 0);
-}
+//void Texture::AddTextura(const char * path, int weight, int  height, int nchannels, char* uniformName)
+//{
+//	//_widht = weight;
+//	//_height = height;
+//	//_nchannels = nchannels;
+//	//_path = path;
+//	//_uniformName = uniformName;
+//	//_textureData = stbi_load(path
+//	//	, &weight, &height, &nchannels, 0);
+//}
 
-char*Texture::GetPath() {
+const char*Texture::GetPath() {
 	return _path;
 }
 
