@@ -119,12 +119,12 @@ int Inicializacion() {
 	return 1;
 };
 
-void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions, const uint32_t numberOfElements)
+void Projection3D(const Shader & shader, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions, const uint32_t numberOfElements)
 {
 
 	glm::mat4 view = glm::mat4(1.0f);
 	//alejamos el mundo 3D
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); //Alejaria el mundo lo suficiente para ver todos los cubos
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
@@ -135,20 +135,22 @@ void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepetic
 			glm::vec3 vector = cubePositions[i];
 			model = glm::translate(model, vector);
 			float angle;
-			if (movimiento) {
-				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-			}
+			angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+			glm::mat4 view = glm::mat4(1.0f);
+			//alejamos el mundo 3D
+			//view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); //Se quedaria dentro de un cubo
 			shader.Set("model", model);
 			glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 		}
 	}
 	shader.Set("view", view);
+
 	shader.Set("projection", projection);
 }
 
 void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,7 +158,7 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements,
 	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
-	Projection3D(shader, movimiento, numeroRepeticionesElementos, cubePositions, numberOfElements);
+	Projection3D(shader,  numeroRepeticionesElementos, cubePositions, numberOfElements);
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
@@ -184,16 +186,13 @@ int main(int argc, char* argv[]) {
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
-
-
-
+	   
 	long sizeOfIndices, sizeOfVertices;
 
 	sizeOfIndices = elementsIndexes * sizeof(float);
 	sizeOfVertices = _elementsVertexs * sizeof(float);
 
 
-	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
@@ -201,8 +200,6 @@ int main(int argc, char* argv[]) {
 	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDrawForGeometry = buffer.GetElementsToDraw();
 
-	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
-	//uint32_t elementsPerLine = 5; //en caso de cubo con todos las posiciones
 	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
 		sizeOfVertices, &shader);
 
@@ -216,15 +213,8 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
-		//Si pulsamos 0 añade interpolacion
-		if (window.GetButtonMoreShiny()) {
-			interpolationValue += 0.1;
-		}
-		//Si pulsamos 1 quita interpolacion
-		if (window.GetButtonLessShiny()) {
-			interpolationValue -= 0.1;
-		}
-		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), true, 10, cubePositions);
+
+		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), 10, cubePositions);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
