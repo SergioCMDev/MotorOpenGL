@@ -32,7 +32,7 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ5_6/";
+const char* pathProyecto = "../tests/EJ5_7/";
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
 
@@ -176,8 +176,7 @@ int Inicializacion() {
 };
 
 
-void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,7 +189,7 @@ void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfEleme
 	glm::mat4 projection = glm::mat4(1.0f);
 	//projection = glm::perspective(camera.GetFOV(), 800.0f / 600.0f, 0.1f, 200.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 200.0f);
-	
+
 	//Cube 1
 	glm::mat4 model = glm::mat4(1.0f);
 
@@ -227,7 +226,7 @@ void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfEleme
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 	shader.Set("view", camera.GetViewMatrix());
-	shader.Set("projection", projection);	
+	shader.Set("projection", projection);
 }
 
 
@@ -281,6 +280,12 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
+	string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+	const char* pathFinalImagen3 = pathFinalImagen3String.c_str();
+
+	string pathFinalImagen4String = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
+	const char* pathFinalImagen4 = pathFinalImagen4String.c_str();
+
 	Shader shaderCubos = Shader(vertexpath, fragmentPath1);
 	Shader shaderSuelo = Shader(vertexpath, fragmentPath1);
 
@@ -324,6 +329,11 @@ int main(int argc, char* argv[]) {
 	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
 	image2.LoadTexture();
 
+	Texture image3 = Texture(pathFinalImagen3, 1024, 1024, 1, 0, true);
+	image3.LoadTexture();
+	Texture image4 = Texture(pathFinalImagen4, 1024, 1024, 1, 0, true);
+	image4.LoadTexture();
+
 	uint32_t numberOfElements = (sizeof(cubePositions) / (sizeof(float) * 3));
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
@@ -335,7 +345,7 @@ int main(int argc, char* argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, image1.GetTexture(), image2.GetTexture());
-		RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, image1.GetTexture(), image2.GetTexture(), numberOfElements, cubePositions);
+		RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, image3.GetTexture(), image4.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
