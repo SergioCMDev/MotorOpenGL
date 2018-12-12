@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="debug|x64">
+      <Configuration>debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="release|x64">
+      <Configuration>release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{456E9EA4-3110-C97A-1ACB-DCCE060C50CB}</ProjectGuid>
+    <RootNamespace>AG08_1</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\AG08_1\</IntDir>
+    <TargetName>AG08_1_d</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+    <OutDir>..\bin\</OutDir>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\AG08_1\</IntDir>
+    <TargetName>AG08_1_r</TargetName>
+    <TargetExt>.exe</TargetExt>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\include;..\src\deps\glfw;..\src\deps\glad;..\src\deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader></PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ProgramDataBaseFileName>$(IntDir)AG08_1_d.compile.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\src\deps\glfw;..\src\deps\glad;..\src\deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)AG08_1_d.pdb</ProgramDatabaseFile>
+      <AdditionalDependencies>OpenGL32.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)AG08_1_d.exe</OutputFile>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+    <ClCompile>
+      <AdditionalOptions>  %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <AdditionalIncludeDirectories>..\include;..\src\deps\glfw;..\src\deps\glad;..\src\deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <PrecompiledHeader></PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat></DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\src\deps\glfw;..\src\deps\glad;..\src\deps\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>OpenGL32.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)AG08_1_r.exe</OutputFile>
+      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Buffer.h" />
+    <ClInclude Include="..\include\Camera.h" />
+    <ClInclude Include="..\include\Figure.h" />
+    <ClInclude Include="..\include\Shader.h" />
+    <ClInclude Include="..\include\Texture.h" />
+    <ClInclude Include="..\include\Utils.h" />
+    <ClInclude Include="..\include\UtilsHandlers.h" />
+    <ClInclude Include="..\include\Window.h" />
+    <ClInclude Include="..\include\glad\glad.h" />
+    <ClInclude Include="..\include\GLFW\glfw3.h" />
+    <ClInclude Include="..\include\GLFW\glfw3native.h" />
+    <ClInclude Include="..\include\glm\simd\common.h" />
+    <ClInclude Include="..\include\glm\simd\exponential.h" />
+    <ClInclude Include="..\include\glm\simd\geometric.h" />
+    <ClInclude Include="..\include\glm\simd\integer.h" />
+    <ClInclude Include="..\include\glm\simd\matrix.h" />
+    <ClInclude Include="..\include\glm\simd\packing.h" />
+    <ClInclude Include="..\include\glm\simd\platform.h" />
+    <ClInclude Include="..\include\glm\simd\trigonometric.h" />
+    <ClInclude Include="..\include\glm\simd\vector_relational.h" />
+    <ClInclude Include="..\include\KHR\khrplatform.h" />
+    <ClInclude Include="..\src\deps\glfw\win32_joystick.h" />
+    <ClInclude Include="..\src\deps\glfw\win32_platform.h" />
+    <ClInclude Include="..\src\deps\glfw\wgl_context.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tests\AG08_1\main.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Buffer.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Camera.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Figure.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Shader.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Texture.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Utils.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\UtilsHandler.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Window.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\context.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\init.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\input.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\monitor.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\window.c">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='debug|x64'">$(IntDir)1\</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='release|x64'">$(IntDir)1\</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\vulkan.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\glad.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\egl_context.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_init.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_joystick.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_monitor.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_time.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_tls.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_window.c">
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\wgl_context.c">
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

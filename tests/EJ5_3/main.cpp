@@ -30,7 +30,7 @@ using namespace std;
 Window window;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/AG05_1/";
+const char* pathProyecto = "../tests/EJ5_3/";
 uint32_t _elementsVertexs = 120;
 
 
@@ -136,8 +136,8 @@ void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepetic
 			model = glm::translate(model, vector);
 			float angle;
 			if (movimiento) {
-				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
 				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
 			}
 			shader.Set("model", model);
 			glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);

@@ -137,13 +137,6 @@ uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uin
 	return VAO;
 }
 
-uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
-	float vertices[], uint32_t sizeOfVertices, Shader* shader, uint32_t *elementsPerLine) {
-
-	_numberOfElementsPerLine = *elementsPerLine;
-	return Buffer::CreateVAO( VBO,  EBO, indices,  sizeOfIndices,
-		vertices,  sizeOfVertices, shader);
-}
 
 uint32_t Buffer::CreateVAO(uint32_t *VBO, uint32_t *EBO, uint32_t indices[],
 	float vertices[], Shader* shader) {

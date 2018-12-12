@@ -12,25 +12,11 @@
 #include "Texture.h"
 
 Utils utils;
-glm::vec3 cubePositions[] = {
- glm::vec3(0.0f, 0.0f, 0.0f),
- glm::vec3(2.0f, 5.0f, -15.0f),
- glm::vec3(-1.5f, -2.2f, -2.5f),
- glm::vec3(-3.8f, -2.0f, -12.3f),
- glm::vec3(2.4f, -0.4f, -3.5f),
- glm::vec3(-1.7f, 3.0f, -7.5f),
- glm::vec3(1.3f, -2.0f, -2.5f),
- glm::vec3(1.5f, 2.0f, -2.5f),
- glm::vec3(1.5f, 0.2f, -1.5f),
- glm::vec3(-1.3f, 1.0f, -1.5f)
-};
-
-
 using namespace std;
 Window window;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/AG05_1/";
+const char* pathProyecto = "../tests/EJ5_1/";
 uint32_t _elementsVertexs = 120;
 
 
@@ -119,7 +105,7 @@ int Inicializacion() {
 	return 1;
 };
 
-void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions, const uint32_t numberOfElements)
+void Projection3D(const Shader & shader, bool movimiento, const uint32_t numberOfElements)
 {
 
 	glm::mat4 view = glm::mat4(1.0f);
@@ -129,26 +115,23 @@ void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepetic
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
 
-	if (numeroRepeticionesElemento > 0) {
-		for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
-			glm::mat4 model = glm::mat4(1.0f);
-			glm::vec3 vector = cubePositions[i];
-			model = glm::translate(model, vector);
-			float angle;
-			if (movimiento) {
-				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-			}
-			shader.Set("model", model);
-			glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-		}
+
+	glm::mat4 model = glm::mat4(1.0f);
+
+	float angle;
+	if (movimiento) {
+		angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 	}
+	shader.Set("model", model);
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+
 	shader.Set("view", view);
 	shader.Set("projection", projection);
 }
 
 void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+	uint32_t texture2, bool movimiento) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,29 +139,34 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements,
 	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
-	Projection3D(shader, movimiento, numeroRepeticionesElementos, cubePositions, numberOfElements);
+	Projection3D(shader, movimiento, numberOfElements);
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
-
+float* GenerarCaraFrontal(int radio, float* origen) {
+	float* f;
+	return f;
+}
 
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
+
+
 	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
 	const char* vertexpath = vertexpathStr.c_str();
 
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
-	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
+	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
 	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
 
-	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
+	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
@@ -186,6 +174,11 @@ int main(int argc, char* argv[]) {
 	uint32_t VBOFigura, EBO;
 
 
+
+
+	int radio = 3;
+	float origen[]{ -0.5f, -0.5f, 0.5f };
+	//float caraFrontal[] = GenerarCaraFrontal(radio, *origen);
 
 	long sizeOfIndices, sizeOfVertices;
 
@@ -224,7 +217,7 @@ int main(int argc, char* argv[]) {
 		if (window.GetButtonLessShiny()) {
 			interpolationValue -= 0.1;
 		}
-		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), true, 10, cubePositions);
+		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), true);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

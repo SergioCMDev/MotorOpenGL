@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5865280E-C479-50BF-8DFB-F31EF9CE4CF0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{56EB95D1-428D-C0A7-2B48-D4FB178947F8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{C196CD9C-2D76-4C38-368E-D70EA2ECB299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deep Headers">
+      <UniqueIdentifier>{DF5CC0A6-CBBF-4F4B-7445-880160871BCE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deps Srcs">
+      <UniqueIdentifier>{2CE651D5-9850-064C-E18E-B7F14D38E4A0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Buffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Camera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Figure.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Shader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Texture.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UtilsHandlers.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Window.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glad\glad.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GLFW\glfw3.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GLFW\glfw3native.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\common.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\exponential.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\geometric.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\integer.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\matrix.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\packing.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\platform.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\trigonometric.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\vector_relational.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\KHR\khrplatform.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deps\glfw\win32_joystick.h">
+      <Filter>Deps Srcs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deps\glfw\win32_platform.h">
+      <Filter>Deps Srcs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deps\glfw\wgl_context.h">
+      <Filter>Deps Srcs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tests\EJ5_1\main.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Buffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Figure.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Utils.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UtilsHandler.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Window.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\context.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\init.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\input.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\monitor.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\window.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\vulkan.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\glad.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\egl_context.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_init.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_joystick.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_monitor.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_time.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_tls.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_window.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\wgl_context.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
