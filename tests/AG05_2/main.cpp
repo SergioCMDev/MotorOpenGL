@@ -11,7 +11,6 @@
 #include <Buffer.h>
 #include <Texture.h>
 #include "Camera.h"
-//#include <UtilsHandlers.h>
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastFrame = 0.0f;
@@ -22,7 +21,6 @@ float lastX = (float)screen_width / 2.0f;
 float lastY = (float)screen_height / 2.0f;
 Window window;
 Utils utils;
-//UtilsHandlers handlers;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
@@ -257,7 +255,6 @@ int main(int argc, char* argv[]) {
 	image2.LoadTexture();
 
 
-	//float interpolationValue = 0.6;
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		float currentFrame = glfwGetTime();

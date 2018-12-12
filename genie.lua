@@ -28,6 +28,7 @@ local project_list = {
 	"EJ4_5",
 	"EJ5_1",
 	"EJ5_3",
+	"EJ5_4",
 	"AG07_1",
 	"AG07_2",
 }
