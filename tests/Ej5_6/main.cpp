@@ -23,14 +23,29 @@ glm::vec3 cubePositions[] = {
   glm::vec3(4.0f, -4.0f, 0.0f),
  glm::vec3(2.0f, -2.0f, 0.0f),
 };
-
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 using namespace std;
 Window window;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ5_5/";
+const char* pathProyecto = "../tests/EJ5_6/";
+
+uint32_t _elementsQuad = 20;
+float vertexCuad[]{
+	// Position					// UVs
+	-0.5f, -0.5f, 0.5f,		 0.0f, 0.0f,	//Front	
+		0.5f, -0.5f, 0.5f,		 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f,		1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,
+};
 uint32_t _elementsVertexs = 120;
+
+uint32_t elementsIndexesQuad = 6;
+
+uint32_t indexesQuad[]{
+	0, 1, 2, 0, 2, 3 //Front
+};
 
 
 float vertex[]{
@@ -118,34 +133,74 @@ int Inicializacion() {
 	return 1;
 };
 
-void Projection3D(const Shader & shader, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions, const uint32_t numberOfElements)
-{
 
+void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
+	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+	//Bindeamos VAO
+	glBindVertexArray(VAO);
 	glm::mat4 view = glm::mat4(1.0f);
 	//alejamos el mundo 3D
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -10.0f));
+	//view = glm::translate(view, glm::vec3(0.0f, 0.0f, -10.0f));
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10.0f);
 
-	if (numeroRepeticionesElemento > 0) {
-		for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
-			glm::mat4 model = glm::mat4(1.0f);
-			glm::vec3 vector = cubePositions[i];
-			model = glm::translate(model, vector);
-			float angle;
-				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-			shader.Set("model", model);
-			glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-		}
-	}
-	shader.Set("view", view);
-	shader.Set("projection", projection);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	//model = glm::translate(model, vector);
+	model = glm::rotate(model, -glm::radians(45.0f), glm::vec3(-25.0f, 0.0f, 0.0f));
+
+	model = glm::translate(model, vec3{ 0.0f, -1.5f, -3.0f });
+	model = glm::scale(model, vec3{ 0.5f , 0.5f, 0.5 });
+
+	shader.Set("model", model);
+
+	shader.Set("view", camera.GetViewMatrix());
+	shader.Set("projection", projection);	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+
+
+	glm::mat4 model2 = glm::mat4(1.0f);
+	//model = glm::translate(model, vector);
+	model2 = glm::rotate(model2, -glm::radians(45.0f), glm::vec3(-25.0f, 0.0f, 0.0f));
+
+	model2 = glm::translate(model2, vec3{ 1.0f, -1.5f, -3.0f });
+	model2 = glm::scale(model2, vec3{ 1.5f , 1.5f, 1.5f });
+
+	shader.Set("model", model2);
+
+	shader.Set("view", camera.GetViewMatrix());
+	shader.Set("projection", projection);	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+
+
+	glm::mat4 model3 = glm::mat4(1.0f);
+	//model = glm::translate(model, vector);
+	model3 = glm::rotate(model3, -glm::radians(45.0f), glm::vec3(-25.0f, 0.0f, 0.0f));
+
+	model3 = glm::translate(model3, vec3{ -1.0f, -1.5f, -3.0f });
+	model3 = glm::scale(model3, vec3{ 0.25f , 0.25f, 0.25f });
+
+	shader.Set("model", model3);
+
+	shader.Set("view", camera.GetViewMatrix());
+	shader.Set("projection", projection);	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
-void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+
+void RenderSuelo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -153,13 +208,33 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements,
 	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
-	Projection3D(shader, numeroRepeticionesElementos, cubePositions, numberOfElements);
+
+	//alejamos el mundo 3D
+	//view = glm::translate(view, glm::vec3(0.0f, -2.0f, -15.0f));
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -2.0f, -15.0f));
+	//view = glm::rotate(view,  -glm::radians(45.0f),glm::vec3(25.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, -glm::radians(45.0f), glm::vec3(25.0f, 0.0f, 0.0f));
+
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+
+	//model = glm::translate(model, vec3{ 0.0f, 0.0f, -5.0f });
+	model = glm::scale(model, vec3{ 10.0f , 10.0f, 10.0f });
+
+	shader.Set("model", model);
+
+	shader.Set("view", camera.GetViewMatrix());
+
+	//shader.Set("view", view);
+	shader.Set("projection", projection);
+
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
-
 
 
 int main(int argc, char* argv[]) {
@@ -178,28 +253,43 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
-	Shader shader = Shader(vertexpath, fragmentPath1);
-	int program = shader.GetIdProgram();
-	uint32_t VBOFigura, EBO;
+	Shader shaderCubos = Shader(vertexpath, fragmentPath1);
+	Shader shaderSuelo = Shader(vertexpath, fragmentPath1);
+
+	int program = shaderCubos.GetIdProgram();
+	uint32_t VBOFigura, EBO, VBOFiguraSuelo, EBOSuelo;
 
 
 
-	long sizeOfIndices, sizeOfVertices;
+	long sizeOfIndices, sizeOfVertices, sizeOfIndicesQuad, sizeOfVerticesQuad;
 
 	sizeOfIndices = elementsIndexes * sizeof(float);
 	sizeOfVertices = _elementsVertexs * sizeof(float);
 
+	sizeOfIndicesQuad = sizeOfIndices / 6;
+	sizeOfVerticesQuad = sizeOfVertices / 6;
+
 
 	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
+	Buffer bufferSuelo = Buffer(sizeOfIndicesQuad, sizeOfVerticesQuad);
+
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
 	buffer.SetSizeVerticesNormal(false);
 	buffer.SetSizeVerticesTextura(2);
-	uint32_t numberOfElementsToDrawForGeometry = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
-		sizeOfVertices, &shader);
+	bufferSuelo.SetStatusVerticesColor(false);
+	bufferSuelo.SetStatusVerticesTextura(true);
+	bufferSuelo.SetSizeVerticesNormal(false);
+	bufferSuelo.SetSizeVerticesTextura(2);
+
+	uint32_t numberOfElementsToDrawForGeometryCubos = buffer.GetElementsToDraw();
+	uint32_t numberOfElementsToDrawForGeometrySuelo = bufferSuelo.GetElementsToDraw();
+
+	uint32_t VAOCubos = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shaderCubos);
+
+	uint32_t VAOSuelo = buffer.CreateVAO(&VBOFiguraSuelo, &EBOSuelo, indexesQuad, sizeOfIndicesQuad, vertexCuad, sizeOfVerticesQuad, &shaderSuelo);
 
 	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
 	image1.LoadTexture();
@@ -210,14 +300,16 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
-		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), numberOfElements, cubePositions);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, image1.GetTexture(), image2.GetTexture());
+		RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, image1.GetTexture(), image2.GetTexture(), numberOfElements, cubePositions);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
 
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &VAOCubos);
 	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
 	image1.ReleaseTexture();
