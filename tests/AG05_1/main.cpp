@@ -119,7 +119,7 @@ int Inicializacion() {
 	return 1;
 };
 
-void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions, const uint32_t numberOfElements)
+void Projection3D(const Shader & shader, uint32_t numeroRepeticionesElemento, glm::vec3 *cubePositions, const uint32_t numberOfElements)
 {
 
 	glm::mat4 view = glm::mat4(1.0f);
@@ -135,10 +135,9 @@ void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepetic
 			glm::vec3 vector = cubePositions[i];
 			model = glm::translate(model, vector);
 			float angle;
-			if (movimiento) {
-				angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-			}
+			angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+
 			shader.Set("model", model);
 			glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 		}
@@ -148,7 +147,7 @@ void Projection3D(const Shader & shader, bool movimiento, uint32_t numeroRepetic
 }
 
 void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, bool movimiento, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
+	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,7 +155,7 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements,
 	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
-	Projection3D(shader, movimiento, numeroRepeticionesElementos, cubePositions, numberOfElements);
+	Projection3D(shader, numeroRepeticionesElementos, cubePositions, numberOfElements);
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
@@ -214,7 +213,7 @@ int main(int argc, char* argv[]) {
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
-		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), true, 10, cubePositions);
+		Render(VAO, shader, numberOfElementsToDrawForGeometry, image1.GetTexture(), image2.GetTexture(), 10, cubePositions);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

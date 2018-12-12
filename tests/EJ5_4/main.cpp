@@ -193,7 +193,6 @@ int main(int argc, char* argv[]) {
 	sizeOfVertices = _elementsVertexs * sizeof(float);
 
 
-	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
@@ -201,8 +200,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDrawForGeometry = buffer.GetElementsToDraw();
 
-	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
-	//uint32_t elementsPerLine = 5; //en caso de cubo con todos las posiciones
+
 	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
 		sizeOfVertices, &shader);
 
