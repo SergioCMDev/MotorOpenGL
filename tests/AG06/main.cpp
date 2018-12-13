@@ -150,8 +150,7 @@ int Inicializacion() {
 	return 1;
 };
 
-void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
-	const uint32_t numberOfElements, Camera camera) {
+void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,	const uint32_t numberOfElements, Camera camera) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
@@ -168,6 +167,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderlight.Set("view", view);
 
 	glm::mat4 model = glm::mat4(1.0f);
+
 	model = glm::translate(model, lightPos);
 	model = glm::scale(model, glm::vec3(0.2f));
 	shaderlight.Set("model", model);
@@ -227,16 +227,13 @@ int main(int argc, char* argv[]) {
 	sizeOfVertices = _elementsVertexs * sizeof(float);
 
 
-	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(false);
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	//uint32_t elementsPerLine = 6;
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex,
-		sizeOfVertices, &shader);
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
 
 	   
 	//Bucle inicial donde se realiza toda la accion del motor
@@ -246,7 +243,6 @@ int main(int argc, char* argv[]) {
 		lastFrame = currentFrame;
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
-		//Si pulsamos 0 añade interpolacion
 
 		Render(VAO, shader, shaderlight, numberOfElementsToDraw,camera);
 
