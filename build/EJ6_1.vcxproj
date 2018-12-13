@@ -120,6 +120,8 @@
     <ClInclude Include="..\include\Buffer.h" />
     <ClInclude Include="..\include\Camera.h" />
     <ClInclude Include="..\include\Figure.h" />
+    <ClInclude Include="..\include\Mesh.h" />
+    <ClInclude Include="..\include\Model.h" />
     <ClInclude Include="..\include\Shader.h" />
     <ClInclude Include="..\include\Texture.h" />
     <ClInclude Include="..\include\Utils.h" />
@@ -150,6 +152,10 @@
     <ClCompile Include="..\src\Camera.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Figure.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Mesh.cpp">
+    </ClCompile>
+    <ClCompile Include="..\src\Model.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Shader.cpp">
     </ClCompile>

@@ -27,6 +27,12 @@
     <ClInclude Include="..\include\Figure.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\Mesh.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Model.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\Shader.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -102,6 +108,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Figure.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Model.cpp">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Shader.cpp">
