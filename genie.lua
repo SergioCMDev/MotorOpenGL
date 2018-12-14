@@ -34,6 +34,8 @@ local project_list = {
 	"EJ5_7",
 	"EJ6_1",
 	"EJ6_2",
+	"EJ6_3",
+	"EJ6_4",
 	"EJ9_1",
 	"AG07_1",
 	"AG07_2",
@@ -68,15 +70,17 @@ local function new_project(name)
 	configuration{"debug"}
 		flags{"Symbols"}
 		targetsuffix("_d")
+		libdirs { "libs/Debug" }
 	configuration{"release"}
 		flags{"Optimize"}
 		targetsuffix("_r")
+		libdirs { "libs/Release" }
 	configuration{"windows"}
 		files{"src/deps/glfw/egl_context.c",
 			  "src/deps/glfw/win32*",
 			  "src/deps/glfw/wgl_*",
 			  "src/deps/glfw/winm_*",}
-		links{"OpenGL32"}
+		links{"OpenGL32",  "assimp-vc140-mt"}
 		defines{"_GLFW_WIN32", "_GLFW_WGL"}
 		flags{"NoEditAndcontinue"}
 		windowstargetplatformversion ="10.0.16299.0"

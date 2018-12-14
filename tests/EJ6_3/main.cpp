@@ -182,13 +182,25 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,	c
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
 
-	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.3f);
-	shaderCube.Set("lightColor", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("ambientStrenght", 0.1f);
+
+
+
+	vec3 objectColor{ 1.0f, 0.5f, 0.3f };
+	vec3 lightColor{ 1.0f, 1.0f, 1.0f };
+	float ambientStrenght = 0.1f;
+	int shininess = 32;
+	float specularStrenght = 0.6f;
+
+	vec3 viewPos = camera.GetPosition();
+
+
+	shaderCube.Set("objectColor", objectColor);
+	shaderCube.Set("lightColor", lightColor);
+	shaderCube.Set("ambientStrenght", ambientStrenght);
 	shaderCube.Set("lightPos", lightPos);
-	shaderCube.Set("viewPos", camera.GetPosition());
-	shaderCube.Set("shininess", 32);
-	shaderCube.Set("specularStrenght", 0.6f);
+	shaderCube.Set("viewPos", viewPos);
+	shaderCube.Set("shininess", shininess);
+	shaderCube.Set("specularStrenght", specularStrenght);
 	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);

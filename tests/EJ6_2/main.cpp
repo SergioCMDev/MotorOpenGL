@@ -71,7 +71,7 @@ uint32_t indexes[]{
 
 using namespace std;
 
-const char* pathProyecto = "../tests/EJ6_2/";
+const char* pathProyecto = "../tests/EJ6_3/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -182,8 +182,10 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,	c
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
 
-	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.3f);
-	shaderCube.Set("lightColor", 1.0f, 1.0f, 1.0f);
+	vec3 objectColor{ 1.0f, 0.5f, 0.3f };
+	vec3 lightColor{ 1.0f, 1.0f, 1.0f };
+	shaderCube.Set("objectColor", objectColor);
+	shaderCube.Set("lightColor", lightColor);
 	shaderCube.Set("ambientStrenght", 0.000001f);
 	shaderCube.Set("lightPos", lightPos);
 	shaderCube.Set("viewPos", camera.GetPosition());
