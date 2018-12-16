@@ -9,9 +9,9 @@
 #include <Utils.h>
 #include <Window.h>
 #include <Buffer.h>
-#include <Texture.h>
 #include "Camera.h"
-
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastFrame = 0.0f;
 bool firstMouse = true;
@@ -132,7 +132,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
 	}
-	//Window::HandlerInput();
 }
 
 
@@ -205,7 +204,26 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements,
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
+uint32_t createTexture(const char* path, bool flip) {
+	uint32_t texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	stbi_set_flip_vertically_on_load(flip);	int width, height, nChannels;
+	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+	return texture;
+}
 
 int main(int argc, char* argv[]) {
 
@@ -247,10 +265,8 @@ int main(int argc, char* argv[]) {
 		sizeOfVertices, &shader);
 
 
-	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
-	image1.LoadTexture();
-	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
-	image2.LoadTexture();
+	uint32_t texture1 = createTexture(pathFinalImagen1, true);
+	uint32_t texture2 = createTexture(pathFinalImagen2, true);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
@@ -259,8 +275,9 @@ int main(int argc, char* argv[]) {
 		float deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 		HandlerInput(window.GetWindow(), deltaTime);
+		window.HandlerInput();
 
-		Render(VAO, shader, numberOfElementsToDraw, image1.GetTexture(), image2.GetTexture(), 10, cubePositions, camera);
+		Render(VAO, shader, numberOfElementsToDraw, texture1, texture2, 10, cubePositions, camera);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -270,8 +287,7 @@ int main(int argc, char* argv[]) {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
-	image1.ReleaseTexture();
-	image2.ReleaseTexture();
+
 
 	glfwTerminate();
 	return 0;

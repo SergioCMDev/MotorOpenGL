@@ -1,37 +1,41 @@
-//#ifndef UTILSHANDLERS_H
-//#define UTILSHANDLERS_H
-//
-//#include<iostream>
-//#include <string>
-//#include <Window.h>
-//#include<glad/glad.h>
-//#include<GLFW/glfw3.h>
-//
-//#include<iostream>
-//#include<cstdint>
-//#include<stdio.h>
-//#include<Camera.h>
-//
-//class UtilsHandlers {
-//
-//public:
-//	UtilsHandlers(GLFWwindow* window, Camera camera);
-//	void HandlerInput(const double deltaTime);
-//	void HandlerInput();
-//	//Process input from keyboard
-//	void HandleKeyboard(const Camera::Movement direction, const float deltaTime);
-//	//Process mouse movement
-//	void HandleMouseMovement(const float xoffset, const float yoffset,
-//		const bool constrainPitch = true);
-//	//Process mouse scroll
-//	void HandleMouseScroll(const float yoffset);
-//	void t(double xpos, double ypos);
-//private:
-//	void OnChangeFrameBufferSize(const int32_t width, const int32_t height);
-//	void OnMouse(double xpos, double ypos);
-//	GLFWwindow* _window;
-//	Camera _camera;
-//	bool _firstMouse = false;
-//	double _lastX, _lastY, _xoffset, _yoffset;
-//};
-//#endif
+#pragma once
+#ifndef MESH_H     
+#define  MESH_H
+
+#include<glm/glm.hpp>
+#include<iostream>
+#include<cstdint>
+#include<stdio.h>
+#include<vector>
+#include<string>
+
+#include<shader.h>
+
+class Shader;
+
+struct Vertex {
+	glm::vec3 Position;
+	glm::vec3 Normal;
+	glm::vec2 TextCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
+};
+struct Texture {
+	uint32_t id;
+	std::string type;
+	std::string path;
+};
+class Mesh {
+public:
+	Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture>
+		textures);
+	void Draw(const Shader& shader) const;
+	std::vector<Vertex> vertices_;
+	std::vector<uint32_t> indices_;
+	std::vector<Texture> textures_;
+	uint32_t VAO_;
+private:
+	void setupMesh();
+	uint32_t VBO_, EBO_;
+};
+#endif

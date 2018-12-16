@@ -11,6 +11,8 @@ local project_list = {
 	"AG08_3",
 	"AG08_4",
 	"AG08_5",
+	"AG09_1",
+	"AG10_1",
 	"EJ2_1",
 	"EJ2_2",
 	"EJ2_3",
@@ -23,8 +25,6 @@ local project_list = {
 	"EJ3_4",
 	"EJ4_1",
 	"EJ4_2",
-	"EJ4_3",
-	"EJ4_4",
 	"EJ4_5",
 	"EJ5_1",
 	"EJ5_3",
@@ -34,11 +34,9 @@ local project_list = {
 	"EJ5_7",
 	"EJ6_1",
 	"EJ6_2",
-	"EJ6_3",
 	"EJ6_4",
-	"EJ9_1",
 	"AG07_1",
-	"AG07_2",
+	"AG07_2"
 }
 
 local function new_project(name)

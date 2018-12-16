@@ -9,8 +9,8 @@
 #include "Utils.h"
 #include "Window.h"
 #include "Buffer.h"
-#include "Texture.h"
-#include "Camera.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>#include "Camera.h"
 
 Utils utils;
 using namespace std;
@@ -32,7 +32,7 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ5_7/";
+const char* pathProyecto = "../tests/EJ5_6/";
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
 
@@ -262,6 +262,74 @@ void RenderSuelo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElem
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
+uint32_t createTexture(const char* path, bool flip) {
+	uint32_t texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	stbi_set_flip_vertically_on_load(flip);
+
+	int width, height, nChannels;
+	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+	return texture;
+}
+uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
+	unsigned int VAO, VBO, EBO;
+
+	glGenVertexArrays(1, &VAO);
+	//Generamos 2 buffer, elementos y objetos
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	//Bindeamos el VAO
+	glBindVertexArray(VAO);
+
+	uint32_t _numberOfElementsPerLine = 5;
+
+	//Bindeamos buffer vertices
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//Subida de vertices al buffer
+	glBufferData(GL_ARRAY_BUFFER, n_verts * sizeof(float) * _numberOfElementsPerLine, vertices, GL_STATIC_DRAW);
+
+	//Bindeo buffer indices
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices * sizeof(float), indices, GL_STATIC_DRAW);
+
+	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
+	uint32_t atributteNumber = 0;
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	//Vertices de textura
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+
+	//desbindeamos buffer objetos
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Desbindeo
+	glBindVertexArray(0);
+
+	//desbindeamos buffer elements
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return VAO;
+}
+
 
 
 int main(int argc, char* argv[]) {
@@ -320,19 +388,15 @@ int main(int argc, char* argv[]) {
 	uint32_t numberOfElementsToDrawForGeometryCubos = buffer.GetElementsToDraw();
 	uint32_t numberOfElementsToDrawForGeometrySuelo = bufferSuelo.GetElementsToDraw();
 
-	uint32_t VAOCubos = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shaderCubos);
 
-	uint32_t VAOSuelo = buffer.CreateVAO(&VBOFiguraSuelo, &EBOSuelo, indexesQuad, sizeOfIndicesQuad, vertexCuad, sizeOfVerticesQuad, &shaderSuelo);
+	uint32_t VAOCubos = createVertexData(vertex, _elementsVertexs, indexes, elementsIndexes);
+	uint32_t VAOSuelo = createVertexData(vertexCuad, _elementsQuad, indexesQuad, elementsIndexesQuad);
 
-	Texture image1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
-	image1.LoadTexture();
-	Texture image2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
-	image2.LoadTexture();
+	uint32_t texture1 = createTexture(pathFinalImagen1, true);
+	uint32_t texture2 = createTexture(pathFinalImagen2, true);
+	uint32_t texture3 = createTexture(pathFinalImagen3, true);
+	uint32_t texture4 = createTexture(pathFinalImagen4, true);
 
-	Texture image3 = Texture(pathFinalImagen3, 1024, 1024, 1, 0, true);
-	image3.LoadTexture();
-	Texture image4 = Texture(pathFinalImagen4, 1024, 1024, 1, 0, true);
-	image4.LoadTexture();
 
 	uint32_t numberOfElements = (sizeof(cubePositions) / (sizeof(float) * 3));
 	//Bucle inicial donde se realiza toda la accion del motor
@@ -344,8 +408,8 @@ int main(int argc, char* argv[]) {
 		window.HandlerInput();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, image1.GetTexture(), image2.GetTexture());
-		RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, image3.GetTexture(), image4.GetTexture());
+		RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, texture1, texture2);
+		RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, texture3, texture4);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -355,8 +419,6 @@ int main(int argc, char* argv[]) {
 	glDeleteVertexArrays(1, &VAOCubos);
 	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
-	image1.ReleaseTexture();
-	image2.ReleaseTexture();
 
 	glfwTerminate();
 	return 0;

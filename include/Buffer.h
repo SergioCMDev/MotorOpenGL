@@ -1,5 +1,6 @@
-#ifndef BUFFER_h     
-#define  BUFFER_h
+#pragma once
+#ifndef BUFFER_H     
+#define  BUFFER_H
 
 #include<cstdint>
 #include<stdio.h>

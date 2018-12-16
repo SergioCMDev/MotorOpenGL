@@ -9,13 +9,14 @@
 #include "Utils.h"
 #include "Window.h"
 #include "Buffer.h"
-#include "Texture.h"
 #include "Camera.h"
+#include "string.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 Utils utils;
-Camera camera(glm::vec3(-1.0f, 2.0f, 6.0f)); 
-
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
+glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -28,49 +29,6 @@ Window window;
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
 uint32_t _elementsVertexs = 192;
-
-float vertex[] = {  //vertices      //uvs     //normals
-	  -0.5f,  -0.5f,  0.5f,       0.0f, 0.0f,     0.0f, 0.0f, 1.0f,//front
-	  0.5f,  -0.5f,  0.5f,       1.0f, 0.0f,      0.0f, 0.0f, 1.0f,
-	  0.5f,  0.5f,  0.5f,       1.0f, 1.0f,       0.0f, 0.0f, 1.0f,
-	  -0.5f, 0.5f,  0.5f,       0.0f, 1.0f,       0.0f, 0.0f, 1.0f,
-
-	  0.5f,  -0.5f,  0.5f,       0.0f, 0.0f,      1.0f, 0.0f, 0.0f,//right
-	  0.5f,  -0.5f,  -0.5f,       1.0f, 0.0f,     1.0f, 0.0f, 0.0f,
-	  0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,      1.0f, 0.0f, 0.0f,
-	  0.5f,  0.5f,  0.5f,       0.0f, 1.0f,       1.0f, 0.0f, 0.0f,
-
-	  -0.5f,  -0.5f,  -0.5f,       1.0f, 0.0f,    0.0f, 0.0f, -1.0f,//back
-	  -0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,     0.0f, 0.0f, -1.0f,
-	  0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,      0.0f, 0.0f, -1.0f,
-	  0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f,     0.0f, 0.0f, -1.0f,
-
-	  -0.5f,  -0.5f,  0.5f,       1.0f, 0.0f,     -1.0f, 0.0f, 0.0f,//left
-	  -0.5f,  0.5f,  0.5f,       1.0f, 1.0f,      -1.0f, 0.0f, 0.0f,
-	  -0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,     -1.0f, 0.0f, 0.0f,
-	  -0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f,    -1.0f, 0.0f, 0.0f,
-
-	  -0.5f,  -0.5f,  0.5f,       0.0f, 1.0f,     0.0f, -1.0f, 0.0f,//bottom
-	  -0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f,    0.0f, -1.0f, 0.0f,
-	  0.5f,  -0.5f,  -0.5f,       1.0f, 0.0f,     0.0f, -1.0f, 0.0f,
-	  0.5f,  -0.5f,  0.5f,       1.0f, 1.0f,      0.0f, -1.0f, 0.0f,
-
-	  -0.5f,  0.5f,  0.5f,       0.0f, 0.0f,      0.0f, 1.0f, 0.0f,//top
-	  0.5f,  0.5f,  0.5f,       1.0f, 0.0f,       0.0f, 1.0f, 0.0f,
-	  0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,      0.0f, 1.0f, 0.0f,
-	  -0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,     0.0f, 1.0f, 0.0f };
-
-
-uint32_t elementsIndexes = 36;
-
-uint32_t indexes[]{
-	0, 1, 2, 0, 2, 3 //Front
-	,4, 5, 6, 4, 6, 7 //Right
-	,8, 9, 10, 8, 10, 11 //Back
-	,12, 13, 14, 12, 14, 15 //Left
-	,16, 17, 18, 16, 18, 19 //Bottom
-	,20, 21, 22, 20, 22, 23 //Top
-};
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
  glm::vec3(2.0f, 5.0f, -15.0f),
@@ -83,12 +41,57 @@ glm::vec3 cubePositions[] = {
  glm::vec3(1.5f, 0.2f, -1.5f),
  glm::vec3(-1.3f, 1.0f, -1.5f)
 };
+float vertex[]{
+	-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
+	0.5f, -0.5f, 0.5f,	1.0f, 0.0f,					0.0f, 0.0f, 1.0f,
+	0.5f, 0.5f, 0.5f,	1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
+	-0.5f, 0.5f, 0.5f,	0.0f, 1.0f,							0.0f, 0.0f, 1.0f,
+
+	0.5f, -0.5f, 0.5f,			 0.0f, 0.0f,							1.0f, 0.0f, 0.0f,//Right
+	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,								1.0f, 0.0f, 0.0f,
+	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,							1.0f, 0.0f, 0.0f,
+	0.5f, 0.5f, 0.5f,		0.0f, 1.0f,					1.0f, 0.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,	1.0f, 0.0f,						0.0f, 0.0f, -1.0f,//Back
+	-0.5f, 0.5f, -0.5f,		1.0f, 1.0f,					0.0f, 0.0f, -1.0f,
+	0.5f, 0.5f, -0.5f,			0.0f, 1.0f,					0.0f, 0.0f, -1.0f,
+	0.5f, -0.5f, -0.5f,		 0.0f, 0.0f,				0.0f, 0.0f, -1.0f,
+
+	-0.5f, -0.5f, 0.5f,		1.0f, 0.0f,					-1.0f, 0.0f, 0.0f,//Left
+	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f,					-1.0f, 0.0f, 0.0f,
+	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,							-1.0f, 0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,					 -1.0f, 0.0f, 0.0f,
+
+	-0.5f, -0.5f, 0.5f,		0.0f, 1.0f,						0.0f, -1.0f, 0.0f,//Bottom
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,					 0.0f, -1.0f, 0.0f,
+	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,					0.0f, -1.0f, 0.0f,
+	0.5f, -0.5f, 0.5f,		1.0f, 1.0f,					0.0f, -1.0f, 0.0f,
+
+	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,					0.0f, 1.0f, 0.0f,//Top
+	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,					0.0f, 1.0f, 0.0f,
+	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,					0.0f, 1.0f, 0.0f,
+	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,						0.0f, 1.0f, 0.0f };
+
+
+
+uint32_t elementsIndexes = 36;
+
+uint32_t indexes[]{
+	0, 1, 2, 0, 2, 3 //Front
+	,4, 5, 6, 4, 6, 7 //Right
+	,8, 9, 10, 8, 10, 11 //Back
+	,12, 13, 14, 12, 14, 15 //Left
+	,16, 17, 18, 16, 18, 19 //Bottom
+	,20, 21, 22, 20, 22, 23 //Top
+};
+
 
 
 
 using namespace std;
 
-const char* pathProyecto = "../tests/AG08_2/";
+const string pathProyecto = "../tests/AG08_2/";
+const char* pathProyecto2 = "../tests/AG08_2/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -167,74 +170,146 @@ int Inicializacion() {
 	return 1;
 };
 
-
 void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
-	const uint32_t numberOfElements, Camera camera, uint32_t texture1,	uint32_t texture2) {
+	const uint32_t numberOfElements, Camera camera, uint32_t textureAlbedo, uint32_t textureSpecular) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	int numeroRepeticionesElemento = 10;
-	//Dibujamos cubo de luz
+
 	glm::mat4 view = camera.GetViewMatrix();
-	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 60.0f);
+
+
+	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
 
 	shaderlight.Use();
 	shaderlight.Set("projection", projection);
 	shaderlight.Set("view", view);
-	glm::mat4 model = glm::mat4(1.0f);
 
+	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, lightPos);
 	model = glm::scale(model, glm::vec3(0.2f));
-	shaderlight.Set("model", view);
-
+	shaderlight.Set("model", model);
 	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureAlbedo);
 
-	//Dibujamos los cubos 
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textureSpecular);
+
 	shaderCube.Use();
+
 	shaderCube.Set("projection", projection);
 	shaderCube.Set("view", view);
 
 	shaderCube.Set("viewPos", camera.GetPosition());
-
-	shaderCube.Set("light.direction",  -0.2,-1.0f,-0.3f);
-	shaderCube.Set("light.ambient", 0.1f, 0.1f, 0.1f);
+	shaderCube.Set("light.position", lightPos);
+	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
 	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("light.specular", 2.0f, 1.0f, 1.0f);
 
-	shaderCube.Set("material.diffuse", 0);
-	shaderCube.Set("material.specular", 1);
+	shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
+	shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
+	shaderCube.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
 	shaderCube.Set("material.shininess", 25.6f);
 
-	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	glBindVertexArray(VAO);
-
-	for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
+	for (uint32_t i = 0; i < 10; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, cubePositions[i]);
-		float angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
+		glm::vec3 vector = cubePositions[i];
+		model = glm::translate(model, vector);
+		float angle;
+		angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
 		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 		shaderCube.Set("model", model);
 		glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
-
 		shaderCube.Set("normalMat", normalMat);
-
 		glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 	}
-	glBindVertexArray(0);
+
+
+
+	glBindVertexArray(VAO);
+
+	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+uint32_t createTexture(const char* path, bool flip) {
+	uint32_t texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	stbi_set_flip_vertically_on_load(flip);	int width, height, nChannels;
+	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+	return texture;
 }
 
+uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
+	unsigned int VAO, VBO, EBO;
 
+	glGenVertexArrays(1, &VAO);
+	//Generamos 2 buffer, elementos y objetos
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	//Bindeamos el VAO
+	glBindVertexArray(VAO);
+
+	uint32_t _numberOfElementsPerLine = 8;
+	uint32_t stride = 3;
+
+	//Bindeamos buffer vertices
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//Subida de vertices al buffer
+	glBufferData(GL_ARRAY_BUFFER, n_verts * sizeof(float) * _numberOfElementsPerLine, vertices, GL_STATIC_DRAW);
+
+	//Bindeo buffer indices
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices * sizeof(float), indices, GL_STATIC_DRAW);
+
+	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
+	uint32_t atributteNumber = 0;
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	//Vertices de textura
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	stride += 2;
+	//Vertices normal
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+
+	//desbindeamos buffer objetos
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Desbindeo
+	glBindVertexArray(0);
+
+	//desbindeamos buffer elements
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return VAO;
+}
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-
-
 	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
 	const char* vertexpath = vertexpathStr.c_str();
 
@@ -253,15 +328,15 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
+	uint32_t textDiffuse = createTexture(pathFinalImagen1, true);
+	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
+
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
-	Texture texture1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
-	texture1.LoadTexture();
-	Texture texture2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
-	texture2.LoadTexture();
+
 
 	long sizeOfIndices, sizeOfVertices;
 
@@ -269,13 +344,14 @@ int main(int argc, char* argv[]) {
 	sizeOfVertices = _elementsVertexs * sizeof(float);
 
 
+	//float verticesQuad = cuadrado.GetVertexs();
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
+	uint32_t VAO = createVertexData(vertex, _elementsVertexs, indexes, elementsIndexes);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
@@ -285,8 +361,8 @@ int main(int argc, char* argv[]) {
 		lastFrame = currentFrame;
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
+		Render(VAO, shader, shaderlight, numberOfElementsToDraw, camera, textDiffuse, textureSpecular);
 
-		Render(VAO, shader, shaderlight, numberOfElementsToDraw, camera, texture1.GetTexture(), texture2.GetTexture());
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -296,8 +372,8 @@ int main(int argc, char* argv[]) {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBOFigura);
 	glDeleteBuffers(1, &EBO);
-	texture1.ReleaseTexture();
-	texture2.ReleaseTexture();
+
+
 
 	glfwTerminate();
 	return 0;

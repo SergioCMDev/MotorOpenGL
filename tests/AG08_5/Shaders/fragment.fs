@@ -2,7 +2,7 @@
 
 in vec3 normal;
 in vec3 fragPos;
-in vec2 textCoords;
+in vec2 texCoord;
 
 struct Material{
 	sampler2D diffuse;
@@ -40,15 +40,15 @@ uniform vec3 viewPos;
 out vec4 FragColor; 
 
 vec3 CalcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir){
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, textCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, texCoord));
 
 	vec3 lightDir = normalize(-light.direction);
 	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = diff * vec3(texture(material.diffuse, textCoords)) * light.diffuse;
+	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse;
 
 	vec3 reflectDir = reflect(-lightDir , normal);
 	float spec =  pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = spec * vec3(texture(material.specular, textCoords)) * light.specular;
+	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular;
 
 
 	return ambient + specular + specular;
@@ -63,16 +63,16 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir){
 	float distance = length(light.position - fragPos);
 	float attenuance = 1.0 / (light.constant + light.linear * distance + light.cuadratic * (distance * distance));
  	
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, textCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, texCoord));
 
 	vec3 lightDir = normalize(light.position - fragPos);
 	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = diff * vec3(texture(material.diffuse, textCoords)) * light.diffuse;
+	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse;
 
 
 	vec3 reflectDir = reflect(-lightDir , normal);
 	float spec =  pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = spec * vec3(texture(material.specular, textCoords)) * light.specular;
+	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular;
 
 	return (ambient + diffuse + specular) * attenuance;
 }

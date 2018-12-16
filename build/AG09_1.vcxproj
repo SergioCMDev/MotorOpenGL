@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9A18090D-062D-31BE-CFAE-D41D3B822DEF}</ProjectGuid>
-    <RootNamespace>EJ4_3</RootNamespace>
+    <ProjectGuid>{86729EA4-7214-C97A-5BCF-DCCE471050CB}</ProjectGuid>
+    <RootNamespace>AG09_1</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -42,15 +42,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\EJ4_3\</IntDir>
-    <TargetName>EJ4_3_d</TargetName>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\AG09_1\</IntDir>
+    <TargetName>AG09_1_d</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\EJ4_3\</IntDir>
-    <TargetName>EJ4_3_r</TargetName>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\AG09_1\</IntDir>
+    <TargetName>AG09_1_r</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -68,7 +68,7 @@
       <PrecompiledHeader></PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(IntDir)EJ4_3_d.compile.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)AG09_1_d.compile.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -77,10 +77,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)EJ4_3_d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)AG09_1_d.pdb</ProgramDatabaseFile>
       <AdditionalDependencies>OpenGL32.lib;assimp-vc140-mt.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libs\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)EJ4_3_d.exe</OutputFile>
+      <OutputFile>$(OutDir)AG09_1_d.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -111,7 +111,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>OpenGL32.lib;assimp-vc140-mt.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libs\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)EJ4_3_r.exe</OutputFile>
+      <OutputFile>$(OutDir)AG09_1_r.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -177,6 +177,8 @@
     <ClInclude Include="..\src\deps\glfw\wgl_context.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\tests\AG09_1\main.cpp">
+    </ClCompile>
     <ClCompile Include="..\src\Buffer.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Camera.cpp">

@@ -9,7 +9,6 @@
 #include "Utils.h"
 #include "Window.h"
 #include "Buffer.h"
-#include "Texture.h"
 #include "Camera.h"
 
 Utils utils;

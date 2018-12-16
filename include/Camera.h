@@ -1,7 +1,10 @@
+#pragma once
 #ifndef CAMERA_H     
 #define  CAMERA_H
 
 #include <glm/glm.hpp>
+#define GLFW_INCLUDE_NONE
+
 #include<GLFW/glfw3.h>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_precision.hpp>

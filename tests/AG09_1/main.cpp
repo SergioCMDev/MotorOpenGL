@@ -9,8 +9,9 @@
 #include "Utils.h"
 #include "Window.h"
 #include "Buffer.h"
-#include "Texture.h"
 #include "Camera.h"
+#include "Model.h"
+
 
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
@@ -94,7 +95,7 @@ glm::vec3 cubePositions[] = {
 
 using namespace std;
 
-const char* pathProyecto = "../tests/AG08_5/";
+const char* pathProyecto = "../tests/AG09_1/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -174,66 +175,23 @@ int Inicializacion() {
 };
 
 
-void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
-	const uint32_t numberOfElements, Camera camera, uint32_t texture1, uint32_t texture2) {
+void Render(const Shader& shader, const Model& obj) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 60.0f);
 
-	int numeroRepeticionesElemento = 10;
+	shader.Use();
+	shader.Set("projection", projection);
+	shader.Set("view", view);
 
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+	shader.Set("model", model);
 
-	//Dibujamos los cubos 
-	shaderCube.Use();
-	shaderCube.Set("projection", projection);
-	shaderCube.Set("view", view);
-
-	shaderCube.Set("viewPos", camera.GetPosition());
-
-	shaderCube.Set("dirlight.direction", -0.2f, -1.0f,-0.3);
-	shaderCube.Set("dirlight.ambient", 0.1f, 0.1f, 0.1f);
-	shaderCube.Set("dirlight.diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("dirlight.specular", 1.0f, 1.0f, 1.0f);
-
-
-	shaderCube.Set("pointLightPositions[0].position", pointLightPositions[0]);
-	shaderCube.Set("pointLightPositions[0].ambient", 0.1f, 0.1f, 0.1f);
-	shaderCube.Set("pointLightPositions[0].diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("pointLightPositions[0].specular", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("pointLightPositions[0].constant", 1.0f);
-	shaderCube.Set("pointLightPositions[0].linear", 0.09f);
-	shaderCube.Set("pointLightPositions[0].cuadratic", 0.032f);
-
-	shaderCube.Set("pointLightPositions[1].position", pointLightPositions[1]);
-	shaderCube.Set("pointLightPositions[1].ambient", 0.1f, 0.1f, 0.1f);
-	shaderCube.Set("pointLightPositions[1].diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("pointLightPositions[1].specular", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("pointLightPositions[1].constant", 1.0f);
-	shaderCube.Set("pointLightPositions[1].linear", 0.09f);
-	shaderCube.Set("pointLightPositions[1].cuadratic", 0.032f);
-
-
-	shaderCube.Set("material.diffuse", 0);
-	shaderCube.Set("material.specular", 1);
-	shaderCube.Set("material.shininess", 25.6f);
-
-	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
-
-	glBindVertexArray(VAO);
-
-	for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, cubePositions[i]);
-		float angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-		shaderCube.Set("model", model);
-		glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
-		shaderCube.Set("normalMat", normalMat);
-
-		glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-	}
+	obj.Draw(shader);
 	glBindVertexArray(0);
 
 }
@@ -251,41 +209,9 @@ int main(int argc, char* argv[]) {
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
-	string vertexpathLightString = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
-	const char* vertexpathLight = vertexpathLightString.c_str();
-
-	string fragmentPathLightString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
-	const char* fragmentPathLight = fragmentPathLightString.c_str();
-
-	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
-	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
-
-	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
-	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
-
 	Shader shader = Shader(vertexpath, fragmentPath1);
-	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
 	int program = shader.GetIdProgram();
-	uint32_t VBOFigura, EBO;
-
-	Texture texture1 = Texture(pathFinalImagen1, 1024, 1024, 1, 0, true);
-	texture1.LoadTexture();
-	Texture texture2 = Texture(pathFinalImagen2, 1024, 1024, 1, 0, true);
-	texture2.LoadTexture();
-
-	long sizeOfIndices, sizeOfVertices;
-
-	sizeOfIndices = elementsIndexes * sizeof(float);
-	sizeOfVertices = _elementsVertexs * sizeof(float);
-
-
-	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
-	buffer.SetStatusVerticesColor(false);
-	buffer.SetStatusVerticesTextura(true);
-	buffer.SetStatusVerticesNormal(true);
-	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
-
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
+	Model object("../assets/obj/Freigther_BI_Export.obj");
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
@@ -296,19 +222,11 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAO, shader, shaderlight, numberOfElementsToDraw, camera, texture1.GetTexture(), texture2.GetTexture());
+		Render(shader, object);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
-
-	//Si se han linkado bien los shaders, los borramos ya que estan linkados
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBOFigura);
-	glDeleteBuffers(1, &EBO);
-	texture1.ReleaseTexture();
-	texture2.ReleaseTexture();
-
 	glfwTerminate();
 	return 0;
 }

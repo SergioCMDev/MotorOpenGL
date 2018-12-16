@@ -2,7 +2,7 @@
 
 in vec3 normal;
 in vec3 fragPos;
-in vec2 textCoords;
+in vec2 texCoord;
 
 struct Material{
 	sampler2D diffuse;
@@ -35,18 +35,18 @@ void main() {
 	float distance = length(light.position - fragPos);
 	float attenuance = 1.0 / (light.constant + light.linear * distance + light.cuadratic * (distance * distance));
  	
-	vec3 ambient = light.ambient * vec3(texture(material.diffuse, textCoords));
+	vec3 ambient = light.ambient * vec3(texture(material.diffuse, texCoord));
 
 	vec3 norm = normalize(normal);
 	vec3 lightDir = normalize(light.position - fragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * vec3(texture(material.diffuse, textCoords)) * light.diffuse;
+	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse;
 
 	vec3 viewDir = normalize(viewPos - fragPos);
 
 	vec3 reflectDir = reflect(-lightDir , norm);
 	float spec =  pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = spec * vec3(texture(material.specular, textCoords)) * light.specular;
+	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular;
 
 	float theta =dot(lightDir, normalize(-light.direction));
 	float epsilon =light.cutOff - light.outerCutOff;

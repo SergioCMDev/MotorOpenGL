@@ -9,7 +9,6 @@
 #include "Utils.h"
 #include "Window.h"
 #include "Buffer.h"
-#include "Texture.h"
 #include "Camera.h"
 
 Utils utils;
@@ -194,7 +193,51 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,	c
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
+uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
+	unsigned int VAO, VBO, EBO;
 
+	glGenVertexArrays(1, &VAO);
+	//Generamos 2 buffer, elementos y objetos
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	//Bindeamos el VAO
+	glBindVertexArray(VAO);
+
+	uint32_t _numberOfElementsPerLine = 6;
+
+	//Bindeamos buffer vertices
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//Subida de vertices al buffer
+	glBufferData(GL_ARRAY_BUFFER, n_verts * sizeof(float) * _numberOfElementsPerLine, vertices, GL_STATIC_DRAW);
+
+	//Bindeo buffer indices
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices * sizeof(float), indices, GL_STATIC_DRAW);
+
+	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
+	uint32_t atributteNumber = 0;
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	//Vertices de textura
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+
+	//desbindeamos buffer objetos
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Desbindeo
+	glBindVertexArray(0);
+
+	//desbindeamos buffer elements
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return VAO;
+}
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
@@ -233,7 +276,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
+	uint32_t VAO = createVertexData(vertex, _elementsVertexs, indexes, elementsIndexes);
 
 	   
 	//Bucle inicial donde se realiza toda la accion del motor

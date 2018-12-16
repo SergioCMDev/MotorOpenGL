@@ -1,37 +1,44 @@
-//#ifndef UTILSHANDLERS_H
-//#define UTILSHANDLERS_H
-//
-//#include<iostream>
-//#include <string>
-//#include <Window.h>
-//#include<glad/glad.h>
-//#include<GLFW/glfw3.h>
-//
-//#include<iostream>
-//#include<cstdint>
-//#include<stdio.h>
-//#include<Camera.h>
-//
-//class UtilsHandlers {
-//
-//public:
-//	UtilsHandlers(GLFWwindow* window, Camera camera);
-//	void HandlerInput(const double deltaTime);
-//	void HandlerInput();
-//	//Process input from keyboard
-//	void HandleKeyboard(const Camera::Movement direction, const float deltaTime);
-//	//Process mouse movement
-//	void HandleMouseMovement(const float xoffset, const float yoffset,
-//		const bool constrainPitch = true);
-//	//Process mouse scroll
-//	void HandleMouseScroll(const float yoffset);
-//	void t(double xpos, double ypos);
-//private:
-//	void OnChangeFrameBufferSize(const int32_t width, const int32_t height);
-//	void OnMouse(double xpos, double ypos);
-//	GLFWwindow* _window;
-//	Camera _camera;
-//	bool _firstMouse = false;
-//	double _lastX, _lastY, _xoffset, _yoffset;
-//};
-//#endif
+#pragma once
+#ifndef MODEL_H     
+#define  MODEL_H
+
+#include<Mesh.h>
+#include<string>
+#include<assimp/material.h>
+#include<assimp/Importer.hpp>
+#include<assimp/postprocess.h>
+#include<assimp/scene.h>
+
+
+class aiNode;
+class aiScene;
+class aiMesh;
+class aiMaterials;
+class Model {
+
+public:
+	/* Model data*/
+	std::vector<Texture> textures_loaded_; // stores all the stored loaded
+	std::vector<Mesh> meshes_;
+	std::string directory_;
+	bool gammaCorrection_;
+
+	/* Functions*/
+	//Constructor
+	Model(std::string const &path, bool gamma = false);
+	//Draws the model and thus all the meshes
+	void Draw(const Shader& shader) const;
+private:
+	/* Functions*/
+	//Load a model with supported ASSIMP extensions from file and stores the result
+	void loadModel(std::string const path);
+	//Proccesses a node in a recursive mode. Proccesses each individual mesh
+	void processNode(aiNode *node, const aiScene *scene);
+
+	Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+
+	//Checks all material texture of a given type and loads the textures if they are not loaded
+	std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+
+};
+#endif
