@@ -34,9 +34,9 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
-uint32_t _elementsVertexs = 192;
+uint32_t numeroElementosVerticesCubo = 192;
 
-float vertex[] = {  //vertices      //uvs     //normals
+float verticesCubo[] = {  //vertices      //uvs     //normals
 	  -0.5f,  -0.5f,  0.5f,       0.0f, 0.0f,     0.0f, 0.0f, 1.0f,//front
 	  0.5f,  -0.5f,  0.5f,       1.0f, 0.0f,      0.0f, 0.0f, 1.0f,
 	  0.5f,  0.5f,  0.5f,       1.0f, 1.0f,       0.0f, 0.0f, 1.0f,
@@ -68,9 +68,9 @@ float vertex[] = {  //vertices      //uvs     //normals
 	  -0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,     0.0f, 1.0f, 0.0f };
 
 
-uint32_t elementsIndexes = 36;
+uint32_t numeroIndicesCubo = 36;
 
-uint32_t indexes[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back

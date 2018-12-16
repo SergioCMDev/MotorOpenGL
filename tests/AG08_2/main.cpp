@@ -28,7 +28,7 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
-uint32_t _elementsVertexs = 192;
+uint32_t numeroElementosVerticesCubo = 192;
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
  glm::vec3(2.0f, 5.0f, -15.0f),
@@ -41,7 +41,7 @@ glm::vec3 cubePositions[] = {
  glm::vec3(1.5f, 0.2f, -1.5f),
  glm::vec3(-1.3f, 1.0f, -1.5f)
 };
-float vertex[]{
+float verticesCubo[]{
 	-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
 	0.5f, -0.5f, 0.5f,	1.0f, 0.0f,					0.0f, 0.0f, 1.0f,
 	0.5f, 0.5f, 0.5f,	1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
@@ -74,9 +74,9 @@ float vertex[]{
 
 
 
-uint32_t elementsIndexes = 36;
+uint32_t numeroIndicesCubo = 36;
 
-uint32_t indexes[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -340,8 +340,8 @@ int main(int argc, char* argv[]) {
 
 	long sizeOfIndices, sizeOfVertices;
 
-	sizeOfIndices = elementsIndexes * sizeof(float);
-	sizeOfVertices = _elementsVertexs * sizeof(float);
+	sizeOfIndices = numeroIndicesCubo * sizeof(float);
+	sizeOfVertices = numeroElementosVerticesCubo * sizeof(float);
 
 
 	//float verticesQuad = cuadrado.GetVertexs();
@@ -351,7 +351,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = createVertexData(vertex, _elementsVertexs, indexes, elementsIndexes);
+	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor

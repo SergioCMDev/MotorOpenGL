@@ -13,6 +13,8 @@ local project_list = {
 	"AG08_5",
 	"AG09_1",
 	"AG10_1",
+	"AG10_2",
+	"AG10_3",
 	"EJ2_1",
 	"EJ2_2",
 	"EJ2_3",
@@ -34,7 +36,6 @@ local project_list = {
 	"EJ5_7",
 	"EJ6_1",
 	"EJ6_2",
-	"EJ6_4",
 	"AG07_1",
 	"AG07_2"
 }

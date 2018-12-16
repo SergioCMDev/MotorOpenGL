@@ -15,8 +15,7 @@
 #include <stb_image.h>
 
 Utils utils;
-Camera camera(glm::vec3(-1.0f, 1.0f, -7.0f));
-
+Camera camera(glm::vec3(-5.0f, 1.0f, 7.0f));
 glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
@@ -94,7 +93,7 @@ uint32_t indicesCubo[]{
 
 using namespace std;
 
-const string pathProyecto = "../tests/AG10_1/";
+const string pathProyecto = "../tests/AG10_3/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -164,6 +163,11 @@ int Inicializacion() {
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
 
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+
 	//cuando la ventana cambie de tamaño
 	glfwSetCursorPosCallback(window.GetWindow(), OnMouse);
 	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
@@ -172,7 +176,7 @@ int Inicializacion() {
 	return 1;
 };
 
-void Draw(mat4 projection, mat4 view,vec3 pos, vec3 scale, mat4 model, Shader shader, uint32_t VAO, uint32_t numberOfElements) {
+void Draw(mat4 projection, mat4 view, vec3 pos, vec3 scale, mat4 model, Shader shader, uint32_t VAO, uint32_t numberOfElements) {
 	shader.Use();
 	shader.Set("projection", projection);
 	shader.Set("view", view);
@@ -188,13 +192,13 @@ void Draw(mat4 projection, mat4 view,vec3 pos, vec3 scale, mat4 model, Shader sh
 }
 
 
-void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32_t textureAlbedo, uint32_t textureSpecular) {
+void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, const Shader& shaderStencil, uint32_t textureAlbedo, uint32_t textureSpecular) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	//Draw(projection, view, lightPos, scale, model, shaderCube, VAOQuad 36);
 	//DrawQuad(projection, view, lightPos, scale, model, shaderCube, 36);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	shaderCube.Use();
 	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.5f, 0.31f);
 
@@ -205,7 +209,7 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 
 	shaderCube.Set("material.ambient", 1.0f, 0.5f, 0.31f);
-	shaderCube.Set("material.shininess",32.2f);
+	shaderCube.Set("material.shininess", 32.2f);
 	shaderCube.Set("material.diffuse", 0);
 	shaderCube.Set("material.specular", 1);
 
@@ -232,15 +236,19 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
 
+	glStencilMask(0x00); //Quitamos mascara del Stencil por lo que no guarda
 	glBindVertexArray(VAOQuad);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	////Pintamos Cubo 1
+	//1 Pasada donde pintamos los cubos normalmente y guardamos los valores de los cubos
+	////Pintamos Cubo 1__________________________________________________________________
+	glStencilMask(0xFF); //Activamos mascara del Stencil 
+	glStencilFunc(GL_ALWAYS, 1, 0xFF); //Almacena los valores escritos con 1
 
 	glm::mat4 model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, 2.0f);
-	scale = vec3(1.0f, 1.f, 1.0f);
+	scale = vec3(1.0f, 1.0f, 1.0f);
 	model2 = glm::translate(model2, pos);
 	model2 = glm::scale(model2, scale);
 	shaderCube.Set("model", model2);
@@ -249,10 +257,9 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
-
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-	//Pintamos Cubo 2
+	//Pintamos Cubo 2__________________________________________________________________
 
 	model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, 0.0f);
@@ -264,11 +271,10 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
-
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
-	//Pintamos Cubo 3
+	//Pintamos Cubo 3__________________________________________________________________
 
 	model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, -2.0f);
@@ -280,11 +286,64 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
+	//2 Pasada donde pintamos los cubos un poco mas grandes, para que el stencil pille la diferencia de tamaño y podamos trabajar con esa diferencia
+
+	////Pintamos Cubo 1__________________________________________________________________
+
+	shaderStencil.Use();
+	shaderStencil.Set("projection", projection);
+	shaderStencil.Set("view", view);
+	glStencilMask(0x00); //Activamos mascara del Stencil en modo lectura 
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //Almacena los valores escritos con 1
+	glDisable(GL_DEPTH_TEST);
+	model2 = glm::mat4(1.0f);
+	pos = vec3(0.0f, 0.2f, 2.0f);
+	scale = vec3(1.2f, 1.2f, 1.2f);
+	model2 = glm::translate(model2, pos);
+	model2 = glm::scale(model2, scale);
+	shaderStencil.Set("model", model2);
+
+	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
+	shaderStencil.Set("normalMat", normalMat);
+
+	glBindVertexArray(VAOCubo);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	//Pintamos Cubo 2__________________________________________________________________
+
+	model2 = glm::mat4(1.0f);
+	pos = vec3(0.0f, 0.2f, 0.0f);
+	model2 = glm::translate(model2, pos);
+	model2 = glm::scale(model2, scale);
+	shaderStencil.Set("model", model2);
+
+	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
+	shaderStencil.Set("normalMat", normalMat);
+
+	glBindVertexArray(VAOCubo);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
+	//Pintamos Cubo 3__________________________________________________________________
+
+	model2 = glm::mat4(1.0f);
+	pos = vec3(0.0f, 0.2f, -2.0f);
+	model2 = glm::translate(model2, pos);
+	model2 = glm::scale(model2, scale);
+	shaderStencil.Set("model", model2);
+
+	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
+	shaderStencil.Set("normalMat", normalMat);
+
+	glBindVertexArray(VAOCubo);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
 	glBindVertexArray(0);
+	glStencilMask(0xFF);
+	glEnable(GL_DEPTH_TEST);
+
 }
 
 
@@ -371,6 +430,12 @@ int main(int argc, char* argv[]) {
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
+	string vertexStencilpathStr = utils.GetFinalPath(pathProyecto, "Shaders/Stencil.vs");
+	const char* vertexStencilpath = vertexStencilpathStr.c_str();
+
+	string fragmentStencilPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentStencil.fs");
+	const char* fragmentStencilPath1 = fragmentStencilPathString.c_str();
+
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
 	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
 
@@ -381,7 +446,7 @@ int main(int argc, char* argv[]) {
 	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
-
+	Shader shaderStencil = Shader(vertexStencilpath, fragmentStencilPath1);
 
 	long sizeOfIndices, sizeOfVertices;
 
@@ -394,7 +459,7 @@ int main(int argc, char* argv[]) {
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 	uint32_t VAOCubo = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
-	uint32_t VAOQuad = createVertexData(verticesCuadrado, numeroElementosVerticesCubo/6, indicesCuadrado, numeroIndicesCubo/6);
+	uint32_t VAOQuad = createVertexData(verticesCuadrado, numeroElementosVerticesCubo / 6, indicesCuadrado, numeroIndicesCubo / 6);
 
 	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
 
@@ -406,7 +471,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOQuad, VAOCubo, shader, textDiffuse, textureSpecular);
+		Render(VAOQuad, VAOCubo, shader, shaderStencil, textDiffuse, textureSpecular);
 
 
 		glfwSwapBuffers(window.GetWindow());

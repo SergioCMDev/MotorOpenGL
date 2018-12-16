@@ -53,9 +53,9 @@ float vertexs[]{
 		-0.5f, 0.5f, -0.5f,		 0.0f, 1.0f
 };
 
-uint32_t elementsIndexes = 36;
+uint32_t numeroIndicesCubo = 36;
 
-uint32_t indexes[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -245,7 +245,7 @@ int main(int argc, char* argv[]) {
 
 	long sizeOfIndices, sizeOfVertices;
 
-	sizeOfIndices = elementsIndexes * sizeof(float);
+	sizeOfIndices = numeroIndicesCubo * sizeof(float);
 	sizeOfVertices = elementsVertexs * sizeof(float);
 
 
@@ -259,7 +259,7 @@ int main(int argc, char* argv[]) {
 
 	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
 	//uint32_t elementsPerLine = 5; //en caso de cubo con todos las posiciones
-	uint32_t VAO = createVertexData(vertexs, elementsVertexs, indexes, elementsIndexes);
+	uint32_t VAO = createVertexData(vertexs, elementsVertexs, indicesCubo, numeroIndicesCubo);
 
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);
