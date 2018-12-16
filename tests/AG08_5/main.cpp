@@ -11,7 +11,7 @@
 #include "Buffer.h"
 #include "Camera.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h> //TERMINAR
+#include <stb_image.h>
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
 
@@ -19,7 +19,7 @@ glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 glm::vec3 pointLightPositions[] = {
 	glm::vec3(0.7f, 0.2f, 2.0f),
-glm::vec3(2.3f, -3.3f, -4.0f)
+	glm::vec3(2.3f, -3.3f, -4.0f)
 
 };
 
@@ -179,11 +179,11 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	glm::mat4 view = camera.GetViewMatrix();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Dibujamos cubo de luz
+	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 60.0f);
-
-	int numeroRepeticionesElemento = 10;
-
 
 	//Dibujamos los cubos 
 	shaderCube.Use();
@@ -192,27 +192,30 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 
 	shaderCube.Set("viewPos", camera.GetPosition());
 
-	shaderCube.Set("dirlight.direction", -0.2f, -1.0f,-0.3);
-	shaderCube.Set("dirlight.ambient", 0.1f, 0.1f, 0.1f);
-	shaderCube.Set("dirlight.diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("dirlight.specular", 1.0f, 1.0f, 1.0f);
+	//DirectionalLight 1
+	shaderCube.Set("dirLight.direction", -0.2f, -0.1f, -0.3f);
+	shaderCube.Set("dirLight.ambient", 0.1f, 0.1f, 0.1f);
+	shaderCube.Set("dirLight.diffuse", 0.3f, 0.3f, 0.3f);
+	shaderCube.Set("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
 
-	shaderCube.Set("pointLightPositions[0].position", pointLightPositions[0]);
-	shaderCube.Set("pointLightPositions[0].ambient", 0.1f, 0.1f, 0.1f);
-	shaderCube.Set("pointLightPositions[0].diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("pointLightPositions[0].specular", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("pointLightPositions[0].constant", 1.0f);
-	shaderCube.Set("pointLightPositions[0].linear", 0.09f);
-	shaderCube.Set("pointLightPositions[0].cuadratic", 0.032f);
+	//PointLight 1
+	shaderCube.Set("pointLights[0].position", pointLightPositions[0]);
+	shaderCube.Set("pointLights[0].ambient", 0.1f, 0.1f, 0.1f);
+	shaderCube.Set("pointLights[0].diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("pointLights[0].constant", 1.0f);
+	shaderCube.Set("pointLights[0].linear", 0.09f);
+	shaderCube.Set("pointLights[0].cuadratic", 0.032f);
 
-	shaderCube.Set("pointLightPositions[1].position", pointLightPositions[1]);
-	shaderCube.Set("pointLightPositions[1].ambient", 0.1f, 0.1f, 0.1f);
-	shaderCube.Set("pointLightPositions[1].diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("pointLightPositions[1].specular", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("pointLightPositions[1].constant", 1.0f);
-	shaderCube.Set("pointLightPositions[1].linear", 0.09f);
-	shaderCube.Set("pointLightPositions[1].cuadratic", 0.032f);
+	//PointLight 1
+	shaderCube.Set("pointLights[1].position", pointLightPositions[1]);
+	shaderCube.Set("pointLights[1].ambient", 0.1f, 0.1f, 0.1f);
+	shaderCube.Set("pointLights[1].diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("pointLights[1].constant", 1.0f);
+	shaderCube.Set("pointLights[1].linear", 0.09f);
+	shaderCube.Set("pointLights[1].cuadratic", 0.032f);
 
 
 	shaderCube.Set("material.diffuse", 0);
@@ -222,6 +225,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
 
 	glBindVertexArray(VAO);
+	int numeroRepeticionesElemento = 10;
 
 	for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
 		glm::mat4 model = glm::mat4(1.0f);
@@ -230,7 +234,6 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 		shaderCube.Set("model", model);
 		glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
-
 		shaderCube.Set("normalMat", normalMat);
 
 		glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
@@ -258,7 +261,6 @@ uint32_t createTexture(const char* path, bool flip) {
 	stbi_image_free(data);
 	return texture;
 }
-
 uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
 	unsigned int VAO, VBO, EBO;
 
@@ -309,7 +311,6 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 
 	return VAO;
 }
-
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
@@ -354,8 +355,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
-	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesCubo, sizeOfIndices, verticesCubo, sizeOfVertices, &shader);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor

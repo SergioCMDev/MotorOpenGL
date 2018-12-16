@@ -33,7 +33,7 @@ struct PointLight{
 };
 
 #define NUMBER_POINT_LIGHTS 2
-uniform PointLight pointLight[NUMBER_POINT_LIGHTS];
+uniform PointLight pointLights[NUMBER_POINT_LIGHTS];
 
 
 uniform vec3 viewPos;
@@ -84,8 +84,8 @@ void main() {
 	
 	vec3 color = CalcDirectionalLight(dirLight, norm, viewDir);
 
-	for(int i=0; i < NUMBER_POINT_LIGHTS; ++i){
-		color+= CalcPointLight(pointLight[i], norm, fragPos, viewDir);
+	for(int i = 0; i < NUMBER_POINT_LIGHTS; ++i){
+		color+= CalcPointLight(pointLights[i], norm, fragPos, viewDir);
 	}
 
 	FragColor = vec4(color, 1.0);
