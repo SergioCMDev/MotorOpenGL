@@ -93,7 +93,7 @@ uint32_t indicesCubo[]{
 
 using namespace std;
 
-const string pathProyecto = "../tests/AG10_2/";
+const string pathProyecto = "../tests/AG10_3/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -139,7 +139,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
 	}
-	//Window::HandlerInput();
 }
 
 
@@ -163,9 +162,8 @@ int Inicializacion() {
 	glDepthFunc(GL_LESS);
 	glEnable(GL_DEPTH_TEST);
 
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 	//cuando la ventana cambie de tamaño
@@ -192,13 +190,13 @@ void Draw(mat4 projection, mat4 view, vec3 pos, vec3 scale, mat4 model, Shader s
 }
 
 
-void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, const Shader& shaderStencil, uint32_t textureAlbedo, uint32_t textureSpecular) {
+void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, const Shader& blendShader, uint32_t textureAlbedo, uint32_t textureSpecular, uint32_t textureTree) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	//Draw(projection, view, lightPos, scale, model, shaderCube, VAOQuad 36);
 	//DrawQuad(projection, view, lightPos, scale, model, shaderCube, 36);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderCube.Use();
 	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.5f, 0.31f);
 
@@ -219,6 +217,7 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, const 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textureSpecular);
 
+	
 
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 100.0f);
 	glm::mat4 view = camera.GetViewMatrix();
@@ -236,15 +235,17 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, const 
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
 
-	glStencilMask(0x00); //Quitamos mascara del Stencil por lo que no guarda
 	glBindVertexArray(VAOQuad);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	//1 Pasada donde pintamos los cubos normalmente y guardamos los valores de los cubos
+
+
+
+
+
 	////Pintamos Cubo 1__________________________________________________________________
-	glStencilMask(0xFF); //Activamos mascara del Stencil 
-	glStencilFunc(GL_ALWAYS, 1, 0xFF); //Almacena los valores escritos con 1
+
 
 	glm::mat4 model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, 2.0f);
@@ -288,62 +289,33 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, const 
 	glBindVertexArray(VAOCubo);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-	//2 Pasada donde pintamos los cubos un poco mas grandes, para que el stencil pille la diferencia de tamaño y podamos trabajar con esa diferencia
 
-	////Pintamos Cubo 1__________________________________________________________________
-
-	shaderStencil.Use();
-	shaderStencil.Set("projection", projection);
-	shaderStencil.Set("view", view);
-	glStencilMask(0x00); //Activamos mascara del Stencil en modo lectura 
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF); //Almacena los valores escritos con 1
-	glDisable(GL_DEPTH_TEST);
-	model2 = glm::mat4(1.0f);
-	pos = vec3(0.0f, 0.2f, 2.0f);
-	scale = vec3(1.2f, 1.2f, 1.2f);
-	model2 = glm::translate(model2, pos);
-	model2 = glm::scale(model2, scale);
-	shaderStencil.Set("model", model2);
-
-	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
-	shaderStencil.Set("normalMat", normalMat);
-
-	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-	//Pintamos Cubo 2__________________________________________________________________
-
-	model2 = glm::mat4(1.0f);
-	pos = vec3(0.0f, 0.2f, 0.0f);
-	model2 = glm::translate(model2, pos);
-	model2 = glm::scale(model2, scale);
-	shaderStencil.Set("model", model2);
-
-	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
-	shaderStencil.Set("normalMat", normalMat);
-
-	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	////Pintamos Quad con arbol__________________________________________________________________
 
 
-	//Pintamos Cubo 3__________________________________________________________________
 
-	model2 = glm::mat4(1.0f);
-	pos = vec3(0.0f, 0.2f, -2.0f);
-	model2 = glm::translate(model2, pos);
-	model2 = glm::scale(model2, scale);
-	shaderStencil.Set("model", model2);
+	blendShader.Use();
+	blendShader.Set("projection", projection);
+	blendShader.Set("view", view);
+	glm::mat4 model_tree = glm::mat4(1.0f);
+	pos = vec3(0.0f, 0.2f, 2.5f);
+	scale = vec3(2.0f);
+	model_tree = glm::translate(model_tree, pos); //Derecha-Izq  Arriba Abajo Z	
+	model_tree = glm::scale(model_tree, scale);
+	model_tree = glm::rotate(model_tree,  glm::pi<float>() /2.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
-	shaderStencil.Set("normalMat", normalMat);
+	blendShader.Set("model", model_tree);
+	blendShader.Set("textureTree", 0);
 
-	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureTree);
+
+	glBindVertexArray(VAOQuad);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 	glBindVertexArray(0);
-	glStencilMask(0xFF);
-	glEnable(GL_DEPTH_TEST);
-
 }
 
 
@@ -362,6 +334,27 @@ uint32_t createTexture(const char* path, bool flip) {
 	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	stbi_image_free(data);
+	return texture;
+}
+
+uint32_t createTextureAlpha(const char* path, bool flip) {
+	uint32_t texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	stbi_set_flip_vertically_on_load(flip);	int width, height, nChannels;
+	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	stbi_image_free(data);
@@ -430,11 +423,11 @@ int main(int argc, char* argv[]) {
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
-	string vertexStencilpathStr = utils.GetFinalPath(pathProyecto, "Shaders/Stencil.vs");
-	const char* vertexStencilpath = vertexStencilpathStr.c_str();
+	string vertexBlendpathStr = utils.GetFinalPath(pathProyecto, "Shaders/blend.vs");
+	const char* vertexBlendpath = vertexBlendpathStr.c_str();
 
-	string fragmentStencilPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentStencil.fs");
-	const char* fragmentStencilPath1 = fragmentStencilPathString.c_str();
+	string fragmentBlendPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentBlend.fs");
+	const char* fragmentBlendPath = fragmentBlendPathString.c_str();
 
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
 	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
@@ -442,11 +435,15 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
+	string pathFinalTreePath = utils.GetFinalPath(pathProyecto, "Assets/tree.png");
+	const char* pathFinalTree = pathFinalTreePath.c_str();
+
 	uint32_t textDiffuse = createTexture(pathFinalImagen1, true);
 	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
+	uint32_t textureTree = createTextureAlpha(pathFinalTree, true);
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
-	Shader shaderStencil = Shader(vertexStencilpath, fragmentStencilPath1);
+	Shader shaderBlend = Shader(vertexBlendpath, fragmentBlendPath);
 
 	long sizeOfIndices, sizeOfVertices;
 
@@ -471,7 +468,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOQuad, VAOCubo, shader, shaderStencil, textDiffuse, textureSpecular);
+		Render(VAOQuad, VAOCubo, shader, shaderBlend, textDiffuse, textureSpecular, textureTree);
 
 
 		glfwSwapBuffers(window.GetWindow());

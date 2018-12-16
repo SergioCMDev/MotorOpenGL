@@ -93,7 +93,7 @@ uint32_t indicesCubo[]{
 
 using namespace std;
 
-const string pathProyecto = "../tests/AG10_3/";
+const string pathProyecto = "../tests/AG10_2/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
