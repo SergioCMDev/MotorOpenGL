@@ -34,64 +34,6 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
-uint32_t numeroElementosVerticesCubo = 192;
-
-float verticesCubo[] = {  //vertices      //uvs     //normals
-	  -0.5f,  -0.5f,  0.5f,       0.0f, 0.0f,     0.0f, 0.0f, 1.0f,//front
-	  0.5f,  -0.5f,  0.5f,       1.0f, 0.0f,      0.0f, 0.0f, 1.0f,
-	  0.5f,  0.5f,  0.5f,       1.0f, 1.0f,       0.0f, 0.0f, 1.0f,
-	  -0.5f, 0.5f,  0.5f,       0.0f, 1.0f,       0.0f, 0.0f, 1.0f,
-
-	  0.5f,  -0.5f,  0.5f,       0.0f, 0.0f,      1.0f, 0.0f, 0.0f,//right
-	  0.5f,  -0.5f,  -0.5f,       1.0f, 0.0f,     1.0f, 0.0f, 0.0f,
-	  0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,      1.0f, 0.0f, 0.0f,
-	  0.5f,  0.5f,  0.5f,       0.0f, 1.0f,       1.0f, 0.0f, 0.0f,
-
-	  -0.5f,  -0.5f,  -0.5f,       1.0f, 0.0f,    0.0f, 0.0f, -1.0f,//back
-	  -0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,     0.0f, 0.0f, -1.0f,
-	  0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,      0.0f, 0.0f, -1.0f,
-	  0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f,     0.0f, 0.0f, -1.0f,
-
-	  -0.5f,  -0.5f,  0.5f,       1.0f, 0.0f,     -1.0f, 0.0f, 0.0f,//left
-	  -0.5f,  0.5f,  0.5f,       1.0f, 1.0f,      -1.0f, 0.0f, 0.0f,
-	  -0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,     -1.0f, 0.0f, 0.0f,
-	  -0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f,    -1.0f, 0.0f, 0.0f,
-
-	  -0.5f,  -0.5f,  0.5f,       0.0f, 1.0f,     0.0f, -1.0f, 0.0f,//bottom
-	  -0.5f,  -0.5f,  -0.5f,       0.0f, 0.0f,    0.0f, -1.0f, 0.0f,
-	  0.5f,  -0.5f,  -0.5f,       1.0f, 0.0f,     0.0f, -1.0f, 0.0f,
-	  0.5f,  -0.5f,  0.5f,       1.0f, 1.0f,      0.0f, -1.0f, 0.0f,
-
-	  -0.5f,  0.5f,  0.5f,       0.0f, 0.0f,      0.0f, 1.0f, 0.0f,//top
-	  0.5f,  0.5f,  0.5f,       1.0f, 0.0f,       0.0f, 1.0f, 0.0f,
-	  0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,      0.0f, 1.0f, 0.0f,
-	  -0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,     0.0f, 1.0f, 0.0f };
-
-
-uint32_t numeroIndicesCubo = 36;
-
-uint32_t indicesCubo[]{
-	0, 1, 2, 0, 2, 3 //Front
-	,4, 5, 6, 4, 6, 7 //Right
-	,8, 9, 10, 8, 10, 11 //Back
-	,12, 13, 14, 12, 14, 15 //Left
-	,16, 17, 18, 16, 18, 19 //Bottom
-	,20, 21, 22, 20, 22, 23 //Top
-};
-glm::vec3 cubePositions[] = {
- glm::vec3(0.0f, 0.0f, 0.0f),
- glm::vec3(2.0f, 5.0f, -15.0f),
- glm::vec3(-1.5f, -2.2f, -2.5f),
- glm::vec3(-3.8f, -2.0f, -12.3f),
- glm::vec3(2.4f, -0.4f, -3.5f),
- glm::vec3(-1.7f, 3.0f, -7.5f),
- glm::vec3(1.3f, -2.0f, -2.5f),
- glm::vec3(1.5f, 2.0f, -2.5f),
- glm::vec3(1.5f, 0.2f, -1.5f),
- glm::vec3(-1.3f, 1.0f, -1.5f)
-};
-
-
 
 using namespace std;
 
@@ -160,7 +102,7 @@ int Inicializacion() {
 		return -1;
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	glEnable(GL_DEPTH_TEST);
@@ -179,7 +121,8 @@ void Render(const Shader& shader, const Model& obj) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	glm::mat4 view = camera.GetViewMatrix();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 60.0f);
 
 	shader.Use();
@@ -191,7 +134,8 @@ void Render(const Shader& shader, const Model& obj) {
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 	shader.Set("model", model);
 
-	obj.Draw(shader);
+	obj.Draw(shader);
+
 	glBindVertexArray(0);
 
 }

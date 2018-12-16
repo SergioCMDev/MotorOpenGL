@@ -152,7 +152,7 @@ int Inicializacion() {
 		return -1;
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	glEnable(GL_DEPTH_TEST);
@@ -340,7 +340,7 @@ int main(int argc, char* argv[]) {
 	long sizeOfIndices, sizeOfVertices;
 
 	sizeOfIndices = numeroIndicesCubo * sizeof(float);
-	sizeOfVertices = _elementsVertexs * sizeof(float);
+	sizeOfVertices = numeroElementosVerticesCubo * sizeof(float);
 
 
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
@@ -349,7 +349,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = createVertexData(verticesCubo, _elementsVertexs, indicesCubo, numeroIndicesCubo);
+	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor

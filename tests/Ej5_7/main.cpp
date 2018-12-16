@@ -27,12 +27,12 @@ glm::vec3 cubePositions[] = {
   glm::vec3(4.0f, -4.0f, 0.0f),
  glm::vec3(2.0f, -2.0f, 0.0f),
 };
-Camera camera(glm::vec3(0.0f, -5.0f, 0.0f));
+Camera camera(glm::vec3(2.0f, 5.0f, 0.0f));
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ5_6/";
+const char* pathProyecto = "../tests/EJ5_7/";
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
 
@@ -40,10 +40,11 @@ double _lastX, _lastY, _xoffset, _yoffset;
 uint32_t _elementsQuad = 20;
 float vertexCuad[]{
 	// Position					// UVs
-	-0.5f, -0.5f, 0.5f,		 0.0f, 0.0f,	//Front	
-		0.5f, -0.5f, 0.5f,		 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f,		1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,
+
+		-0.5f, 0.5f, 0.5f,		0.0f, 0.0f, //Top
+		0.5f, 0.5f, 0.5f,		1.0f, 0.0f,
+		0.5f, 0.5f, -0.5f,		1.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f,		 0.0f, 1.0f
 };
 uint32_t numeroElementosVerticesCubo = 120;
 
@@ -161,11 +162,11 @@ int Inicializacion() {
 		return -1;
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
 
 	//cuando la ventana cambie de tamaño
 	glfwSetCursorPosCallback(window.GetWindow(), OnMouse);
@@ -227,30 +228,27 @@ void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfEleme
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 	shader.Set("view", camera.GetViewMatrix());
 	shader.Set("projection", projection);
+	glBindVertexArray(0);
+
 }
 
-
-void RenderSuelo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2) {
+void Render(uint32_t VAOSuelo, const Shader& shader, const uint32_t numberOfElementsSuelo, uint32_t VAOCubos, const uint32_t numberOfElementsToDrawForGeometryCubos, uint32_t texture1, uint32_t texture2) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shader.Use();
 	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
 	//Bindeamos VAO
-	glBindVertexArray(VAO);
+	glBindVertexArray(VAOSuelo);
 
 	//alejamos el mundo 3D
-	//view = glm::translate(view, glm::vec3(0.0f, -2.0f, -15.0f));
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, -2.0f, -15.0f));
-	//view = glm::rotate(view,  -glm::radians(45.0f),glm::vec3(25.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(25.0f, 0.0f, 0.0f));
+	model = glm::translate(model, vec3{ 1.0f, -5.0f, -1.0f }); //Derecha-Izq  Arriba Abajo Z
+	//model = glm::translate(model, glm::vec3(0.0f, -1.0f, -11.0f));
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-
-	//model = glm::translate(model, vec3{ 0.0f, 0.0f, -5.0f });
 	model = glm::scale(model, vec3{ 10.0f , 10.0f, 10.0f });
 
 	shader.Set("model", model);
@@ -260,7 +258,50 @@ void RenderSuelo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElem
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
-	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, numberOfElementsSuelo, GL_UNSIGNED_INT, 0);
+
+	shader.Use();
+	//Bindeamos VAO
+	glBindVertexArray(VAOCubos);
+	glm::mat4 view = glm::mat4(1.0f);
+
+	//Cube 1
+	glm::mat4 modelcube = glm::mat4(1.0f);
+
+	modelcube = glm::translate(modelcube, vec3{ 1.0f, 0.3f, 0.0f }); //Derecha-Izq  Arriba Abajo Z
+	modelcube = glm::scale(modelcube, vec3{ 0.5f , 0.5f, 0.5 });
+
+	shader.Set("model", modelcube);
+	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElementsToDrawForGeometryCubos, GL_UNSIGNED_INT, 0);
+
+	////Cube 2
+	modelcube = glm::translate(modelcube, vec3{ 4.0f, 1.7f, 1.0f });
+	modelcube = glm::scale(modelcube, vec3{ 1.5f , 1.5f, 1.5f });
+
+	shader.Set("model", modelcube);
+	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElementsToDrawForGeometryCubos, GL_UNSIGNED_INT, 0);
+
+	//////Cube 3
+
+	modelcube = glm::translate(modelcube, vec3{ 2.0f, 2.7f, -2.0f });
+	modelcube = glm::scale(modelcube, vec3{ 0.25f , 0.25f, 0.25f });
+
+	shader.Set("model", modelcube);
+	shader.Set("texture1", 0);
+	shader.Set("texture2", 1);
+
+	glDrawElements(GL_TRIANGLES, numberOfElementsToDrawForGeometryCubos, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
+
+
+
 }
 uint32_t createTexture(const char* path, bool flip) {
 	uint32_t texture;
@@ -348,16 +389,10 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
-	string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
-	const char* pathFinalImagen3 = pathFinalImagen3String.c_str();
+	Shader shader = Shader(vertexpath, fragmentPath1);
+	//Shader shaderSuelo = Shader(vertexpath, fragmentPath1);
 
-	string pathFinalImagen4String = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
-	const char* pathFinalImagen4 = pathFinalImagen4String.c_str();
-
-	Shader shaderCubos = Shader(vertexpath, fragmentPath1);
-	Shader shaderSuelo = Shader(vertexpath, fragmentPath1);
-
-	int program = shaderCubos.GetIdProgram();
+	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO, VBOFiguraSuelo, EBOSuelo;
 
 
@@ -375,15 +410,6 @@ int main(int argc, char* argv[]) {
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
 	Buffer bufferSuelo = Buffer(sizeOfIndicesQuad, sizeOfVerticesQuad);
 
-	buffer.SetStatusVerticesColor(false);
-	buffer.SetStatusVerticesTextura(true);
-	buffer.SetSizeVerticesNormal(false);
-	buffer.SetSizeVerticesTextura(2);
-
-	bufferSuelo.SetStatusVerticesColor(false);
-	bufferSuelo.SetStatusVerticesTextura(true);
-	bufferSuelo.SetSizeVerticesNormal(false);
-	bufferSuelo.SetSizeVerticesTextura(2);
 
 	uint32_t numberOfElementsToDrawForGeometryCubos = buffer.GetElementsToDraw();
 	uint32_t numberOfElementsToDrawForGeometrySuelo = bufferSuelo.GetElementsToDraw();
@@ -394,8 +420,7 @@ int main(int argc, char* argv[]) {
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);
 	uint32_t texture2 = createTexture(pathFinalImagen2, true);
-	uint32_t texture3 = createTexture(pathFinalImagen3, true);
-	uint32_t texture4 = createTexture(pathFinalImagen4, true);
+
 
 
 	uint32_t numberOfElements = (sizeof(cubePositions) / (sizeof(float) * 3));
@@ -407,9 +432,9 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, texture1, texture2);
-		RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, texture3, texture4);
+		Render(VAOSuelo, shader, numberOfElementsToDrawForGeometrySuelo, VAOCubos, numberOfElementsToDrawForGeometryCubos, texture1, texture2);
+		//RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, texture1, texture2);
+		//RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, texture1, texture2);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();

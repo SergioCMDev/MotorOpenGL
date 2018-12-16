@@ -1,7 +1,12 @@
 #include "Mesh.h"
+#include<glad/glad.h>
+#include<shader.h>
+#include<iostream>
+#include<cstdint>
+#include<stdio.h>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture>
-	textures) : vertices_(vertices), indices_(indices), textures_(textures) {
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture>	textures) 
+	: vertices_(vertices), indices_(indices), textures_(textures) {
 	setupMesh();
 }
 
@@ -14,7 +19,6 @@ void Mesh::setupMesh() {
 	//Bindeamos el VAO
 	glBindVertexArray(VAO_);
 
-
 	//Bindeamos buffer vertices
 	glBindBuffer(GL_ARRAY_BUFFER, VBO_);
 	//Subida de vertices al buffer
@@ -26,29 +30,25 @@ void Mesh::setupMesh() {
 
 	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
 	uint32_t atributteNumber = 0;
-	glVertexAttribPointer(atributteNumber, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	glad_glEnableVertexAttribArray(atributteNumber);
-	atributteNumber += 1;
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
 	//Vertex Normals
-	glVertexAttribPointer(atributteNumber, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-	glad_glEnableVertexAttribArray(atributteNumber);
-	atributteNumber += 1;
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
 
 	//Vertex texture Coords
-	glVertexAttribPointer(atributteNumber, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TextCoords));
-	glad_glEnableVertexAttribArray(atributteNumber);
-	atributteNumber += 1;
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TextCoords));
 
 	//Vertex tangent
-	glVertexAttribPointer(atributteNumber, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-	glad_glEnableVertexAttribArray(atributteNumber);
-	atributteNumber += 1;
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
 
 	//Vertex bitangent
-	glVertexAttribPointer(atributteNumber, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
-	glad_glEnableVertexAttribArray(atributteNumber);
-	atributteNumber += 1;
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 	glBindVertexArray(0);
 }

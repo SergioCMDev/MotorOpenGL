@@ -1,15 +1,19 @@
 //#include "Model.h"
+//
+//#include<iostream>
+//#include<glad/glad.h>
 //#define STB_IMAGE_IMPLEMENTATION
 //#include <stb_image.h>
 //
+//using namespace std;
 //
 //void Model::loadModel(string const path) {
 //	//read file via ASSIMP
 //	Assimp::Importer importer;
-//	const aiScene* scene = importer.ReadFile(path.c_str(), aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+//	const aiScene* scene = importer.ReadFile(path.c_str(),	aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 //	//check errors
 //	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-//		std::cout << "ERROR ASSIMP:: " << importer.GetErrorString() << endl;
+//		cout << "ERROR ASSIMP:: " << importer.GetErrorString() << endl;
 //		return;
 //	}
 //	//retrieve the directory path of the filepath
@@ -19,7 +23,7 @@
 //	processNode(scene->mRootNode, scene);
 //}
 //
-//Model::Model(std::string const &path, bool gamma) : gammaCorrection_(gamma) {
+//Model::Model(string const &path, bool gamma) : gammaCorrection_(gamma) {
 //	loadModel(path);
 //}
 //
@@ -40,8 +44,6 @@
 //	}
 //}
 //
-//
-//
 //static unsigned int TextureFromFile(const char *path, const string &directory, bool gamme) {
 //	string fileName = string(path);
 //	fileName = directory + '/' + fileName;
@@ -58,7 +60,6 @@
 //		}
 //		else if (nrComponents == 3) {
 //			format = GL_RGB;
-//
 //		}
 //		else if (nrComponents == 4) {
 //			format = GL_RGBA;
@@ -79,7 +80,6 @@
 //	stbi_image_free(data);
 //	return textureID;
 //}
-//
 //
 //std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) {
 //	vector<Texture> textures;
@@ -105,7 +105,6 @@
 //
 //			textures.push_back(texture);
 //			textures_loaded_.push_back(texture);
-//
 //		}
 //	}
 //	return textures;
@@ -121,7 +120,7 @@
 //	for (uint32_t i = 0; i < mesh->mNumVertices; i++)
 //	{
 //		Vertex vertex;
-//		vec3 vector; //We declare a placeholder vector since assimp uses its own vector 
+//		glm::vec3 vector; //We declare a placeholder vector since assimp uses its own vector 
 //		//positions
 //		vector.x = mesh->mVertices[i].x;
 //		vector.y = mesh->mVertices[i].y;
@@ -134,36 +133,37 @@
 //		vertex.Normal = vector;
 //		//texture coordinates
 //		if (mesh->mTextureCoords[0]) {
-//			vec2 vec;
+//			glm::vec2 vec;
 //			vec.x = mesh->mTextureCoords[0][i].x;
 //			vec.y = mesh->mTextureCoords[0][i].y;
 //			vertex.TextCoords = vec;
 //
 //		}
 //		else {
-//			vertex.TextCoords = vec2(0.0f, 0.0f);
-//			//tangent
-//			vector.x = mesh->mTangents[i].x;
-//			vector.y = mesh->mTangents[i].y;
-//			vector.z = mesh->mTangents[i].z;
-//			vertex.Tangent = vector;
-//
-//			//Bitangent
-//			vector.x = mesh->mBitangents[i].x;
-//			vector.y = mesh->mBitangents[i].y;
-//			vector.z = mesh->mBitangents[i].z;
-//			vertex.Bitangent = vector;
-//			vertices.push_back(vertex);
+//			vertex.TextCoords = glm::vec2(0.0f, 0.0f);
 //		}
+//		//tangent
+//		vector.x = mesh->mTangents[i].x;
+//		vector.y = mesh->mTangents[i].y;
+//		vector.z = mesh->mTangents[i].z;
+//		vertex.Tangent = vector;
+//
+//		//Bitangent
+//		vector.x = mesh->mBitangents[i].x;
+//		vector.y = mesh->mBitangents[i].y;
+//		vector.z = mesh->mBitangents[i].z;
+//		vertex.Bitangent = vector;
+//		vertices.push_back(vertex);
 //
 //	}
+//
 //	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 //	{
 //		aiFace face = mesh->mFaces[i];
 //		//retrieve all indices of the face and store them in the indices vector
-//		for (unsigned int nj = 0; nj < face.mNumIndices; nj++)
+//		for (unsigned int j = 0; j < face.mNumIndices; j++)
 //		{
-//			indices.push_back(face.mIndices[nj]);
+//			indices.push_back(face.mIndices[j]);
 //		}
 //	}
 //	//proccess materials

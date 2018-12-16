@@ -3,13 +3,10 @@
 #define  MESH_H
 
 #include<glm/glm.hpp>
-#include<iostream>
-#include<cstdint>
-#include<stdio.h>
 #include<vector>
 #include<string>
 
-#include<shader.h>
+
 
 class Shader;
 
@@ -30,6 +27,7 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture>
 		textures);
 	void Draw(const Shader& shader) const;
+
 	std::vector<Vertex> vertices_;
 	std::vector<uint32_t> indices_;
 	std::vector<Texture> textures_;

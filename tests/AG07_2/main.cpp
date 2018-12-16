@@ -24,7 +24,6 @@ const uint32_t screen_width = 800, screen_height = 600;
 float lastX = (float)screen_width / 2.0f;
 float lastY = (float)screen_height / 2.0f;
 Window window;
-//UtilsHandlers handlers;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
@@ -144,7 +143,7 @@ int Inicializacion() {
 		return -1;
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	glEnable(GL_DEPTH_TEST);

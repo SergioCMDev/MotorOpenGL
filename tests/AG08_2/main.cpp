@@ -91,7 +91,6 @@ uint32_t indicesCubo[]{
 using namespace std;
 
 const string pathProyecto = "../tests/AG08_2/";
-const char* pathProyecto2 = "../tests/AG08_2/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -156,7 +155,7 @@ int Inicializacion() {
 		return -1;
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	glEnable(GL_DEPTH_TEST);

@@ -3,12 +3,12 @@
 #define  MODEL_H
 
 #include<Mesh.h>
-#include<string>
 #include<assimp/material.h>
-#include<assimp/Importer.hpp>
+#include<string>
+
+#include<assimp/importer.hpp>
 #include<assimp/postprocess.h>
 #include<assimp/scene.h>
-
 
 class aiNode;
 class aiScene;
