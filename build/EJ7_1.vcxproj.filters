@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5865280E-C479-50BF-8DFB-F31EF9CE4CF0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{56EB95D1-428D-C0A7-2B48-D4FB178947F8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{C196CD9C-2D76-4C38-368E-D70EA2ECB299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\assimp">
+      <UniqueIdentifier>{72D4CAC9-5EA2-BECF-4736-2FF633A39A34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\assimp\Compiler">
+      <UniqueIdentifier>{4911CA12-B548-12AA-BE52-76CD2A0939A3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\assimp\port">
+      <UniqueIdentifier>{D38B5B0E-3FED-381C-C85A-7FCE34BB6FDB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\assimp\port\AndroidJNI">
+      <UniqueIdentifier>{B128F498-9D4E-BEFF-8694-43CB7259E3CB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deep Headers">
+      <UniqueIdentifier>{DF5CC0A6-CBBF-4F4B-7445-880160871BCE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deps Srcs">
+      <UniqueIdentifier>{2CE651D5-9850-064C-E18E-B7F14D38E4A0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Buffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Camera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Figure.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Mesh.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Model.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Shader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Texture.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Utils.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UtilsHandlers.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Window.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\ai_assert.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\anim.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\camera.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\cexport.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\cfileio.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\cimport.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\color4.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\config.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\DefaultIOStream.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\DefaultIOSystem.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\Defines.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\defs.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\importerdesc.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\light.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\material.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\matrix3x3.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\matrix4x4.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\mesh.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\metadata.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\postprocess.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\quaternion.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\scene.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\SceneCombiner.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\texture.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\types.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\vector2.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\vector3.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\version.h">
+      <Filter>include\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\Compiler\poppack1.h">
+      <Filter>include\assimp\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\Compiler\pstdint.h">
+      <Filter>include\assimp\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\Compiler\pushpack1.h">
+      <Filter>include\assimp\Compiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\assimp\port\AndroidJNI\AndroidJNIIOSystem.h">
+      <Filter>include\assimp\port\AndroidJNI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glad\glad.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GLFW\glfw3.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GLFW\glfw3native.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\common.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\exponential.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\geometric.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\integer.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\matrix.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\packing.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\platform.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\trigonometric.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\glm\simd\vector_relational.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\KHR\khrplatform.h">
+      <Filter>Deep Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deps\glfw\win32_joystick.h">
+      <Filter>Deps Srcs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deps\glfw\win32_platform.h">
+      <Filter>Deps Srcs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\deps\glfw\wgl_context.h">
+      <Filter>Deps Srcs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\tests\EJ7_1\main.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Buffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Figure.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Mesh.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Model.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Texture.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Utils.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\UtilsHandler.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Window.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\context.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\init.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\input.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\monitor.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\window.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\vulkan.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\glad.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\egl_context.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_init.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_joystick.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_monitor.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_time.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_tls.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\win32_window.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\deps\glfw\wgl_context.c">
+      <Filter>Deps Srcs</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
