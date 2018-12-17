@@ -16,13 +16,6 @@
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
 
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
-glm::vec3 pointLightPositions[] = {
-	glm::vec3(0.7f, 0.2f, 2.0f),
-glm::vec3(2.3f, -3.3f, -4.0f)
-
-};
 
 float lastFrame = 0.0f;
 bool firstMouse = true;
@@ -84,7 +77,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
 	}
-	//Window::HandlerInput();
 }
 
 
@@ -157,6 +149,7 @@ int main(int argc, char* argv[]) {
 	int program = shader.GetIdProgram();
 	Model object("../assets/obj/Freigther_BI_Export.obj");
 
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {

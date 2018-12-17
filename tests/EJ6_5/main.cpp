@@ -25,9 +25,9 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
-uint32_t _elementsVertexs = 144;
+uint32_t numeroElementosVerticesCubo = 144;
 
-float vertex[]{
+float verticesCubo[]{
 	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, //Front
 				0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 				0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
@@ -54,9 +54,9 @@ float vertex[]{
 				-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f };
 
 
-uint32_t elementsIndexes = 36;
+uint32_t numeroIndicesCubo = 36;
 
-uint32_t indexes[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -70,7 +70,7 @@ uint32_t indexes[]{
 
 using namespace std;
 
-const char* pathProyecto = "../tests/AG06/";
+const char* pathProyecto = "../tests/EJ6_5/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -135,7 +135,7 @@ int Inicializacion() {
 		return -1;
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	glEnable(GL_DEPTH_TEST);
@@ -149,7 +149,7 @@ int Inicializacion() {
 	return 1;
 };
 
-void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,	const uint32_t numberOfElements, Camera camera) {
+void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight, const uint32_t numberOfElements, Camera camera) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
@@ -181,28 +181,64 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,	c
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
 
-
-
-
 	vec3 objectColor{ 1.0f, 0.5f, 0.3f };
 	vec3 lightColor{ 1.0f, 1.0f, 1.0f };
-	float ambientStrenght = 0.1f;
-	int shininess = 32;
-	float specularStrenght = 0.6f;
-
-	vec3 viewPos = camera.GetPosition();
-
-
 	shaderCube.Set("objectColor", objectColor);
 	shaderCube.Set("lightColor", lightColor);
-	shaderCube.Set("ambientStrenght", ambientStrenght);
+	shaderCube.Set("ambientStrenght", 0.1f);
 	shaderCube.Set("lightPos", lightPos);
-	shaderCube.Set("viewPos", viewPos);
-	shaderCube.Set("shininess", shininess);
-	shaderCube.Set("specularStrenght", specularStrenght);
+	shaderCube.Set("viewPos", camera.GetPosition());
+	shaderCube.Set("shininess", 320);
+	shaderCube.Set("specularStrenght", 0.6f);
 	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+}
+
+uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
+	unsigned int VAO, VBO, EBO;
+
+	glGenVertexArrays(1, &VAO);
+	//Generamos 2 buffer, elementos y objetos
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	//Bindeamos el VAO
+	glBindVertexArray(VAO);
+
+	uint32_t _numberOfElementsPerLine = 6;
+	int stride = 3;
+	//Bindeamos buffer vertices
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//Subida de vertices al buffer
+	glBufferData(GL_ARRAY_BUFFER, n_verts * sizeof(float) * _numberOfElementsPerLine, vertices, GL_STATIC_DRAW);
+
+	//Bindeo buffer indices
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices * sizeof(float), indices, GL_STATIC_DRAW);
+
+	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
+	uint32_t atributteNumber = 0;
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	//Vertices de textura
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(stride * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+
+	//desbindeamos buffer objetos
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//Desbindeo
+	glBindVertexArray(0);
+
+	//desbindeamos buffer elements
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return VAO;
 }
 
 
@@ -234,8 +270,8 @@ int main(int argc, char* argv[]) {
 
 	long sizeOfIndices, sizeOfVertices;
 
-	sizeOfIndices = elementsIndexes * sizeof(float);
-	sizeOfVertices = _elementsVertexs * sizeof(float);
+	sizeOfIndices = numeroIndicesCubo * sizeof(float);
+	sizeOfVertices = numeroElementosVerticesCubo * sizeof(float);
 
 
 	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
@@ -244,9 +280,9 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
+	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
 
-	   
+
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		float currentFrame = glfwGetTime();
@@ -255,7 +291,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAO, shader, shaderlight, numberOfElementsToDraw,camera);
+		Render(VAO, shader, shaderlight, numberOfElementsToDraw, camera);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
