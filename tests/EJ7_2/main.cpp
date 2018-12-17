@@ -15,7 +15,7 @@
 #include <stb_image.h>
 using namespace std;
 
-const string pathProyecto = "../tests/EJ7_1/";
+const string pathProyecto = "../tests/EJ7_2/";
 
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
@@ -162,8 +162,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 	glm::mat4 view = camera.GetViewMatrix();
@@ -192,8 +191,8 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 
 	shaderCube.Set("viewPos", camera.GetPosition());
 	shaderCube.Set("light.position", lightPos);
-	shaderCube.Set("light.ambient", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("light.diffuse", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
 	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 
 	shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
@@ -226,9 +225,9 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 
 	shaderCube.Set("viewPos", camera.GetPosition());
 	shaderCube.Set("light.position", lightPos);
-	shaderCube.Set("light.ambient", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("light.diffuse", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("light.specular", 0.5f, 0.5f, 0.5f);
 
 	shaderCube.Set("material.ambient", 0.5f, 0.5f, 0.5f);
 	shaderCube.Set("material.diffuse", 0.5f, 0.4f, 0.57);
@@ -260,8 +259,8 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 
 	shaderCube.Set("viewPos", camera.GetPosition());
 	shaderCube.Set("light.position", lightPos);
-	shaderCube.Set("light.ambient", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("light.diffuse", 1.0f, 1.0f, 1.0f);
+	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
 	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 
 	shaderCube.Set("material.ambient", 0.0f, 0.0f, 0.0f);
@@ -292,9 +291,7 @@ uint32_t createTexture(const char* path, bool flip) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	stbi_set_flip_vertically_on_load(flip);
-
-	int width, height, nChannels;
+	stbi_set_flip_vertically_on_load(flip);	int width, height, nChannels;
 	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
