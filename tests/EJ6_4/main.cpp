@@ -123,7 +123,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight, c
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	//glClearColor(0.5f, 0.f, 0.5f, 0);
 	glm::mat4 view = camera.GetViewMatrix();
 
-	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	shaderlight.Use();
 	shaderlight.Set("projection", projection);
@@ -332,7 +332,7 @@ int main(int argc, char* argv[]) {
 
 
 	//sizeOfIndices / sizeof(float)
-	Sphere sphere = createSphere(2);
+	Sphere sphere = createSphere(1);
 	const int size = sphere.sizeVertices + sphere.sizeNormales + sphere.sizeTexturas;
 	vector<float> newVertice(size);
 	int x = 0;
@@ -361,7 +361,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAO, shader, shaderlight, sphere.sizeElementos*10, camera);
+		Render(VAO, shader, shaderlight, sphere.sizeElementos*100, camera);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
