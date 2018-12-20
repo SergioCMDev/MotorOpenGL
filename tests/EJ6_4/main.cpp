@@ -35,8 +35,10 @@ struct Sphere {
 	float* normals;
 	float* textCoords;
 	uint32_t* elementos;
-	uint32_t numVertices;
-	uint32_t numElementos;
+	uint32_t sizeVertices;
+	uint32_t sizeElementos;
+	uint32_t sizeNormales;
+	uint32_t sizeTexturas;
 };
 
 
@@ -118,7 +120,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight, c
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	//glClearColor(0.5f, 0.f, 0.5f, 0);
 	glm::mat4 view = camera.GetViewMatrix();
 
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
@@ -157,12 +159,11 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight, c
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
-uint32_t createVertexData(Sphere sphere) {
+uint32_t createVertexData(vector<float> vertices, Sphere sphere) {
 	unsigned int VAO, VBO, EBO;
-	const float* vertices = sphere.vertices;
-	const uint32_t n_verts = sphere.numVertices;
+	//const float* vertices = sphere.vertices;
 	const uint32_t* indices = sphere.elementos;
-	const uint32_t n_indices = sphere.numElementos;
+	const uint32_t n_indices = sphere.sizeElementos;
 
 
 	glGenVertexArrays(1, &VAO);
@@ -173,12 +174,14 @@ uint32_t createVertexData(Sphere sphere) {
 	//Bindeamos el VAO
 	glBindVertexArray(VAO);
 
-	uint32_t _numberOfElementsPerLine = 8;
 	//Bindeamos buffer vertices
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//Subida de vertices al buffer
-	glBufferData(GL_ARRAY_BUFFER, n_verts * sizeof(float), vertices, GL_STATIC_DRAW);
+
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, n_verts * sizeof(float), &vertices, GL_STATIC_DRAW);
 	//glBufferData(GL_ARRAY_BUFFER, n_verts, vertices, GL_STATIC_DRAW);
+
 
 	//Bindeo buffer indices
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -186,15 +189,16 @@ uint32_t createVertexData(Sphere sphere) {
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices, indices, GL_STATIC_DRAW);
 
 	//Vertices de posicion
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
 	////Vertices de normales
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)((sphere.sizeVertices)*(sizeof(float))));
+	//glVertexAttribPointer(1, sphere.sizeNormales, GL_FLOAT, GL_FALSE, 0, (void*)(sphere.sizeVertices * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	//Vertices de textura
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2 , GL_FLOAT, GL_FALSE, 0, (void*)((sphere.sizeVertices + sphere.sizeNormales)*(sizeof(float))));
 	glEnableVertexAttribArray(2);
 
 
@@ -209,6 +213,7 @@ uint32_t createVertexData(Sphere sphere) {
 
 	return VAO;
 }
+
 
 void generateVerts(float * verts, float * norms, float * tex, unsigned int * el, const uint32_t slices, const uint32_t stacks, const uint32_t radius) {
 	float theta, phi;       // Generate positions and normals
@@ -288,8 +293,11 @@ Sphere createSphere(const float radius) {
 	sphere.textCoords = tex;
 	sphere.elementos = el;
 	sphere.normals = n;
-	sphere.numVertices = nVerts * 3;
-	sphere.numElementos = elements;
+	sphere.sizeVertices = nVerts * 3;
+	sphere.sizeNormales = nVerts * 3;
+	sphere.sizeTexturas = 2 * nVerts;
+	sphere.sizeElementos = elements;
+
 	return sphere;
 }
 
@@ -316,12 +324,33 @@ int main(int argc, char* argv[]) {
 	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
 
 
+	//sphere.sizeVertices = nVerts * 3;
+	//sphere.sizeNormales = nVerts * 3;
+	//sphere.sizeTexturas = 2 * nVerts;
+	//sphere.sizeElementos = elements;
+
+
+
 	//sizeOfIndices / sizeof(float)
 	Sphere sphere = createSphere(2);
+	const int size = sphere.sizeVertices + sphere.sizeNormales + sphere.sizeTexturas;
+	vector<float> newVertice(size);
+	int x = 0;
 
-	//uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
 
-	uint32_t VAOSphere = createVertexData(sphere);
+	for (uint32_t i = 0; i < sphere.sizeVertices; ++i) {
+		newVertice[i] = sphere.vertices[i];
+	}
+
+	for (uint32_t i = 0; i <  sphere.sizeNormales; i++) {
+		newVertice[sphere.sizeVertices + i] = sphere.normals[i];
+	}
+
+	for (uint32_t i = 0; i <  sphere.sizeTexturas; i++) {
+		newVertice[sphere.sizeVertices + sphere.sizeNormales + i] = sphere.textCoords[i];
+	}
+
+	uint32_t VAO = createVertexData(newVertice, sphere);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
@@ -332,7 +361,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOSphere, shader, shaderlight, sphere.numElementos, camera);
+		Render(VAO, shader, shaderlight, sphere.sizeElementos*10, camera);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
