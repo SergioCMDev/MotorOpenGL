@@ -26,6 +26,7 @@ struct Light{
 	vec3 specular;
 };
 uniform Light light;
+
 uniform vec3 viewPos;
 
 
@@ -42,8 +43,8 @@ void main() {
 
 	tangentLightPos = TBN * light.position; //convertimos las luces a espacio tangente
 	tangentViewPos = TBN * viewPos; //convertimos la posicion de la camara a espacio tangente
-	tangentViewPos = TBN * fragPos; //convertimos la posicion del fragmento a espacio tangente
+	tangentFragPos = TBN * fragPos; //convertimos la posicion del fragmento a espacio tangente
 
-	 gl_Position = projection * view * model * vec4(aPos.x, aPos.y,aPos.z,1.0);
+	 gl_Position = projection * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
 }
 

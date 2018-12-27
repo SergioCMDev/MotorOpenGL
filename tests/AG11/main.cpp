@@ -16,7 +16,8 @@
 
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
-glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -27,7 +28,10 @@ Window window;
 
 bool _firstMouse = false;
 double _lastX, _lastY, _xoffset, _yoffset;
-uint32_t numeroElementosVerticesCubo = 192;
+
+using namespace std;
+
+const string pathProyecto = "../tests/AG11/";
 
 uint32_t createQuadVertexData() {
 	vec3 pos1(-1.0f, 1.0f, 0.0f);
@@ -45,7 +49,7 @@ uint32_t createQuadVertexData() {
 	vec3 tangent1, tangent2, bitangent1, bitangent2;
 
 	vec3 edge1 = pos2 - pos1;
-	vec3 edge2 = pos2 - pos1;
+	vec3 edge2 = pos3 - pos1;
 	vec2 deltaUV1 = uv2 - uv1;
 	vec2 deltaUV2 = uv3 - uv1;
 
@@ -81,13 +85,13 @@ uint32_t createQuadVertexData() {
 	bitangent2 = normalize(bitangent2);
 
 	float vertices[] = {
-		pos1.x, pos1.y, pos1.z,		normal.x, normal.y, normal.z, uv1.x,uv1.y,	tangent1.x,tangent1.y, tangent1.z,	bitangent1.x,bitangent1.y, bitangent1.z,
-		pos2.x, pos2.y, pos2.z,		normal.x, normal.y, normal.z, uv2.x,uv2.y,	tangent1.x,tangent1.y, tangent1.z,	bitangent1.x,bitangent1.y, bitangent1.z,
-		pos3.x, pos3.y, pos3.z,		normal.x, normal.y, normal.z, uv3.x,uv3.y,	tangent1.x,tangent1.y, tangent1.z,	bitangent1.x,bitangent1.y, bitangent1.z,
+		pos1.x, pos1.y, pos1.z,		normal.x, normal.y, normal.z,   uv1.x, uv1.y,  	tangent1.x, tangent1.y, tangent1.z,	  bitangent1.x, bitangent1.y, bitangent1.z,
+		pos2.x, pos2.y, pos2.z,		normal.x, normal.y, normal.z,   uv2.x, uv2.y,  	tangent1.x, tangent1.y, tangent1.z,	  bitangent1.x, bitangent1.y, bitangent1.z,
+		pos3.x, pos3.y, pos3.z,		normal.x, normal.y, normal.z,   uv3.x, uv3.y,  	tangent1.x, tangent1.y, tangent1.z,	  bitangent1.x, bitangent1.y, bitangent1.z,
 
-		pos1.x, pos1.y, pos1.z,		normal.x, normal.y, normal.z, uv1.x,uv1.y,	tangent2.x,tangent2.y, tangent2.z,	bitangent2.x,bitangent2.y, bitangent2.z,
-		pos3.x, pos3.y, pos3.z,		normal.x, normal.y, normal.z, uv3.x,uv3.y,	tangent2.x,tangent2.y, tangent2.z,	bitangent2.x,bitangent2.y, bitangent2.z,
-		pos4.x, pos4.y, pos4.z,		normal.x, normal.y, normal.z, uv4.x,uv4.y,	tangent2.x,tangent2.y, tangent2.z,	bitangent2.x,bitangent2.y, bitangent2.z,
+		pos1.x, pos1.y, pos1.z,		normal.x, normal.y, normal.z,   uv1.x, uv1.y,  	tangent2.x, tangent2.y, tangent2.z,	  bitangent2.x, bitangent2.y, bitangent2.z,
+		pos3.x, pos3.y, pos3.z,		normal.x, normal.y, normal.z,   uv3.x, uv3.y,  	tangent2.x, tangent2.y, tangent2.z,	  bitangent2.x, bitangent2.y, bitangent2.z,
+		pos4.x, pos4.y, pos4.z,		normal.x, normal.y, normal.z,   uv4.x, uv4.y,  	tangent2.x, tangent2.y, tangent2.z,	  bitangent2.x, bitangent2.y, bitangent2.z,
 	};
 
 	float indices[]{ 0,1,2,3,4,5 };
@@ -151,16 +155,7 @@ uint32_t createQuadVertexData() {
 
 
 
-using namespace std;
-
-const string pathProyecto = "../tests/AG11/";
-#pragma region Cabezeras
-void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
-#pragma endregion
-
-
 #pragma region Metodos
-
 
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
@@ -233,15 +228,20 @@ int Inicializacion() {
 };
 
 void Render(uint32_t VAO, const Shader& shaderBump,
-	uint32_t textureAlbedo, uint32_t textureSpecular, uint32_t textureNormal) {
+	const uint32_t textureAlbedo, const uint32_t textureSpecular, const uint32_t textureNormal) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	glm::mat4 view = camera.GetViewMatrix();
 
 
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
+
+	float l_pos[] = { sin((float)glfwGetTime() / 2.0f), 0.0f, abs(cos((float)glfwGetTime() / 2.0f)) };
+	lightPos = vec3(l_pos[0], l_pos[1], l_pos[0]);
+
 
 	shaderBump.Use();
 	shaderBump.Set("projection", projection);
@@ -258,7 +258,7 @@ void Render(uint32_t VAO, const Shader& shaderBump,
 	shaderBump.Set("light.ambient", 0.1f, 0.1f, 0.1f);
 	shaderBump.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
 	shaderBump.Set("light.specular", 1.0f, 1.0f, 1.0f);
-	
+
 	shaderBump.Set("material.diffuse", 0);
 	shaderBump.Set("material.specular", 1);
 	shaderBump.Set("material.normal", 2);
@@ -278,6 +278,8 @@ void Render(uint32_t VAO, const Shader& shaderBump,
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+	glBindVertexArray(0);
+
 }
 uint32_t createTexture(const char* path, bool flip) {
 	uint32_t texture;
@@ -290,7 +292,9 @@ uint32_t createTexture(const char* path, bool flip) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	stbi_set_flip_vertically_on_load(flip);	int width, height, nChannels;
+	stbi_set_flip_vertically_on_load(flip);
+
+	int width, height, nChannels;
 	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -305,12 +309,6 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	//string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	//const char* vertexpath = vertexpathStr.c_str();
-
-	//string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
-	//const char* fragmentPath1 = fragmentPathString.c_str();
-
 	string vertexpathBumptString = utils.GetFinalPath(pathProyecto, "Shaders/bump.vs");
 	const char* vertexpathBump = vertexpathBumptString.c_str();
 
@@ -330,9 +328,7 @@ int main(int argc, char* argv[]) {
 	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
 	uint32_t textureNormal = createTexture(pathFinalImagen3, true);
 
-	//Shader shader = Shader(vertexpath, fragmentPath1);
 	Shader shaderNormal = Shader(vertexpathBump, fragmentPathBump);
-
 
 	uint32_t VAO = createQuadVertexData();
 
@@ -349,8 +345,6 @@ int main(int argc, char* argv[]) {
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
-
-
 
 	glDeleteVertexArrays(1, &VAO);
 

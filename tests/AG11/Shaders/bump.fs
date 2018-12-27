@@ -24,8 +24,6 @@ struct Light{
 };
 uniform Light light;
 
-
-
 void main() {
  	
 

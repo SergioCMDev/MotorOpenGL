@@ -32,27 +32,28 @@ double _lastX, _lastY, _xoffset, _yoffset;
 
 
 float verticesCuadrado[] = {
-	// positions		texture cords						// normal coords
-	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 1.0f, 0.0f,//Top
-	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 1.0f, 0.0f,
-	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				0.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 1.0f, 0.0f
+	// positions		// normal coords	texture cords						
+	-0.5f, 0.5f, 0.5f,		0.0f, 1.0f, 0.0f, 		0.0f, 0.0f,				//Top
+	0.5f, 0.5f, 0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 0.0f,
+	0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 1.0f,
+	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,		0.0f, 1.0f,
 };
-
-
-
-float quad_scree_vertices[] = {
-	// positions		texture cords						// normal coords
-	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 1.0f//Top
-	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 1.0f
-	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				0.0f, 1.0f
-	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 1.0f
-	
-};
-
 uint32_t indicesCuadrado[] = {
 	0, 1, 2, 0, 2, 3 //Front
 };
+
+float quad_screen_vertices[] = {
+	// positions		texture cords						// normal coords
+	-1.0f, 1.0f, 0.0f,		0.0f, 0.0f, 1.0f, 		0.0f, 1.0f,
+	-1.0f, -1.0f, 0.0f,		0.0f, 0.0f, 1.0f,		0.0f, 0.0f,
+	1.0f, -1.0f, 0.0f,		0.0f, 0.0f, 1.0f,		1.0f, 0.0f,
+	1.0f, 1.0f, 0.0f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
+
+};
+uint32_t indicesQuadScreeen[] = {
+	0, 1, 2, 0, 2, 3 //Front
+};
+
 
 uint32_t numeroElementosVerticesCubo = 192;
 
@@ -183,40 +184,59 @@ int Inicializacion() {
 	return 1;
 };
 
-void Draw(mat4 projection, mat4 view,vec3 pos, vec3 scale, mat4 model, Shader shader, uint32_t VAO, uint32_t numberOfElements) {
-	shader.Use();
-	shader.Set("projection", projection);
-	shader.Set("view", view);
-	//glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPos);
-	model = glm::scale(model, glm::vec3(0.2f));
-	model = glm::translate(model, lightPos);
 
-	shader.Set("model", model);
-	glBindVertexArray(VAO);
+pair<uint32_t, uint32_t> createFBO() {
+	uint32_t fbo;
+	glGenFramebuffers(1, &fbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+	uint32_t textureColor;
+	glGenTextures(1, &textureColor);
+	glBindTexture(GL_TEXTURE_2D, textureColor);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, screen_width, screen_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColor, 0);
+
+	uint32_t rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, screen_width, screen_height);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+		cout << "Error loading GL_FRAMEBUFFER" << endl;
+	}
+
+	return make_pair(fbo, textureColor);
 }
 
 
-void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32_t textureAlbedo, uint32_t textureSpecular) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	//Si lo quitamos, no borra nunca la pantalla
-	//Draw(projection, view, lightPos, scale, model, shaderCube, VAOQuad 36);
-	//DrawQuad(projection, view, lightPos, scale, model, shaderCube, 36);
+void Render(uint32_t VAOQuad, uint32_t VAOCubo, uint32_t VAOScreenQuad,
+	const Shader& shaderCube,	  const Shader& shaderFBO,
+	const uint32_t textureAlbedo, const uint32_t textureSpecular,
+	const uint32_t fbo,			  const uint32_t text_fbo) {
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	vec4 color(1.0f, 0.0f, 0.1f, 1.0f);
+
 	shaderCube.Use();
-	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.5f, 0.31f);
+	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.5f);
 
 	shaderCube.Set("viewPos", camera.GetPosition());
 	shaderCube.Set("light.position", lightPos);
 	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
 	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
 	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
-
 	shaderCube.Set("material.ambient", 1.0f, 0.5f, 0.31f);
-	shaderCube.Set("material.shininess",32.2f);
+	shaderCube.Set("material.shininess", 32.2f);
 	shaderCube.Set("material.diffuse", 0);
 	shaderCube.Set("material.specular", 1);
 
@@ -232,7 +252,6 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 
 	shaderCube.Set("projection", projection);
 	shaderCube.Set("view", view);
-
 	glm::mat4 model = glm::mat4(1.0f);
 	vec3 pos = vec3(0.0f, -6.0f, 0.0f);
 	vec3 scale = vec3(10.0f, 10.f, 10.0f);
@@ -294,6 +313,23 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo, const Shader& shaderCube, uint32
 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
+	glBindVertexArray(0);
+
+	//Segunda pasada
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST);
+
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	shaderFBO.Use();
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, text_fbo);
+	shaderFBO.Set("screenTexture", 0);
+
+	glBindVertexArray(VAOScreenQuad);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }
@@ -310,7 +346,9 @@ uint32_t createTexture(const char* path, bool flip) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	stbi_set_flip_vertically_on_load(flip);	int width, height, nChannels;
+	stbi_set_flip_vertically_on_load(flip);
+
+	int width, height, nChannels;
 	unsigned char* data = stbi_load(path, &width, &height, &nChannels, 0);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -353,7 +391,6 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 	//Vertices de textura
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-	stride += 2;
 	//Vertices normal
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
@@ -382,6 +419,12 @@ int main(int argc, char* argv[]) {
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
+	string vertexpathFboStr = utils.GetFinalPath(pathProyecto, "Shaders/fbo.vs");
+	const char* vertexpathFbo = vertexpathFboStr.c_str();
+
+	string fragmentPathFboString = utils.GetFinalPath(pathProyecto, "Shaders/fbo.fs");
+	const char* fragmentPathFbo = fragmentPathFboString.c_str();
+
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
 	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
 
@@ -391,23 +434,18 @@ int main(int argc, char* argv[]) {
 	uint32_t textDiffuse = createTexture(pathFinalImagen1, true);
 	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
 
+
+
 	Shader shader = Shader(vertexpath, fragmentPath1);
 
+	Shader fboShader = Shader(vertexpathFbo, fragmentPathFbo);
 
-	long sizeOfIndices, sizeOfVertices;
+	auto fboRes = createFBO();
 
-	sizeOfIndices = numeroIndicesCubo * sizeof(float);
-	sizeOfVertices = numeroElementosVerticesCubo * sizeof(float);
+	uint32_t VAOCubo = createVertexData(verticesCubo, 24, indicesCubo, 36);
+	uint32_t VAOQuad = createVertexData(verticesCuadrado, 4, indicesCuadrado, 6);
+	uint32_t VAOScreenQuad = createVertexData(quad_screen_vertices, 4, indicesQuadScreeen, 6);
 
-
-	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
-
-	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
-
-	uint32_t VAOCubo = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
-	uint32_t VAOQuad = createVertexData(verticesCuadrado, numeroElementosVerticesCubo/6, indicesCuadrado, numeroIndicesCubo/6);
-
-	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
@@ -417,8 +455,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOQuad, VAOCubo, shader, textDiffuse, textureSpecular);
-
+		Render(VAOQuad, VAOCubo, VAOScreenQuad, shader, fboShader, textDiffuse, textureSpecular, fboRes.first, fboRes.second);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -427,6 +464,7 @@ int main(int argc, char* argv[]) {
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAOQuad);
 	glDeleteVertexArrays(1, &VAOCubo);
+	glDeleteVertexArrays(1, &VAOScreenQuad);
 
 
 
