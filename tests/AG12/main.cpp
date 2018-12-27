@@ -58,35 +58,35 @@ uint32_t indicesQuadScreeen[] = {
 uint32_t numeroElementosVerticesCubo = 192;
 
 float verticesCubo[]{
-	-0.5f, -0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
-	0.5f, -0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 0.0f, 1.0f,
-	0.5f, 0.5f, 0.5f,		1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
-	-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,				0.0f, 0.0f, 1.0f,
-
-	0.5f, -0.5f, 0.5f,		0.0f, 0.0f,				1.0f, 0.0f, 0.0f,//Right
-	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,				1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, 0.5f,		0.0f, 1.0f,				1.0f, 0.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,	1.0f, 0.0f,				0.0f, 0.0f, -1.0f,//Back
-	-0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				0.0f, 0.0f, -1.0f,
-	0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 0.0f, -1.0f,
-	0.5f, -0.5f, -0.5f,		 0.0f, 0.0f,			0.0f, 0.0f, -1.0f,
-
-	-0.5f, -0.5f, 0.5f,		1.0f, 0.0f,				-1.0f, 0.0f, 0.0f,//Left
-	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f,				-1.0f, 0.0f, 0.0f,
-	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				-1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,				 -1.0f, 0.0f, 0.0f,
-
-	-0.5f, -0.5f, 0.5f,		0.0f, 1.0f,				0.0f, -1.0f, 0.0f,//Bottom
-	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,				0.0f, -1.0f, 0.0f,
-	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,				0.0f, -1.0f, 0.0f,
-	0.5f, -0.5f, 0.5f,		1.0f, 1.0f,				0.0f, -1.0f, 0.0f,
-
-	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 1.0f, 0.0f,//Top
-	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 1.0f, 0.0f,
-	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				0.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 1.0f, 0.0f };
+	-0.5f, -0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   0.0f, 0.0f,				 //Front
+	0.5f, -0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
+	0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
+	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+							
+	0.5f, -0.5f, 0.5f,		1.0f, 0.0f, 0.0f,   0.0f, 0.0f,				//Right
+	0.5f, -0.5f, -0.5f,		1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+	0.5f, 0.5f, -0.5f,		1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
+	0.5f, 0.5f, 0.5f,		1.0f, 0.0f, 0.0f,   0.0f, 1.0f,
+							
+	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f, -1.0f,  1.0f, 0.0f,				//Back
+	-0.5f, 0.5f, -0.5f,		0.0f, 0.0f, -1.0f,  1.0f, 1.0f,				
+	0.5f, 0.5f, -0.5f,		0.0f, 0.0f, -1.0f,  0.0f, 1.0f,				
+	0.5f, -0.5f, -0.5f,		0.0f, 0.0f, -1.0f,  0.0f, 0.0f,			
+							
+	-0.5f, -0.5f, 0.5f,		-1.0f, 0.0f, 0.0f,  1.0f, 0.0f,				//Left
+	-0.5f, 0.5f, 0.5f,		-1.0f, 0.0f, 0.0f,  1.0f, 1.0f,				
+	-0.5f, 0.5f, -0.5f,		-1.0f, 0.0f, 0.0f,  0.0f, 1.0f,				
+	-0.5f, -0.5f, -0.5f,	-1.0f, 0.0f, 0.0f,  0.0f, 0.0f,				
+							
+	-0.5f, -0.5f, 0.5f,		0.0f, -1.0f, 0.0f,  0.0f, 1.0f,				//Bottom
+	-0.5f, -0.5f, -0.5f,	0.0f, -1.0f, 0.0f,  0.0f, 0.0f,				
+	0.5f, -0.5f, -0.5f,		0.0f, -1.0f, 0.0f,  1.0f, 0.0f,				
+	0.5f, -0.5f, 0.5f,		0.0f, -1.0f, 0.0f,  1.0f, 1.0f,				
+							
+	-0.5f, 0.5f, 0.5f,		0.0f, 1.0f, 0.0f,  0.0f, 0.0f,				//Top
+	 0.5f, 0.5f, 0.5f,		0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+	 0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,  0.0f, 1.0f,				};
 
 
 
@@ -214,8 +214,9 @@ pair<uint32_t, uint32_t> createFBO() {
 }
 
 
-void Render(uint32_t VAOQuad, uint32_t VAOCubo, uint32_t VAOScreenQuad,
+void Render(
 	const Shader& shaderCube,	  const Shader& shaderFBO,
+	uint32_t VAOCubo , uint32_t VAOQuad, uint32_t VAOScreenQuad,
 	const uint32_t textureAlbedo, const uint32_t textureSpecular,
 	const uint32_t fbo,			  const uint32_t text_fbo) {
 
@@ -370,7 +371,6 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 	glBindVertexArray(VAO);
 
 	uint32_t _numberOfElementsPerLine = 8;
-	uint32_t stride = 3;
 
 	//Bindeamos buffer vertices
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -381,18 +381,17 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices * sizeof(float), indices, GL_STATIC_DRAW);
 
-	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
-	uint32_t atributteNumber = 0;
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 
-	//Vertices de textura
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
 	//Vertices normal
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(5 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	//Vertices de textura
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 
@@ -455,7 +454,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOQuad, VAOCubo, VAOScreenQuad, shader, fboShader, textDiffuse, textureSpecular, fboRes.first, fboRes.second);
+		Render(shader, fboShader, VAOCubo, VAOQuad, VAOScreenQuad, textDiffuse, textureSpecular, fboRes.first, fboRes.second);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
