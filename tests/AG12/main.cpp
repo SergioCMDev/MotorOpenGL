@@ -234,7 +234,12 @@ void Render(
 	shaderCube.Set("viewPos", camera.GetPosition());
 	shaderCube.Set("light.position", lightPos);
 	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
-	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
+	//Valor Normal
+	//shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
+
+	//Post Proceso 1
+	shaderCube.Set("light.diffuse", 0.2f, 1.0f, 0.2f);
+
 	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 	shaderCube.Set("material.ambient", 1.0f, 0.5f, 0.31f);
 	shaderCube.Set("material.shininess", 32.2f);
@@ -317,10 +322,15 @@ void Render(
 	glBindVertexArray(0);
 
 	//Segunda pasada
+	//Para mostrar la linea en medio
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	//Pintamos sobre gris
+	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	//Pintamos sobre blanco
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shaderFBO.Use();
@@ -331,6 +341,8 @@ void Render(
 
 	glBindVertexArray(VAOScreenQuad);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//Para mostrar la linea en medio
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glBindVertexArray(0);
 }
