@@ -15,9 +15,9 @@
 #include <stb_image.h>
 
 Utils utils;
-Camera camera(glm::vec3(-1.0f, 2.0f, 6.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
-glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
+glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -28,9 +28,6 @@ const float shadow_far = 7.5f;
 float lastX = (float)screen_width / 2.0f;
 float lastY = (float)screen_height / 2.0f;
 Window window;
-
-bool _firstMouse = false;
-double _lastX, _lastY, _xoffset, _yoffset;
 
 float quad_vertices[] = {
 	// positions				// normal coords	 texture cords						
@@ -91,7 +88,6 @@ float verticesCubo[]{
 	 0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
 	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,  0.0f, 1.0f, };
 
-
 uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
@@ -121,19 +117,18 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 }
 
 void OnMouse(GLFWwindow* window, double xpos, double ypos) {
-	if (_firstMouse) {
-		_firstMouse = false;
-		_lastX = xpos;
-		_lastY = ypos;
+	if (firstMouse) {
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
 	}
 
-	_xoffset = xpos - _lastX;
-	_yoffset = ypos - _lastY;
-	_lastX = xpos;
-	_lastY = ypos;
+	float _xoffset = xpos - lastX;
+	float _yoffset = ypos - lastY;
+	lastX = xpos;
+	lastY = ypos;
 	camera.handleMouseMovement(_xoffset, _yoffset);
 }
-
 
 void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
 	camera.handleMouseScroll(yoffset);
@@ -154,8 +149,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 	}
 	//Window::HandlerInput();
 }
-
-
 
 int Inicializacion() {
 	if (!glfwInit()) {
@@ -184,7 +177,6 @@ int Inicializacion() {
 	return 1;
 };
 
-
 pair<uint32_t, uint32_t> createFBO() {
 	uint32_t fbo;
 	glGenFramebuffers(1, &fbo);
@@ -197,8 +189,10 @@ pair<uint32_t, uint32_t> createFBO() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f,1.0f ,1.0f ,1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
 	glDrawBuffer(GL_NONE);
@@ -212,16 +206,14 @@ pair<uint32_t, uint32_t> createFBO() {
 	return make_pair(fbo, depthMap);
 }
 
-
 void RenderScene(const Shader &shader,
 	const uint32_t cubeVAO, const uint32_t quadVAO, 
 	const uint32_t text1, const uint32_t text2) {
 
 
-
 	//Pintamos Suelo
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, text2);
+	glBindTexture(GL_TEXTURE_2D, text1);
 	shader.Set("diffuseTexture", 0);
 
 	mat4 model(1.0f);
@@ -233,7 +225,7 @@ void RenderScene(const Shader &shader,
 	//Pintamos Cubos
 	//Cubo 1
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, text1);
+	glBindTexture(GL_TEXTURE_2D, text2);
 	shader.Set("diffuseTexture", 0);
 	model = mat4(1.0f);
 	model = translate(model, vec3(0.0f, 1.5f, 0.0f));
@@ -244,7 +236,7 @@ void RenderScene(const Shader &shader,
 
 	//Cubo 2
 	model = mat4(1.0f);
-	model = translate(model, vec3(2.0f, 0.0f, 1.0f));
+	model = translate(model, vec3(0.5f, -0.25f, 0.5f));
 	model = scale(model, vec3(0.5f));
 	shader.Set("model", model);
 	glBindVertexArray(cubeVAO);
@@ -258,8 +250,9 @@ void RenderScene(const Shader &shader,
 	shader.Set("model", model);
 	glBindVertexArray(cubeVAO);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-}
 
+	glBindVertexArray(0);
+}
 
 void Render(
 	const Shader& lighingShader, const Shader& depthShader, const Shader& debugShader,
@@ -279,19 +272,33 @@ void Render(
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, shadow_width, shadow_height); //Cambiamos tamaño de pantalla a pantalla de sombra
-	RenderScene(depthShader, cubeVAO, quadVAO, tex1, tex2);
+	RenderScene(depthShader, cubeVAO, quadVAO, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glViewport(0, 0, screen_width, screen_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	debugShader.Use();
-	glActiveTexture(GL_TEXTURE0);
+	lighingShader.Use();
+	lightProjection = glm::perspective(radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 100.0f);
+	mat4 view = camera.GetViewMatrix();
+	lighingShader.Set("projection", lightProjection);
+	lighingShader.Set("view", view);
+	lighingShader.Set("viewPos", camera.GetPosition());
+	lighingShader.Set("lightPos", lightPos);
+	lighingShader.Set("lightSpaceMatrix", lightSpaceMatrix);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, text_fbo);
-	debugShader.Set("depthMap", 0);
+	lighingShader.Set("depthMap", 1);
+	RenderScene(lighingShader, cubeVAO, quadVAO, tex1, tex2);
 
-	glBindVertexArray(screenQuadVAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//debugShader.Use();
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, text_fbo);
+	//debugShader.Set("depthMap", 0);
+
+	//glBindVertexArray(screenQuadVAO);
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 
@@ -408,8 +415,8 @@ int main(int argc, char* argv[]) {
 	auto fboRes = createFBO();
 
 	uint32_t VAOCubo =		 createVertexData(verticesCubo, 24, indicesCubo, 36);
-	uint32_t VAOQuad =		 createVertexData(quad_vertices, 4, quad_indices, 6);
-	uint32_t VAOScreenQuad = createVertexData(quad_screen_vertices, 4, indicesQuadScreeen, 6);
+	uint32_t VAOQuad =		 createVertexData(quad_vertices, 6, quad_indices, 6);
+	uint32_t VAOScreenQuad = createVertexData(quad_screen_vertices, 6, indicesQuadScreeen, 6);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
