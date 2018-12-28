@@ -30,7 +30,7 @@ double _lastX, _lastY, _xoffset, _yoffset;
 
 
 
-float verticesCuadrado[] = {
+float quad_vertices[] = {
 	// positions		texture cords						// normal coords
 	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 1.0f, 0.0f,//Top
 	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 1.0f, 0.0f,
@@ -38,7 +38,7 @@ float verticesCuadrado[] = {
 	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 1.0f, 0.0f
 };
 
-uint32_t indicesCuadrado[] = {
+uint32_t quad_indices[] = {
 	0, 1, 2, 0, 2, 3 //Front
 };
 
@@ -459,7 +459,7 @@ int main(int argc, char* argv[]) {
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 	uint32_t VAOCubo = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
-	uint32_t VAOQuad = createVertexData(verticesCuadrado, numeroElementosVerticesCubo / 6, indicesCuadrado, numeroIndicesCubo / 6);
+	uint32_t VAOQuad = createVertexData(quad_vertices, numeroElementosVerticesCubo / 6, quad_indices, numeroIndicesCubo / 6);
 
 	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
 

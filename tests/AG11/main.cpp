@@ -94,7 +94,7 @@ uint32_t createQuadVertexData() {
 		pos4.x, pos4.y, pos4.z,		normal.x, normal.y, normal.z,   uv4.x, uv4.y,  	tangent2.x, tangent2.y, tangent2.z,	  bitangent2.x, bitangent2.y, bitangent2.z,
 	};
 
-	float indices[]{ 0,1,2,3,4,5 };
+	float indices[]{ 0,1,2,	 3,4,5 };
 
 	unsigned int VAO, VBO, EBO;
 
@@ -107,7 +107,6 @@ uint32_t createQuadVertexData() {
 	glBindVertexArray(VAO);
 
 	uint32_t _numberOfElementsPerLine = 14;
-	uint32_t stride = 3;
 
 	//Bindeamos buffer vertices
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -117,8 +116,6 @@ uint32_t createQuadVertexData() {
 	//Bindeo buffer indices
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	uint32_t atributteNumber = 0;
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -135,7 +132,6 @@ uint32_t createQuadVertexData() {
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(8 * sizeof(float)));
 	glEnableVertexAttribArray(3);
 
-
 	//Vertices de Bitangent
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(11 * sizeof(float)));
 	glEnableVertexAttribArray(4);
@@ -150,10 +146,7 @@ uint32_t createQuadVertexData() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	return VAO;
-
 }
-
-
 
 #pragma region Metodos
 
@@ -227,21 +220,18 @@ int Inicializacion() {
 	return 1;
 };
 
-void Render(uint32_t VAO, const Shader& shaderBump,
-	const uint32_t textureAlbedo, const uint32_t textureSpecular, const uint32_t textureNormal) {
+void Render(const uint32_t VAO,
+	const Shader& shaderBump,
+	const uint32_t textDiff, const uint32_t textureSpecular, const uint32_t textureNormal) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	//Si lo quitamos, no borra nunca la pantalla
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 view = camera.GetViewMatrix();
 
-
-	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 10.0f);
 
 	float l_pos[] = { sin((float)glfwGetTime() / 2.0f), 0.0f, abs(cos((float)glfwGetTime() / 2.0f)) };
 	lightPos = vec3(l_pos[0], l_pos[1], l_pos[0]);
-
 
 	shaderBump.Use();
 	shaderBump.Set("projection", projection);
@@ -266,7 +256,7 @@ void Render(uint32_t VAO, const Shader& shaderBump,
 
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureAlbedo);
+	glBindTexture(GL_TEXTURE_2D, textDiff);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, textureSpecular);
@@ -316,21 +306,23 @@ int main(int argc, char* argv[]) {
 	const char* fragmentPathBump = fragmentPathBumpString.c_str();
 
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
-	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
+	const char* textDiffusePath = pathFinalImagen1String.c_str();
 
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
-	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
+	const char* textureSpecularPath = pathFinalImagen2String.c_str();
 
 	string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/normal.png");
-	const char* pathFinalImagen3 = pathFinalImagen3String.c_str();
+	const char* textureNormalPath = pathFinalImagen3String.c_str();
 
-	uint32_t textDiffuse = createTexture(pathFinalImagen1, true);
-	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
-	uint32_t textureNormal = createTexture(pathFinalImagen3, true);
+	uint32_t textDiffuse = createTexture(textDiffusePath, true);
+	uint32_t textureSpecular = createTexture(textureSpecularPath, true);
+	uint32_t textureNormal = createTexture(textureNormalPath, true);
 
 	Shader shaderNormal = Shader(vertexpathBump, fragmentPathBump);
 
 	uint32_t VAO = createQuadVertexData();
+
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {

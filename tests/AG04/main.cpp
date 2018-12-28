@@ -21,7 +21,7 @@ Window window;
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/AG04/";
 
-float verticesCuadrado[] = {
+float quad_vertices[] = {
 	// positions		// texture coords
 -0.5f, -0.5f, 0.0f,			0.0f, 0.0f, // bottom left
 0.5f, -0.5f, 0.0f,			1.0f, 0.0f, // bottom right
@@ -31,7 +31,7 @@ float verticesCuadrado[] = {
 
 
 
-uint32_t indicesCuadrado[] = {
+uint32_t quad_indices[] = {
 	0, 1, 2, 0, 2, 3 //Front
 };
 
@@ -205,12 +205,12 @@ int main(int argc, char* argv[]) {
 
 
 
-	Buffer buffer = Buffer(sizeof(indicesCuadrado), sizeof(verticesCuadrado));
+	Buffer buffer = Buffer(sizeof(quad_indices), sizeof(quad_vertices));
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = createVertexData(verticesCuadrado, 24, indicesCuadrado, 6);
+	uint32_t VAO = createVertexData(quad_vertices, 24, quad_indices, 6);
 
 	uint32_t texture1 = createTexture(pathFinalImagen1,true);
 
