@@ -27,7 +27,7 @@ glm::vec3 cubePositions[] = {
   glm::vec3(4.0f, -4.0f, 0.0f),
  glm::vec3(2.0f, -2.0f, 0.0f),
 };
-Camera camera(glm::vec3(2.0f, 5.0f, 0.0f));
+Camera camera(glm::vec3(2.0f, 0.5f, 0.0f));
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -306,6 +306,7 @@ void Render(uint32_t VAOSuelo, const Shader& shader, const uint32_t numberOfElem
 
 
 }
+
 uint32_t createTexture(const char* path, bool flip) {
 	uint32_t texture;
 	glGenTextures(1, &texture);
@@ -328,6 +329,7 @@ uint32_t createTexture(const char* path, bool flip) {
 	stbi_image_free(data);
 	return texture;
 }
+
 uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
 	unsigned int VAO, VBO, EBO;
 
@@ -398,7 +400,7 @@ int main(int argc, char* argv[]) {
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO, VBOFiguraSuelo, EBOSuelo;
 
-
+	camera.SetFlying(false);
 
 	long sizeOfIndices, sizeOfVertices, sizeOfIndicesQuad, sizeOfVerticesQuad;
 

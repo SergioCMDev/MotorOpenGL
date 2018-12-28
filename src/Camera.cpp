@@ -71,6 +71,10 @@ void Camera::HandleKeyboard(const Movement direction, const float deltaTime) {
 	if (!_flying) _position.y = prev_y;
 }
 
+void Camera::SetFlying(bool fly) {
+	_flying = fly;
+}
+
 void Camera::handleMouseMovement(const float xoffset, const float yoffset,
 	const bool constrainPitch) {
 	float xoff = xoffset * k_Sensitivity;

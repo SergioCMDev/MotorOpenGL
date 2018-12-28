@@ -51,6 +51,7 @@ public:
 	//Process mouse scroll
 	void handleMouseScroll(const float yoffset);
 
+	void Camera::SetFlying(bool fly);
 
 private:
 	void updateCameraVectors(); //Calculates front vector
