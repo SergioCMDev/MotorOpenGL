@@ -4,8 +4,8 @@ out vec4 FragColor;
 
 in vec2 texCoords;
 in vec3 tangentLightPos;
-in vec3 tangentFragPos;
 in vec3 tangentViewPos;
+in vec3 tangentFragPos;
 
 struct Material{
 	sampler2D diffuse;
@@ -25,8 +25,6 @@ struct Light{
 uniform Light light;
 
 void main() {
- 	
-
  	vec3 normal = texture(material.normal, texCoords).rgb;
  	normal = normalize(normal * 2.0 -1.0);
 
@@ -46,5 +44,4 @@ void main() {
 
 	vec3 phong = ambient + diffuse + specular;
 	FragColor = vec4(phong, 1.0);
-	
 }

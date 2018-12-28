@@ -14,9 +14,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#pragma region Variables globales
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
 
 float lastFrame = 0.0f;
 bool firstMouse = true;
@@ -26,12 +27,56 @@ float lastX = (float)screen_width / 2.0f;
 float lastY = (float)screen_height / 2.0f;
 Window window;
 
-bool _firstMouse = false;
-double _lastX, _lastY, _xoffset, _yoffset;
-
 using namespace std;
 
 const string pathProyecto = "../tests/AG11/";
+#pragma endregion
+
+#pragma region Control Eventos
+
+void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
+	//redimension de pantalla 
+	//Cambio de clip scene a view scene
+	glViewport(0, 0, width, height);
+}
+
+void OnMouse(GLFWwindow* window, double xpos, double ypos) {
+	if (firstMouse) {
+		firstMouse = false;
+		lastX = xpos;
+		lastY = ypos;
+	}
+
+	float _xoffset = xpos - lastX;
+	float _yoffset = ypos - lastY;
+	lastX = xpos;
+	lastY = ypos;
+	camera.handleMouseMovement(_xoffset, _yoffset);
+}
+
+
+void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
+	camera.handleMouseScroll(yoffset);
+}
+
+void HandlerInput(GLFWwindow* window, const double deltaTime) {
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Forward, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Backward, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Left, deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
+	}
+	//Window::HandlerInput();
+}
+#pragma endregion
+
+#pragma region Metodos
 
 uint32_t createQuadVertexData() {
 	vec3 pos1(-1.0f, 1.0f, 0.0f);
@@ -117,23 +162,23 @@ uint32_t createQuadVertexData() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	//Vertices normal
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	//Vertices de UV
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(6 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
 	//Vertices de Tangent
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(8 * sizeof(float)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(8 * sizeof(float)));
 	glEnableVertexAttribArray(3);
 
 	//Vertices de Bitangent
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(11 * sizeof(float)));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 14 * sizeof(float), (void*)(11 * sizeof(float)));
 	glEnableVertexAttribArray(4);
 
 	//desbindeamos buffer objetos
@@ -148,51 +193,6 @@ uint32_t createQuadVertexData() {
 	return VAO;
 }
 
-#pragma region Metodos
-
-void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
-	//redimension de pantalla 
-	//Cambio de clip scene a view scene
-	glViewport(0, 0, width, height);
-}
-
-void OnMouse(GLFWwindow* window, double xpos, double ypos) {
-	if (_firstMouse) {
-		_firstMouse = false;
-		_lastX = xpos;
-		_lastY = ypos;
-	}
-
-	_xoffset = xpos - _lastX;
-	_yoffset = ypos - _lastY;
-	_lastX = xpos;
-	_lastY = ypos;
-	camera.handleMouseMovement(_xoffset, _yoffset);
-}
-
-
-void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
-	camera.handleMouseScroll(yoffset);
-}
-
-void HandlerInput(GLFWwindow* window, const double deltaTime) {
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-		camera.HandleKeyboard(Camera::Movement::Forward, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-		camera.HandleKeyboard(Camera::Movement::Backward, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-		camera.HandleKeyboard(Camera::Movement::Left, deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
-	}
-	//Window::HandlerInput();
-}
-
-
-
 int Inicializacion() {
 	if (!glfwInit()) {
 		cout << "Error initializing GLFW" << endl;
@@ -205,6 +205,8 @@ int Inicializacion() {
 		cout << "Error initializing GLAD" << endl;
 		return -1;
 	}
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -213,8 +215,8 @@ int Inicializacion() {
 	glDepthFunc(GL_LESS);
 
 	//cuando la ventana cambie de tamaño
-	glfwSetCursorPosCallback(window.GetWindow(), OnMouse);
 	glfwSetFramebufferSizeCallback(window.GetWindow(), OnChangeFrameBufferSize);
+	glfwSetCursorPosCallback(window.GetWindow(), OnMouse);
 	glfwSetScrollCallback(window.GetWindow(), OnScroll);
 	glfwSetInputMode(window.GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	return 1;
@@ -228,7 +230,7 @@ void Render(const uint32_t VAO,
 
 	glm::mat4 view = camera.GetViewMatrix();
 
-	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 10.0f);
+	glm::mat4 projection = glm::perspective(radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 10.0f);
 
 	float l_pos[] = { sin((float)glfwGetTime() / 2.0f), 0.0f, abs(cos((float)glfwGetTime() / 2.0f)) };
 	lightPos = vec3(l_pos[0], l_pos[1], l_pos[0]);
@@ -236,8 +238,9 @@ void Render(const uint32_t VAO,
 	shaderBump.Use();
 	shaderBump.Set("projection", projection);
 	shaderBump.Set("view", view);
-	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
+	mat4 model = glm::mat4(1.0f);
+	mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
+
 	shaderBump.Set("model", model);
 	shaderBump.Set("normalMat", normalMat);
 
@@ -269,8 +272,8 @@ void Render(const uint32_t VAO,
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
-
 }
+
 uint32_t createTexture(const char* path, bool flip) {
 	uint32_t texture;
 	glGenTextures(1, &texture);
@@ -299,30 +302,29 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	string vertexpathBumptString = utils.GetFinalPath(pathProyecto, "Shaders/bump.vs");
-	const char* vertexpathBump = vertexpathBumptString.c_str();
+	//string vertexpathBumptString = utils.GetFinalPath(pathProyecto, "Shaders/bump.vs");
+	//const char* vertexpathBump = vertexpathBumptString.c_str();
 
-	string fragmentPathBumpString = utils.GetFinalPath(pathProyecto, "Shaders/bump.fs");
-	const char* fragmentPathBump = fragmentPathBumpString.c_str();
+	//string fragmentPathBumpString = utils.GetFinalPath(pathProyecto, "Shaders/bump.fs");
+	//const char* fragmentPathBump = fragmentPathBumpString.c_str();
 
-	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
-	const char* textDiffusePath = pathFinalImagen1String.c_str();
+	//string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
+	//const char* textDiffusePath = pathFinalImagen1String.c_str();
 
-	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
-	const char* textureSpecularPath = pathFinalImagen2String.c_str();
+	//string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
+	//const char* textureSpecularPath = pathFinalImagen2String.c_str();
 
-	string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/normal.png");
-	const char* textureNormalPath = pathFinalImagen3String.c_str();
+	//string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/normal.png");
+	//const char* textureNormalPath = pathFinalImagen3String.c_str();
 
-	uint32_t textDiffuse = createTexture(textDiffusePath, true);
-	uint32_t textureSpecular = createTexture(textureSpecularPath, true);
-	uint32_t textureNormal = createTexture(textureNormalPath, true);
+	uint32_t textDiffuse = createTexture("../tests/AG11/Textures/albedo.png", true);
+	uint32_t textureSpecular = createTexture("../tests/AG11/Textures/specular.png", true);
+	uint32_t textureNormal = createTexture("../tests/AG11/Textures/normal.png", true);
 
-	Shader shaderNormal = Shader(vertexpathBump, fragmentPathBump);
+	Shader shaderNormal = Shader("../tests/AG11/Shaders/bump.vs", "../tests/AG11/Shaders/bump.fs");
 
 	uint32_t VAO = createQuadVertexData();
 
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {

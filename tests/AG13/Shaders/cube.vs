@@ -19,6 +19,6 @@ void main() {
 	normal = transpose(inverse(mat3(model))) * aNormal;
 	texCoord = aTextCoord;
 	fragPosLightSpace = lightSpaceMatrix * vec4(fragPos, 1.0);
-	gl_Position = projection * view * model * vec4(aPos.x, aPos.y,aPos.z,1.0);
+	gl_Position = projection * view * model * vec4(aPos,1.0);
 }
 
