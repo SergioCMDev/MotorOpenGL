@@ -33,8 +33,10 @@ bool firstMouse = true;
 
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/EJ5_7/";
-bool _firstMouse = false;
-double _lastX, _lastY, _xoffset, _yoffset;
+const uint32_t screen_width = 800, screen_height = 600;
+
+float lastX = (float)screen_width / 2.0f;
+float lastY = (float)screen_height / 2.0f;
 
 
 uint32_t _elementsQuad = 20;
@@ -115,18 +117,19 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 }
 
 void OnMouse(GLFWwindow* window, double xpos, double ypos) {
-	if (_firstMouse) {
-		_firstMouse = false;
-		_lastX = xpos;
-		_lastY = ypos;
+	if (firstMouse) {
+		firstMouse = false;
+		lastX = xpos;
+		lastY = ypos;
 	}
 
-	_xoffset = xpos - _lastX;
-	_yoffset = ypos - _lastY;
-	_lastX = xpos;
-	_lastY = ypos;
-	camera.handleMouseMovement(_xoffset, _yoffset);
+	double xoffset = xpos - lastX;
+	double yoffset = ypos - lastY;
+	lastX = xpos;
+	lastY = ypos;
+	camera.handleMouseMovement(xoffset, yoffset);
 }
+
 
 
 void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {

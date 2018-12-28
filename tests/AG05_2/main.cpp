@@ -22,10 +22,6 @@ float lastY = (float)screen_height / 2.0f;
 Window window;
 Utils utils;
 
-bool _firstMouse = false;
-double _lastX, _lastY, _xoffset, _yoffset;
-
-
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
  glm::vec3(2.0f, 5.0f, -15.0f),
@@ -101,17 +97,17 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 }
 
 void OnMouse(GLFWwindow* window, double xpos, double ypos) {
-	if (_firstMouse) {
-		_firstMouse = false;
-		_lastX = xpos;
-		_lastY = ypos;
+	if (firstMouse) {
+		firstMouse = false;
+		lastX = xpos;
+		lastY = ypos;
 	}
 
-	_xoffset = xpos - _lastX;
-	_yoffset = ypos - _lastY;
-	_lastX = xpos;
-	_lastY = ypos;
-	camera.handleMouseMovement(_xoffset, _yoffset);
+	double xoffset = xpos - lastX;
+	double yoffset = ypos - lastY;
+	lastX = xpos;
+	lastY = ypos;
+	camera.handleMouseMovement(xoffset, yoffset);
 }
 
 

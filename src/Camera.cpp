@@ -1,12 +1,12 @@
 #include "Camera.h"
 
-Camera::~Camera() {}
 Camera::Camera() :
 	_position(glm::vec3(0.0f, 0.0f, 0.0f)),
 	_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
 	_yaw(k_Yaw), _pitch(k_Pitch), _fov(k_FOV) {
 	updateCameraVectors();
 }
+Camera::~Camera() {}
 
 Camera::Camera(const glm::vec3 position, const glm::vec3 up, const float yaw, const float pitch) :
 	_position(position),
@@ -68,7 +68,7 @@ void Camera::HandleKeyboard(const Movement direction, const float deltaTime) {
 		_position += _right * velocity; break;
 	}
 
-	if (_flying) _position.y = prev_y;
+	if (!_flying) _position.y = prev_y;
 }
 
 void Camera::handleMouseMovement(const float xoffset, const float yoffset,

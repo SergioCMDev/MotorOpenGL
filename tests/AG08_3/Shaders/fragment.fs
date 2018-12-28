@@ -1,5 +1,7 @@
 #version 330 core
 
+out vec4 FragColor; 
+
 in vec3 normal;
 in vec3 fragPos;
 in vec2 texCoord;
@@ -14,22 +16,24 @@ uniform Material material;
 struct Light{
 	vec3 position;
 
-	float linear;
-	float constant;
-	float cuadratic;
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	float constant;
+	float linear;
+	float cuadratic;
 };
 uniform Light light;
 uniform vec3 viewPos;
 
 
-out vec4 FragColor; 
 
 void main() {
 	float distance = length(light.position - fragPos);
-	float attenuance = 1.0 / (light.constant + light.linear * distance + light.cuadratic * (distance * distance));
+	float attenuance = 1.0 / (light.constant + 
+							  light.linear * distance + 
+							  light.cuadratic * (distance * distance));
  	
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, texCoord));
 

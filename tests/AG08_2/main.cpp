@@ -24,10 +24,7 @@ const uint32_t screen_width = 800, screen_height = 600;
 float lastX = (float)screen_width / 2.0f;
 float lastY = (float)screen_height / 2.0f;
 Window window;
-//UtilsHandlers handlers;
 
-bool _firstMouse = false;
-double _lastX, _lastY, _xoffset, _yoffset;
 uint32_t numeroElementosVerticesCubo = 192;
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
@@ -106,17 +103,17 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 }
 
 void OnMouse(GLFWwindow* window, double xpos, double ypos) {
-	if (_firstMouse) {
-		_firstMouse = false;
-		_lastX = xpos;
-		_lastY = ypos;
+	if (firstMouse) {
+		firstMouse = false;
+		lastX = xpos;
+		lastY = ypos;
 	}
 
-	_xoffset = xpos - _lastX;
-	_yoffset = ypos - _lastY;
-	_lastX = xpos;
-	_lastY = ypos;
-	camera.handleMouseMovement(_xoffset, _yoffset);
+	double xoffset = xpos - lastX;
+	double yoffset = ypos - lastY;
+	lastX = xpos;
+	lastY = ypos;
+	camera.handleMouseMovement(xoffset, yoffset);
 }
 
 
@@ -205,12 +202,12 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Set("view", view);
 
 	shaderCube.Set("viewPos", camera.GetPosition());
-	shaderCube.Set("light.position", lightPos);
-	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("light.direction", -0.2f, -1.0f, -0.3f);
+	shaderCube.Set("light.ambient", 0.1f, 0.1f, 0.1f);
 	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
-	shaderCube.Set("light.specular", 2.0f, 1.0f, 1.0f);
+	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 
-	shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
+	//shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
 	shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
 	shaderCube.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
 	shaderCube.Set("material.shininess", 25.6f);
