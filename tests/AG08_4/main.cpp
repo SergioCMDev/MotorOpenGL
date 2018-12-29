@@ -206,7 +206,6 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Set("light.direction", -1.0f, 0.0f, -1.0f);
 	shaderCube.Set("light.cutOff", cos(radians(20.0f)));
 	shaderCube.Set("light.outerCutOff", cos(radians(25.0f)));
-	shaderCube.Set("light.direction", -1.0f, 0.0f, -1.0f);
 	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
 	shaderCube.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
 	shaderCube.Set("light.constant", 1.0f);

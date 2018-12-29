@@ -11,7 +11,7 @@ struct Material{
 };
 uniform Material material;
 
-struct Light{
+struct SpotLight{
 	vec3 position;
 	vec3 direction;
 
@@ -25,13 +25,13 @@ struct Light{
 	vec3 diffuse;
 	vec3 specular;
 };
-uniform Light light;
+uniform SpotLight light;
 uniform vec3 viewPos;
 
 
 out vec4 FragColor; 
 
-void main() {
+vec3 calcSpotLight(SpotLight light){
 	float distance = length(light.position - fragPos);
 	float attenuance = 1.0 / (light.constant + light.linear * distance + light.cuadratic * (distance * distance));
  	
@@ -53,6 +53,11 @@ void main() {
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0,1.0);
 
 	vec3 phong = (ambient + (diffuse * intensity) + (specular * intensity)) * attenuance;
+	return phong;
+}
+
+void main() {
+	vec3 phong = calcSpotLight(light);
 	FragColor = vec4(phong, 1.0);
 	
 }

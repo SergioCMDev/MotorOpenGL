@@ -23,6 +23,11 @@ glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 glm::vec3 pointLightPositions[] = {
 	glm::vec3(0.7f, 0.2f, 2.0f),
 	glm::vec3(2.3f, -3.3f, -4.0f)
+};
+
+glm::vec3 spotLightPositions[] = {
+	glm::vec3(2.7f, 3.2f, 2.0f),
+	glm::vec3(-2.7f, 3.2f, -5.0f),
 
 };
 
@@ -67,7 +72,6 @@ float verticesCubo[] = {  //vertices      //uvs     //normals
 	  0.5f,  0.5f,  -0.5f,       1.0f, 1.0f,      0.0f, 1.0f, 0.0f,
 	  -0.5f,  0.5f,  -0.5f,       0.0f, 1.0f,     0.0f, 1.0f, 0.0f };
 
-
 uint32_t numeroIndicesCubo = 36;
 
 uint32_t indicesCubo[]{
@@ -78,6 +82,7 @@ uint32_t indicesCubo[]{
 	,16, 17, 18, 16, 18, 19 //Bottom
 	,20, 21, 22, 20, 22, 23 //Top
 };
+
 glm::vec3 cubePositions[] = {
  glm::vec3(0.0f, 0.0f, 0.0f),
  glm::vec3(2.0f, 5.0f, -15.0f),
@@ -142,7 +147,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 
 #pragma region Metodos
 
-
 int Inicializacion() {
 	if (!glfwInit()) {
 		cout << "Error initializing GLFW" << endl;
@@ -170,7 +174,6 @@ int Inicializacion() {
 	return 1;
 };
 
-
 void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	const uint32_t numberOfElements, Camera camera, uint32_t texture1, uint32_t texture2) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
@@ -196,7 +199,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Set("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
 
-	//PointLight 1
+	//PointLight 0
 	shaderCube.Set("pointLights[0].position", pointLightPositions[0]);
 	shaderCube.Set("pointLights[0].ambient", 0.1f, 0.1f, 0.1f);
 	shaderCube.Set("pointLights[0].diffuse", 0.5f, 0.5f, 0.5f);
@@ -213,6 +216,32 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Set("pointLights[1].constant", 1.0f);
 	shaderCube.Set("pointLights[1].linear", 0.09f);
 	shaderCube.Set("pointLights[1].cuadratic", 0.032f);
+
+
+	//SpotLight 0
+	shaderCube.Set("spotLights[0].position", spotLightPositions[0]);
+	shaderCube.Set("spotLights[0].direction", -1.0f, 0.0f, -1.0f);
+	shaderCube.Set("spotLights[0].cutOff", cos(radians(20.0f)));
+	shaderCube.Set("spotLights[0].outerCutOff", cos(radians(25.0f)));
+	shaderCube.Set("spotLights[0].linear", 0.09f);
+	shaderCube.Set("spotLights[0].constant", 1.0f);
+	shaderCube.Set("spotLights[0].cuadratic", 0.032f);
+	shaderCube.Set("spotLights[0].direction", -1.0f, 0.0f, -1.0f);
+	shaderCube.Set("spotLights[0].ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("spotLights[0].diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("spotLights[0].specular", 1.0f, 1.0f, 1.0f);
+
+	//SpotLight 1
+	shaderCube.Set("spotLights[1].position", spotLightPositions[1]);
+	shaderCube.Set("spotLights[1].direction", -1.0f, 0.0f, -1.0f);
+	shaderCube.Set("spotLights[1].cutOff", cos(radians(20.0f)));
+	shaderCube.Set("spotLights[1].outerCutOff", cos(radians(25.0f)));
+	shaderCube.Set("spotLights[1].direction", -1.0f, 0.0f, -1.0f);
+	shaderCube.Set("spotLights[1].ambient", 0.2f, 0.15f, 0.1f);
+	shaderCube.Set("spotLights[1].diffuse", 0.5f, 0.5f, 0.5f);
+	shaderCube.Set("spotLights[1].constant", 1.0f);
+	shaderCube.Set("spotLights[1].linear", 0.09f);
+	shaderCube.Set("spotLights[1].cuadratic", 0.032f);
 
 
 	shaderCube.Set("material.diffuse", 0);
