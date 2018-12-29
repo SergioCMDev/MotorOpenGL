@@ -14,7 +14,7 @@
 
 
 Utils utils;
-Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
+Camera camera(glm::vec3(-1.0f, 0.0f, 3.0f));
 
 
 float lastFrame = 0.0f;
@@ -28,7 +28,7 @@ Window window;
 
 using namespace std;
 
-const char* pathProyecto = "../tests/AG09/";
+const char* pathProyecto = "../tests/EJ9_1/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	int program = shader.GetIdProgram();
-	Model object("../assets/obj/Freigther_BI_Export.obj");
+	Model object("../assets/obj/Grua/Neck_Mech_Walker_by_3DHaupt-(Wavefront OBJ).obj");
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
