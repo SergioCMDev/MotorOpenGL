@@ -142,15 +142,16 @@ int Inicializacion() {
 	return 1;
 };
 
-void Render(uint32_t VAOQuad, uint32_t VAOCubo, 
+void Render(uint32_t VAOQuad, uint32_t VAOQuadFrontal, 
 	const Shader& shaderQuad, const Shader& blendShader, const Shader& shaderCube,
-	uint32_t textGrass, uint32_t textureWood){
+	uint32_t textGrass, uint32_t textureWood,
+	uint32_t textSpecular, uint32_t textureAlbedo){
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//Pintamos Suelo
+	//Pintamos Suelo__________________________________________________________________
 	shaderQuad.Use();
 	shaderQuad.Set("objectColor", 1.0f, 0.5f, 0.5f, 0.31f);
 
@@ -206,7 +207,7 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
 	shaderCube.Set("normalMat", normalMat);
 
-	glBindVertexArray(VAOCubo);
+	glBindVertexArray(VAOQuadFrontal);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	////Pintamos Cubo 2__________________________________________________________________
@@ -224,7 +225,7 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
 	shaderCube.Set("normalMat", normalMat);
 
-	glBindVertexArray(VAOCubo);
+	glBindVertexArray(VAOQuadFrontal);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
@@ -242,27 +243,45 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
 	shaderCube.Set("normalMat", normalMat);
 
-	glBindVertexArray(VAOCubo);
+	glBindVertexArray(VAOQuadFrontal);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 	//////Pintamos Cubo 4__________________________________________________________________
+	shaderQuad.Use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureAlbedo);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textSpecular);
 
-	shaderCube.Set("projection", projection);
-	shaderCube.Set("view", view);
+	shaderQuad.Set("objectColor", 1.0f, 0.5f, 0.5f, 0.31f);
+
+	shaderQuad.Set("viewPos", camera.GetPosition());
+	shaderQuad.Set("light.position", lightPos);
+	shaderQuad.Set("light.ambient", 0.2f, 0.15f, 0.1f);
+	shaderQuad.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
+	shaderQuad.Set("light.specular", 1.0f, 1.0f, 1.0f);
+
+	shaderQuad.Set("material.ambient", 1.0f, 0.5f, 0.31f);
+	shaderQuad.Set("material.shininess", 32.2f);
+	shaderQuad.Set("material.diffuse", 0);
+	shaderQuad.Set("material.specular", 1);
+
+
+	shaderQuad.Set("projection", projection);
+	shaderQuad.Set("view", view);
 	modelCube = glm::mat4(1.0f);
-	posCubes = vec3(0.0f, 0.0f, 0.0f);
+	posCubes = vec3(0.0f, 0.0f, -4.0f);
 	scaleCubes = vec3(1.0f);
 	modelCube = glm::translate(modelCube, posCubes);
 	modelCube = glm::scale(modelCube, scaleCubes);
-	shaderCube.Set("model", modelCube);
-	shaderCube.Set("color", vec3(0.0f, 0.0f, 1.0f));
-	shaderCube.Set("transparencia", 0.3f);
+	shaderQuad.Set("model", modelCube);
+
 
 	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
-	shaderCube.Set("normalMat", normalMat);
+	shaderQuad.Set("normalMat", normalMat);
 
-	glBindVertexArray(VAOCubo);
+	glBindVertexArray(VAOQuadFrontal);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
@@ -392,8 +411,17 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/tree.png");
 	const char* textureWoodPath = pathFinalImagen2String.c_str();
 
+
+	string textureDiffusePathString = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
+	const char* textureDiffusePath = textureDiffusePathString.c_str();
+
+	string textureSpecularPathString = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
+	const char* textureSpecularPath = textureSpecularPathString.c_str();
+
 	uint32_t textGrass = createTexture(textureGrassPath, true);
 	uint32_t textureWood = createTexture(textureWoodPath, true);
+	uint32_t textureDiffuse = createTexture(textureDiffusePath, true);
+	uint32_t textureSpecular = createTexture(textureSpecularPath, true);
 
 	Shader shaderQuad = Shader(quadVSPath, quadFSPath);
 	Shader shaderBlend = Shader(BlendVSPath, BlendFSPath);
@@ -414,7 +442,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOQuad, VAOCubo, shaderQuad, shaderBlend, shaderCubos, textGrass, textureWood);
+		Render(VAOQuad, VAOCubo, shaderQuad, shaderBlend, shaderCubos, textGrass, textureWood, textureSpecular, textureDiffuse);
 
 
 		glfwSwapBuffers(window.GetWindow());
