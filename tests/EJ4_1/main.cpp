@@ -32,7 +32,7 @@ float vertexs[] {
 
 uint32_t numeroIndicesCubo = 6;
 
-uint32_t indicesCubo[]{
+uint32_t indicesQuadFrontal[]{
 0, 1, 2, 0, 2, 3 };
 
 #pragma region Cabezeras
@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
 
-	uint32_t VAO = createVertexData(vertexs, elementsVertexs, indicesCubo, numeroIndicesCubo);
+	uint32_t VAO = createVertexData(vertexs, elementsVertexs, indicesQuadFrontal, numeroIndicesCubo);
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);
 	uint32_t texture2 = createTexture(pathFinalImagen2, true);

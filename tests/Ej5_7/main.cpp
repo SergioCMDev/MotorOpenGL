@@ -57,7 +57,7 @@ uint32_t indexesQuad[]{
 };
 
 
-float verticesCubo[]{
+float verticesQuadFrontal[]{
 	// Position					// UVs
 	-0.5f, -0.5f, 0.5f,		 0.0f, 0.0f,	//Front	
 		0.5f, -0.5f, 0.5f,		 1.0f, 0.0f,
@@ -92,7 +92,7 @@ float verticesCubo[]{
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesCubo[]{
+uint32_t indicesQuadFrontal[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -420,7 +420,7 @@ int main(int argc, char* argv[]) {
 	uint32_t numberOfElementsToDrawForGeometrySuelo = bufferSuelo.GetElementsToDraw();
 
 
-	uint32_t VAOCubos = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
+	uint32_t VAOCubos = createVertexData(verticesQuadFrontal, numeroElementosVerticesCubo, indicesQuadFrontal, numeroIndicesCubo);
 	uint32_t VAOSuelo = createVertexData(vertexCuad, _elementsQuad, indexesQuad, elementsIndexesQuad);
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);

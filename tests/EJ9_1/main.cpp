@@ -40,7 +40,7 @@ glm::vec3 spotLightPositions[] = {
 };
 uint32_t numeroElementosVerticesCubo = 192;
 
-float verticesCubo[]{
+float verticesQuadFrontal[]{
 	-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
 	0.5f, -0.5f, 0.5f,	1.0f, 0.0f,					0.0f, 0.0f, 1.0f,
 	0.5f, 0.5f, 0.5f,	1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
@@ -75,7 +75,7 @@ float verticesCubo[]{
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesCubo[]{
+uint32_t indicesQuadFrontal[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -175,7 +175,7 @@ void Render(uint32_t VAO, const Shader& shader, const Shader& shaderCube, const 
 	shader.Use();
 	shader.Set("projection", projection);
 	shader.Set("view", view);
-	vec3 posObj (0.0f, 0.0f, -5.0f);
+	vec3 posObj (0.0f, 0.0f, 0.0f);
 	glm::mat4 model(1.0f);
 	model = glm::translate(model, posObj);
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -186,37 +186,37 @@ void Render(uint32_t VAO, const Shader& shader, const Shader& shaderCube, const 
 
 	//DirectionalLight 1
 	shader.Set("dirLight.direction", 0.0f, 0.0f, 0.0f);
-	shader.Set("dirLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.Set("dirLight.ambient", 0.5f, 0.5f, 0.5f);
 	shader.Set("dirLight.diffuse", 0.3f, 0.3f, 0.3f);
-	shader.Set("dirLight.specular", 0.5f, 0.5f, 0.5f);
+	shader.Set("dirLight.specular", 1.5f, 1.5f, 1.5f);
 
 	vec3 pointLightPositions(0.0f, 5.0f, 0.0f);
 	//PointLight 1
 	shader.Set("pointLights.position", pointLightPositions);
-	shader.Set("pointLights.ambient", 0.1f, 0.1f, 0.1f);
-	shader.Set("pointLights.diffuse", 0.5f, 0.5f, 0.5f);
+	shader.Set("pointLights.ambient", 0.5f, 0.5f, 0.5f);
+	shader.Set("pointLights.diffuse", 0.7f, 0.7f, 0.7f);
 	shader.Set("pointLights.specular", 1.0f, 1.0f, 1.0f);
-	shader.Set("pointLights.constant", 11.0f);
+	shader.Set("pointLights.constant", 1.0f);
 	shader.Set("pointLights.linear", 0.09f);
 	shader.Set("pointLights.cuadratic", 0.032f);
 
+	vec3 spotLightPositions(0.0f, 5.0f, 0.0f);
 	//SpotLight
-	shader.Set("spotLights.position", spotLightPositions[0]);
-	shader.Set("spotLights.direction", 0.0f, 0.0f, 0.0f);
-	shader.Set("spotLights.cutOff", cos(radians(20.0f)));
-	shader.Set("spotLights.outerCutOff", cos(radians(25.0f)));
-	shader.Set("spotLights.linear", 0.09f);
-	shader.Set("spotLights.constant", 1.0f);
-	shader.Set("spotLights.cuadratic", 0.032f);
-	shader.Set("spotLights.direction", -1.0f, 0.0f, -1.0f);
-	shader.Set("spotLights.ambient", 0.2f, 0.15f, 0.1f);
-	shader.Set("spotLights.diffuse", 0.5f, 0.5f, 0.5f);
-	shader.Set("spotLights.specular", 1.0f, 1.0f, 1.0f);
+	//shader.Set("spotLights.position", spotLightPositions);
+	//shader.Set("spotLights.direction", 0.0f, 0.0f, 0.0f);
+	//shader.Set("spotLights.cutOff", cos(radians(20.0f)));
+	//shader.Set("spotLights.outerCutOff", cos(radians(25.0f)));
+	//shader.Set("spotLights.linear", 0.09f);
+	//shader.Set("spotLights.constant", 1.0f);
+	//shader.Set("spotLights.cuadratic", 0.032f);
+	//shader.Set("spotLights.direction", -1.0f, 0.0f, -1.0f);
+	//shader.Set("spotLights.ambient", 0.2f, 0.15f, 0.1f);
+	//shader.Set("spotLights.diffuse", 0.5f, 0.5f, 0.5f);
+	//shader.Set("spotLights.specular", 2.0f, 2.0f, 2.0f);
 
 	shader.Set("material.shininess", 25.6f);
 
 	obj.Draw(shader);
-
 	//shaderCube.Use();
 	//shaderCube.Set("projection", projection);
 	//shaderCube.Set("view", view);
@@ -306,10 +306,11 @@ int main(int argc, char* argv[]) {
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	Shader shader2 = Shader(lightVS, lightFS);
 
-	Model object("../assets/obj/Grua/Neck_Mech_Walker_by_3DHaupt-(Wavefront OBJ).obj");
+	Model object("../assets/obj/Freigther_BI_Export.obj");
+	//Model object("../assets/obj/Grua/Neck_Mech_Walker_by_3DHaupt-(Wavefront OBJ).obj");
 
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
+	uint32_t VAO = createVertexData(verticesQuadFrontal, numeroElementosVerticesCubo, indicesQuadFrontal, numeroIndicesCubo);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {

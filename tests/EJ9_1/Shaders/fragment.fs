@@ -28,7 +28,7 @@ struct PointLight{
 	vec3 diffuse;
 	vec3 specular;
 };
-uniform PointLight pointLight;
+uniform PointLight pointLights;
 
 struct SpotLight{
 	vec3 position;
@@ -121,18 +121,20 @@ void main() {
 	vec3 norm = normalize(normal);
 	vec3 viewDir = normalize(viewPos - fragPos);
 
-	//vec3 color = CalcDirectionalLight(dirLight, norm, viewDir);
+	vec3 color = CalcDirectionalLight(dirLight, norm, viewDir);
 
-	//vec3 color = CalcPointLight(pointLight, norm, viewDir);
-	//color += CalcPointLight(pointLight, norm, viewDir);
+	//vec3 color = CalcPointLight(pointLights, norm, viewDir);
+	color += CalcPointLight(pointLights, norm, viewDir);
 
-	vec3 color = calcSpotLight(spotLight);
+	//vec3 color = calcSpotLight(spotLight);
 	//color += calcSpotLight(spotLight);
 
 
 	//FragColor = texture(texture_diffuse1, TexCoords);
 	//FragColor = texture(texture_specular1, TexCoords);
 	FragColor = vec4(color, 1.0) ;
-	//FragColor = vec4(norm, 1.0);
+	//vec3 rgb_normal = normal * 0.5 + 0.5; // transforms from [-1,1] to [0,1]  
+
+	//FragColor = vec4(rgb_normal, 1.0);
 
 }

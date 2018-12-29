@@ -21,7 +21,7 @@ Window window;
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/AG04/";
 
-float quad_vertices[] = {
+float quad_vertices_suelo[] = {
 	// positions		// texture coords
 -0.5f, -0.5f, 0.0f,			0.0f, 0.0f, // bottom left
 0.5f, -0.5f, 0.0f,			1.0f, 0.0f, // bottom right
@@ -205,12 +205,12 @@ int main(int argc, char* argv[]) {
 
 
 
-	Buffer buffer = Buffer(sizeof(quad_indices), sizeof(quad_vertices));
+	Buffer buffer = Buffer(sizeof(quad_indices), sizeof(quad_vertices_suelo));
 	buffer.SetStatusVerticesColor(false);
 	buffer.SetStatusVerticesTextura(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = createVertexData(quad_vertices, 24, quad_indices, 6);
+	uint32_t VAO = createVertexData(quad_vertices_suelo, 24, quad_indices, 6);
 
 	uint32_t texture1 = createTexture(pathFinalImagen1,true);
 

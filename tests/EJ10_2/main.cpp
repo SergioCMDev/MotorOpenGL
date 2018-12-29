@@ -27,7 +27,7 @@ Window window;
 
 
 
-float quad_vertices[] = {
+float quad_vertices_suelo[] = {
 	// positions		texture cords						// normal coords
 	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 1.0f, 0.0f,//Top
 	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 1.0f, 0.0f,
@@ -41,48 +41,19 @@ uint32_t quad_indices[] = {
 
 uint32_t numeroElementosVerticesCubo = 192;
 
-float verticesCubo[]{
+float verticesQuadFrontal[]{
 	-0.5f, -0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
 	0.5f, -0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 0.0f, 1.0f,
 	0.5f, 0.5f, 0.5f,		1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
 	-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,				0.0f, 0.0f, 1.0f,
-
-	0.5f, -0.5f, 0.5f,		0.0f, 0.0f,				1.0f, 0.0f, 0.0f,//Right
-	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,				1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				1.0f, 0.0f, 0.0f,
-	0.5f, 0.5f, 0.5f,		0.0f, 1.0f,				1.0f, 0.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,	1.0f, 0.0f,				0.0f, 0.0f, -1.0f,//Back
-	-0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				0.0f, 0.0f, -1.0f,
-	0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 0.0f, -1.0f,
-	0.5f, -0.5f, -0.5f,		 0.0f, 0.0f,			0.0f, 0.0f, -1.0f,
-
-	-0.5f, -0.5f, 0.5f,		1.0f, 0.0f,				-1.0f, 0.0f, 0.0f,//Left
-	-0.5f, 0.5f, 0.5f,		1.0f, 1.0f,				-1.0f, 0.0f, 0.0f,
-	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				-1.0f, 0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,				 -1.0f, 0.0f, 0.0f,
-
-	-0.5f, -0.5f, 0.5f,		0.0f, 1.0f,				0.0f, -1.0f, 0.0f,//Bottom
-	-0.5f, -0.5f, -0.5f,	0.0f, 0.0f,				0.0f, -1.0f, 0.0f,
-	0.5f, -0.5f, -0.5f,		1.0f, 0.0f,				0.0f, -1.0f, 0.0f,
-	0.5f, -0.5f, 0.5f,		1.0f, 1.0f,				0.0f, -1.0f, 0.0f,
-
-	-0.5f, 0.5f, 0.5f,		0.0f, 0.0f,				0.0f, 1.0f, 0.0f,//Top
-	0.5f, 0.5f, 0.5f,		1.0f, 0.0f,				0.0f, 1.0f, 0.0f,
-	0.5f, 0.5f, -0.5f,		1.0f, 1.0f,				0.0f, 1.0f, 0.0f,
-	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f,				0.0f, 1.0f, 0.0f };
+};
 
 
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesCubo[]{
+uint32_t indicesQuadFrontal[]{
 	0, 1, 2, 0, 2, 3 //Front
-	,4, 5, 6, 4, 6, 7 //Right
-	,8, 9, 10, 8, 10, 11 //Back
-	,12, 13, 14, 12, 14, 15 //Left
-	,16, 17, 18, 16, 18, 19 //Bottom
-	,20, 21, 22, 20, 22, 23 //Top
 };
 
 
@@ -236,12 +207,11 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	////Pintamos Cubo 2__________________________________________________________________
 
-	shaderCube.Set("projection", projection);
-	shaderCube.Set("view", view);
+
 	modelCube = glm::mat4(1.0f);
 	posCubes = vec3(0.0f, 0.0f, -2.0f);
 	scaleCubes = vec3(1.0f);
@@ -249,19 +219,17 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	modelCube = glm::scale(modelCube, scaleCubes);
 	shaderCube.Set("model", modelCube);
 	shaderCube.Set("color", vec3(0.0f, 1.0f, 0.0f));
-	shaderCube.Set("transparencia", 0.5f);
+	shaderCube.Set("transparencia", 0.7f);
 
 	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 	//////Pintamos Cubo 3__________________________________________________________________
 
-	shaderCube.Set("projection", projection);
-	shaderCube.Set("view", view);
 	modelCube = glm::mat4(1.0f);
 	posCubes = vec3(0.0f, 0.0f, 0.0f);
 	scaleCubes = vec3(1.0f);
@@ -269,13 +237,13 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	modelCube = glm::scale(modelCube, scaleCubes);
 	shaderCube.Set("model", modelCube);
 	shaderCube.Set("color", vec3(0.0f, 0.0f, 1.0f));
-	shaderCube.Set("transparencia", 0.3f);
+	shaderCube.Set("transparencia", 0.5f);
 
 	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 	//////Pintamos Cubo 4__________________________________________________________________
@@ -295,7 +263,7 @@ void Render(uint32_t VAOQuad, uint32_t VAOCubo,
 	shaderCube.Set("normalMat", normalMat);
 
 	glBindVertexArray(VAOCubo);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 	glBindVertexArray(0);
@@ -434,8 +402,8 @@ int main(int argc, char* argv[]) {
 	long sizeOfIndices, sizeOfVertices;
 
 
-	uint32_t VAOCubo = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
-	uint32_t VAOQuad = createVertexData(quad_vertices, numeroElementosVerticesCubo / 6, quad_indices, numeroIndicesCubo / 6);
+	uint32_t VAOCubo = createVertexData(verticesQuadFrontal, numeroElementosVerticesCubo, indicesQuadFrontal, numeroIndicesCubo);
+	uint32_t VAOQuad = createVertexData(quad_vertices_suelo, numeroElementosVerticesCubo / 6, quad_indices, numeroIndicesCubo / 6);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
