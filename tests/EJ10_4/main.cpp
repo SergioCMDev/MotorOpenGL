@@ -61,7 +61,7 @@ uint32_t indicesQuadFrontal[]{
 
 using namespace std;
 
-const string pathProyecto = "../tests/EJ10_3/";
+const string pathProyecto = "../tests/EJ10_4/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -248,6 +248,44 @@ void Render(uint32_t VAOQuad, uint32_t VAOQuadFrontal,
 
 	glBindVertexArray(VAOQuadFrontal);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+	//////Pintamos Cubo 5_______________SOLIDO 1___________________________________________________
+
+	modelCube = glm::mat4(1.0f);
+	posCubes = vec3(0.0f, 0.0f, -1.0f);
+	scaleCubes = vec3(1.0f);
+	modelCube = glm::translate(modelCube, posCubes);
+	modelCube = glm::scale(modelCube, scaleCubes);
+	shaderCube.Set("model", modelCube);
+	shaderCube.Set("color", vec3(0.4f, 0.2f, 0.6f));
+	shaderCube.Set("transparencia", 1.0f);
+
+	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
+	shaderCube.Set("normalMat", normalMat);
+
+	glBindVertexArray(VAOQuadFrontal);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+
+	//////Pintamos Cubo 6_______________SOLIDO 6___________________________________________________
+
+	modelCube = glm::mat4(1.0f);
+	posCubes = vec3(0.0f, 0.0f, 3.0f);
+	scaleCubes = vec3(1.0f);
+	modelCube = glm::translate(modelCube, posCubes);
+	modelCube = glm::scale(modelCube, scaleCubes);
+	shaderCube.Set("model", modelCube);
+	shaderCube.Set("color", vec3(0.2f, 0.5f, 0.4f));
+	shaderCube.Set("transparencia", 1.0f);
+
+	normalMat = glm::inverse(glm::transpose(glm::mat3(modelCube)));
+	shaderCube.Set("normalMat", normalMat);
+
+	glBindVertexArray(VAOQuadFrontal);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 
 	//////Pintamos Cubo 4____________________DIFUSO + ALBEDO______________________________________________
