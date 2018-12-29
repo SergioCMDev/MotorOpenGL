@@ -186,6 +186,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderlight.Use();
 	shaderlight.Set("projection", projection);
 	shaderlight.Set("view", view);
+	lightPos = camera.GetPosition();
 
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, lightPos);
@@ -317,17 +318,17 @@ int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
 	}
-	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/vertex.vs");
-	const char* vertexpath = vertexpathStr.c_str();
+	string vertexpathStr = utils.GetFinalPath(pathProyecto, "Shaders/cube.vs");
+	const char* cubeVS = vertexpathStr.c_str();
 
-	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
-	const char* fragmentPath1 = fragmentPathString.c_str();
+	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/cube.fs");
+	const char* cubeFS = fragmentPathString.c_str();
 
-	string vertexpathLightString = utils.GetFinalPath(pathProyecto, "Shaders/vertexLight.vs");
-	const char* vertexpathLight = vertexpathLightString.c_str();
+	string vertexpathLightString = utils.GetFinalPath(pathProyecto, "Shaders/light.vs");
+	const char* lightVS = vertexpathLightString.c_str();
 
-	string fragmentPathLightString = utils.GetFinalPath(pathProyecto, "Shaders/fragmentLight.fs");
-	const char* fragmentPathLight = fragmentPathLightString.c_str();
+	string fragmentPathLightString = utils.GetFinalPath(pathProyecto, "Shaders/light.fs");
+	const char* lightFS = fragmentPathLightString.c_str();
 
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
 	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
@@ -338,11 +339,8 @@ int main(int argc, char* argv[]) {
 	uint32_t textDiffuse = createTexture(pathFinalImagen1, true);
 	uint32_t textureSpecular = createTexture(pathFinalImagen2, true);
 
-	Shader shader = Shader(vertexpath, fragmentPath1);
-	Shader shaderlight = Shader(vertexpathLight, fragmentPathLight);
-	int program = shader.GetIdProgram();
-	uint32_t VBOFigura, EBO;
-
+	Shader shader = Shader(cubeVS, cubeFS);
+	Shader shaderlight = Shader(lightVS, lightFS);
 
 
 	long sizeOfIndices, sizeOfVertices;
@@ -377,10 +375,6 @@ int main(int argc, char* argv[]) {
 
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBOFigura);
-	glDeleteBuffers(1, &EBO);
-
-
 
 	glfwTerminate();
 	return 0;
