@@ -123,8 +123,6 @@
     <ClInclude Include="..\include\Mesh.h" />
     <ClInclude Include="..\include\Model.h" />
     <ClInclude Include="..\include\Shader.h" />
-    <ClInclude Include="..\include\teapot.h" />
-    <ClInclude Include="..\include\teapotdata.h" />
     <ClInclude Include="..\include\Texture.h" />
     <ClInclude Include="..\include\Utils.h" />
     <ClInclude Include="..\include\UtilsHandlers.h" />
@@ -196,8 +194,6 @@
     <ClCompile Include="..\src\Model.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Shader.cpp">
-    </ClCompile>
-    <ClCompile Include="..\src\teapot.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Texture.cpp">
     </ClCompile>

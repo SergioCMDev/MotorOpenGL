@@ -3,6 +3,7 @@
 #define  CAMERA_H
 
 #include <glm/glm.hpp>
+#include <glm/vec4.hpp>
 #define GLFW_INCLUDE_NONE
 
 #include<GLFW/glfw3.h>

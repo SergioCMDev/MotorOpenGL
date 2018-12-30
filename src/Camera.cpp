@@ -1,5 +1,29 @@
 #include "Camera.h"
 
+glm::mat4 Camera::LookAtOwnCalculate() const {
+
+	//glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	//glm::vec3 cameraDirection = glm::normalize(_position - cameraTarget); //CameraDirection
+	//glm::vec3 cameraRight = glm::normalize(glm::cross(_up, cameraDirection)); //CameraRight	//glm::vec3 cameraUp = glm::normalize(glm::cross(_up, cameraDirection));	//CameraUp
+
+	//glm::mat4 m1(0.0f);
+	//m1[0] = glm::vec4(glm::vec3(cameraRight.x, cameraRight.y, cameraRight.z), 0.0f);
+	//m1[1] = glm::vec4(glm::vec3(cameraUp.x, cameraUp.y, cameraUp.z), 0.0f);
+	//m1[2] = glm::vec4(glm::vec3(cameraDirection.x, cameraDirection.y, cameraDirection.z), 0.0f);
+	//m1[3] = glm::vec4(glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
+
+	//glm::mat4 m2(0.0f);
+	//m2[0] = glm::vec4(glm::vec3(1.0f, 0.0f, 0.0f), -_position.x);
+	//m2[1] = glm::vec4(glm::vec3(0.0f, 1.0f, 0.0f), -_position.y);
+	//m2[2] = glm::vec4(glm::vec3(0.0f, 0.0f, 1.0f), -_position.z);
+	//m2[3] = glm::vec4(glm::vec3(0.0f), 1.0f);
+
+	glm::mat4 mat(0.0f);
+
+	//mat = mat * m2;
+	return mat;
+}
+
 Camera::Camera() :
 	_position(glm::vec3(0.0f, 0.0f, 0.0f)),
 	_worldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
@@ -34,28 +58,7 @@ glm::mat4 Camera::GetViewMatrixOwnCalculate() const {
 	return LookAtOwnCalculate();
 }
 
-glm::mat4 Camera::LookAtOwnCalculate() const {
-	
-	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 D = glm::normalize(_position - cameraTarget); //CameraDirection
-	glm::vec3 R = glm::normalize(glm::cross(_up, D)); //CameraRight	//glm::vec3 U = glm::cross(D, R);	//CameraUp	//glm::mat4 m3(0.0f);
-	//m3[0] = glm::vec4(glm::vec3(R.x, R.y, R.y), 0.0f);
-	//m3[1] = glm::vec4(glm::vec3(U.x, U.y, U.y), 0.0f);
-	//m3[2] = glm::vec4(glm::vec3(D.x, D.y, D.y), 0.0f);
-	//m3[3] = glm::vec4(glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
 
-	//glm::mat4 m2(0.0f);
-	//m2[0] = glm::vec4(glm::vec3(1.0f, 0.0f, 0.0f), -_position.x);
-	//m2[1] = glm::vec4(glm::vec3(0.0f, 1.0f, 0.0f), -_position.y);
-	//m2[2] = glm::vec4(glm::vec3(0.0f, 0.0f, 1.0f), -_position.z);
-	//m2[3] = glm::vec4(glm::vec3(0.0f), 1.0f);
-
-	glm::mat4 mat(0.0f);
-
-
-	return mat;
-	//return m1 * m2;
-}
 
 
 

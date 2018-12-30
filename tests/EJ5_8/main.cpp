@@ -10,7 +10,8 @@
 #include "Window.h"
 #include "Buffer.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>#include "Camera.h"
+#include <stb_image.h>
+#include "Camera.h"
 
 Utils utils;
 using namespace std;
@@ -167,63 +168,6 @@ int Inicializacion() {
 	return 1;
 };
 
-
-void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,	uint32_t texture2) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	//Si lo quitamos, no borra nunca la pantalla
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	shader.Use();
-	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-	glm::mat4 view = glm::mat4(1.0f);
-	//alejamos el mundo 3D
-	glm::mat4 projection = glm::mat4(1.0f);
-	//projection = glm::perspective(camera.GetFOV(), 800.0f / 600.0f, 0.1f, 200.0f);
-	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 200.0f);
-	
-	//Cube 1
-	glm::mat4 model = glm::mat4(1.0f);
-
-	model = glm::translate(model, vec3{ -4.0f, -6.7f, -11.0f }); //Derecha-Izq  Arriba Abajo Z
-	model = glm::scale(model, vec3{ 0.5f , 0.5f, 0.5 });
-
-	shader.Set("model", model);
-	shader.Set("texture1", 0);
-	shader.Set("texture2", 1);
-
-	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-
-	//Cube 2
-	glm::mat4 model2 = glm::mat4(1.0f);
-
-	model2 = glm::translate(model2, vec3{ 4.0f, -5.7f, -16.0f });
-	model2 = glm::scale(model2, vec3{ 1.5f , 1.5f, 1.5f });
-
-	shader.Set("model", model2);
-	shader.Set("texture1", 0);
-	shader.Set("texture2", 1);
-
-	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-
-	//Cube 3
-	glm::mat4 model3 = glm::mat4(1.0f);
-
-	model3 = glm::translate(model3, vec3{ -3.0f, -6.7f, -15.0f });
-	model3 = glm::scale(model3, vec3{ 0.25f , 0.25f, 0.25f });
-
-	shader.Set("model", model3);
-	shader.Set("texture1", 0);
-	shader.Set("texture2", 1);
-
-	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-	//shader.Set("view", camera.GetViewMatrix());
-	shader.Set("view", camera.GetViewMatrixOwnCalculate());
-	shader.Set("projection", projection);	
-	glBindVertexArray(0);
-
-}
-
 void Render(uint32_t VAOSuelo, const Shader& shader, const uint32_t numberOfElementsSuelo, uint32_t VAOCubos, const uint32_t numberOfElementsToDrawForGeometryCubos, uint32_t texture1, uint32_t texture2) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
@@ -244,7 +188,8 @@ void Render(uint32_t VAOSuelo, const Shader& shader, const uint32_t numberOfElem
 	model = glm::scale(model, vec3{ 10.0f , 10.0f, 10.0f });
 
 	shader.Set("model", model);
-	shader.Set("view", camera.GetViewMatrix());
+	//shader.Set("view", camera.GetViewMatrix());
+	shader.Set("view", camera.GetViewMatrixOwnCalculate());
 	shader.Set("projection", projection);
 
 	shader.Set("texture1", 0);
@@ -382,30 +327,6 @@ int main(int argc, char* argv[]) {
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
-	//Shader shaderSuelo = Shader(vertexpath, fragmentPath1);
-
-	int program = shader.GetIdProgram();
-	uint32_t VBOFigura, EBO, VBOFiguraSuelo, EBOSuelo;
-
-
-
-	long sizeOfIndices, sizeOfVertices, sizeOfIndicesQuad, sizeOfVerticesQuad;
-
-	sizeOfIndices = numeroIndicesCubo * sizeof(float);
-	sizeOfVertices = numeroElementosVerticesCubo * sizeof(float);
-
-	sizeOfIndicesQuad = sizeOfIndices / 6;
-	sizeOfVerticesQuad = sizeOfVertices / 6;
-
-
-	//float verticesQuad = cuadrado.GetVertexs();
-	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
-	Buffer bufferSuelo = Buffer(sizeOfIndicesQuad, sizeOfVerticesQuad);
-
-
-	uint32_t numberOfElementsToDrawForGeometryCubos = buffer.GetElementsToDraw();
-	uint32_t numberOfElementsToDrawForGeometrySuelo = bufferSuelo.GetElementsToDraw();
-
 
 	uint32_t VAOCubos = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
 	uint32_t VAOSuelo = createVertexData(vertexCuad, _elementsQuad, indexesQuad, elementsIndexesQuad);
@@ -422,9 +343,8 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAOSuelo, shader, numberOfElementsToDrawForGeometrySuelo, VAOCubos, numberOfElementsToDrawForGeometryCubos, texture1, texture2);
-		//RenderSuelo(VAOSuelo, shaderSuelo, numberOfElementsToDrawForGeometrySuelo, texture1, texture2);
-		//RenderCubo(VAOCubos, shaderCubos, numberOfElementsToDrawForGeometryCubos, texture1, texture2);
+		Render(VAOSuelo, shader, 6, VAOCubos, 36, texture1, texture2);
+
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -432,8 +352,7 @@ int main(int argc, char* argv[]) {
 
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAOCubos);
-	glDeleteBuffers(1, &VBOFigura);
-	glDeleteBuffers(1, &EBO);
+
 
 	glfwTerminate();
 	return 0;
