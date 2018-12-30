@@ -159,6 +159,10 @@
     <ClInclude Include="..\include\assimp\Compiler\pstdint.h" />
     <ClInclude Include="..\include\assimp\Compiler\pushpack1.h" />
     <ClInclude Include="..\include\assimp\port\AndroidJNI\AndroidJNIIOSystem.h" />
+    <ClInclude Include="..\include\GL\eglew.h" />
+    <ClInclude Include="..\include\GL\glew.h" />
+    <ClInclude Include="..\include\GL\glxew.h" />
+    <ClInclude Include="..\include\GL\wglew.h" />
     <ClInclude Include="..\include\glad\glad.h" />
     <ClInclude Include="..\include\GLFW\glfw3.h" />
     <ClInclude Include="..\include\GLFW\glfw3native.h" />
@@ -177,6 +181,8 @@
     <ClInclude Include="..\src\deps\glfw\wgl_context.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\tests\EJ4_4\main.cpp">
+    </ClCompile>
     <ClCompile Include="..\src\Buffer.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Camera.cpp">
