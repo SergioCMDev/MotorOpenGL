@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{5865280E-C479-50BF-8DFB-F31EF9CE4CF0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{56EB95D1-428D-C0A7-2B48-D4FB178947F8}</UniqueIdentifier>
     </Filter>
@@ -21,6 +24,9 @@
     </Filter>
     <Filter Include="include\assimp\port\AndroidJNI">
       <UniqueIdentifier>{B128F498-9D4E-BEFF-8694-43CB7259E3CB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\GL">
+      <UniqueIdentifier>{B8FFB8DA-A4B7-FA27-0DBF-D383F9959518}</UniqueIdentifier>
     </Filter>
     <Filter Include="Deep Headers">
       <UniqueIdentifier>{DF5CC0A6-CBBF-4F4B-7445-880160871BCE}</UniqueIdentifier>
@@ -156,6 +162,18 @@
     <ClInclude Include="..\include\assimp\port\AndroidJNI\AndroidJNIIOSystem.h">
       <Filter>include\assimp\port\AndroidJNI</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\GL\eglew.h">
+      <Filter>include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GL\glew.h">
+      <Filter>include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GL\glxew.h">
+      <Filter>include\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\GL\wglew.h">
+      <Filter>include\GL</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\glad\glad.h">
       <Filter>Deep Headers</Filter>
     </ClInclude>
@@ -206,6 +224,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\tests\EJ4_3\main.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\Buffer.cpp">
       <Filter>Source</Filter>
     </ClCompile>
