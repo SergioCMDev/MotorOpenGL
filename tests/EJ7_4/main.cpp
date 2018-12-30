@@ -15,7 +15,7 @@
 #include <stb_image.h>
 using namespace std;
 
-const string pathProyecto = "../tests/EJ7_3/";
+const string pathProyecto = "../tests/EJ7_4/";
 
 Utils utils;
 Camera camera(glm::vec3(-1.0f, 2.0f, 3.0f));
@@ -65,7 +65,7 @@ float verticesCubo[]{
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesCubo[]{
+uint32_t indicesQuadFrontal[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -180,6 +180,9 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderlight.Set("model", model);
 	glBindVertexArray(VAO);
 
+
+
+
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 
 	shaderCube.Use();
@@ -193,18 +196,18 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Set("light.position", lightPos);
 	shaderCube.Set("light.ambient", 1.0f, 1.0f, 1.0f);
 	shaderCube.Set("light.diffuse", 1.0f, 1.0f, 1.0f);
-	shaderCube.Set("light.specular", -1.0f, -1.0f, -1.0f);
+	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 
 	shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
 	shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
 	shaderCube.Set("material.specular", -0.393548f, -0.271906f, -0.166721f);
 	shaderCube.Set("material.shininess", 25.6f);
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureAlbedo);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, textureAlbedo);
 
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, textureSpecular);
+	//glActiveTexture(GL_TEXTURE1);
+	//glBindTexture(GL_TEXTURE_2D, textureSpecular);
 
 	glBindVertexArray(VAO);
 
@@ -429,7 +432,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
+	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesQuadFrontal, numeroIndicesCubo);
 
 	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indexes, sizeOfIndices, vertex, sizeOfVertices, &shader);
 

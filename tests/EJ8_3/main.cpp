@@ -41,7 +41,7 @@ Window window;
 
 uint32_t numeroElementosVerticesCubo = 192;
 
-float verticesQuadFrontal[] = {  //vertices      //uvs     //normals
+float verticesCubo[] = {  //vertices      //uvs     //normals
 	  -0.5f,  -0.5f,  0.5f,       0.0f, 0.0f,     0.0f, 0.0f, 1.0f,//front
 	  0.5f,  -0.5f,  0.5f,       1.0f, 0.0f,      0.0f, 0.0f, 1.0f,
 	  0.5f,  0.5f,  0.5f,       1.0f, 1.0f,       0.0f, 0.0f, 1.0f,
@@ -74,7 +74,7 @@ float verticesQuadFrontal[] = {  //vertices      //uvs     //normals
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesQuadFrontal[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -379,7 +379,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetStatusVerticesNormal(true);
 	uint32_t numberOfElementsToDraw = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuadFrontal, sizeOfIndices, verticesQuadFrontal, sizeOfVertices, &shader);
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesCubo, sizeOfIndices, verticesCubo, sizeOfVertices, &shader);
 
 
 	//Bucle inicial donde se realiza toda la accion del motor

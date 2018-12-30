@@ -40,7 +40,7 @@ glm::vec3 spotLightPositions[] = {
 };
 uint32_t numeroElementosVerticesCubo = 192;
 
-float verticesQuadFrontal[]{
+float verticesCubo[]{
 	-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,				0.0f, 0.0f, 1.0f, //Front
 	0.5f, -0.5f, 0.5f,	1.0f, 0.0f,					0.0f, 0.0f, 1.0f,
 	0.5f, 0.5f, 0.5f,	1.0f, 1.0f,				0.0f, 0.0f, 1.0f,
@@ -75,7 +75,7 @@ float verticesQuadFrontal[]{
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesQuadFrontal[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -310,7 +310,7 @@ int main(int argc, char* argv[]) {
 	//Model object("../assets/obj/Grua/Neck_Mech_Walker_by_3DHaupt-(Wavefront OBJ).obj");
 
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-	uint32_t VAO = createVertexData(verticesQuadFrontal, numeroElementosVerticesCubo, indicesQuadFrontal, numeroIndicesCubo);
+	uint32_t VAO = createVertexData(verticesCubo, numeroElementosVerticesCubo, indicesCubo, numeroIndicesCubo);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {

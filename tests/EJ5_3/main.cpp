@@ -34,7 +34,7 @@ const char* pathProyecto = "../tests/EJ5_3/";
 uint32_t numeroElementosVerticesCubo = 120;
 
 
-float verticesQuadFrontal[]{
+float verticesCubo[]{
 	// Position					// UVs
 	-0.5f, -0.5f, 0.5f,		 0.0f, 0.0f,	//Front	
 		0.5f, -0.5f, 0.5f,		 1.0f, 0.0f,
@@ -69,7 +69,7 @@ float verticesQuadFrontal[]{
 
 uint32_t numeroIndicesCubo = 36;
 
-uint32_t indicesQuadFrontal[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -220,7 +220,7 @@ int main(int argc, char* argv[]) {
 	buffer.SetSizeVerticesTextura(2);
 	uint32_t numberOfElementsToDrawForGeometry = buffer.GetElementsToDraw();
 
-	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuadFrontal, sizeOfIndices, verticesQuadFrontal,
+	uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesCubo, sizeOfIndices, verticesCubo,
 		sizeOfVertices, &shader);
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);

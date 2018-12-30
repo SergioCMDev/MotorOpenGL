@@ -57,7 +57,7 @@ uint32_t indicesQuadScreeen[] = {
 	0, 1, 2,	0, 2, 3 //Front
 };
 
-float verticesQuadFrontal[]{
+float verticesCubo[]{
 	-0.5f, -0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   0.0f, 0.0f,				 //Front
 	0.5f, -0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   1.0f, 0.0f,
 	0.5f, 0.5f, 0.5f,		0.0f, 0.0f, 1.0f,   1.0f, 1.0f,
@@ -88,7 +88,7 @@ float verticesQuadFrontal[]{
 	 0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
 	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,  0.0f, 1.0f, };
 
-uint32_t indicesQuadFrontal[]{
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
@@ -414,7 +414,7 @@ int main(int argc, char* argv[]) {
 
 	auto fboRes = createFBO();
 
-	uint32_t VAOCubo =		 createVertexData(verticesQuadFrontal, 24, indicesQuadFrontal, 36);
+	uint32_t VAOCubo =		 createVertexData(verticesCubo, 24, indicesCubo, 36);
 	uint32_t VAOQuad =		 createVertexData(quad_vertices_suelo, 6, quad_indices, 6);
 	uint32_t VAOScreenQuad = createVertexData(quad_screen_vertices, 6, indicesQuadScreeen, 6);
 
