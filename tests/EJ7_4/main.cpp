@@ -406,7 +406,7 @@ int main(int argc, char* argv[]) {
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
 	const char* pathFinalImagen1 = pathFinalImagen1String.c_str();
 
-	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
+	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/emissive.png");
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
 	uint32_t textDiffuse = createTexture(pathFinalImagen1, true);

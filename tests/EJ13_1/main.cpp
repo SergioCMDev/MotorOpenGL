@@ -29,7 +29,7 @@ float lastX = (float)screen_width / 2.0f;
 float lastY = (float)screen_height / 2.0f;
 Window window;
 
-float quad_vertices[] = {
+float quad_vertices_suelo[] = {
 	// positions				// normal coords	 texture cords						
 	 25.0f, -0.5f,  25.0f,		0.0f, 1.0f, 0.0f, 		25.0f,  0.0f,				//Top
 	-25.0f, -0.5f,  25.0f,		0.0f, 1.0f, 0.0f,		 0.0f,  0.0f,
@@ -206,7 +206,7 @@ pair<uint32_t, uint32_t> createFBO() {
 	return make_pair(fbo, depthMap);
 }
 
-void RenderScene(const Shader &shader,
+void RenderScene(const Shader &shader, const Shader &shaderLight,
 	const uint32_t cubeVAO, const uint32_t quadVAO, 
 	const uint32_t text1, const uint32_t text2) {
 
@@ -252,10 +252,22 @@ void RenderScene(const Shader &shader,
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
+
+	//Cubo 4
+	shaderLight.Use();
+	vec3 lightPos = vec3(-1.0f, 5.0f, 2.0f);
+	model = mat4(1.0f);
+	model = translate(model, lightPos);
+	model = scale(model, vec3(0.25f));
+	shaderLight.Set("model", model);
+	glBindVertexArray(cubeVAO);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
 }
 
 void Render(
-	const Shader& lighingShader, const Shader& depthShader, const Shader& debugShader,
+	const Shader& shader, const Shader& depthShader, const Shader& debugShader, const Shader& lightShader,
 	uint32_t cubeVAO, uint32_t quadVAO, uint32_t screenQuadVAO,
 	const uint32_t tex1, const uint32_t tex2,
 	const uint32_t fbo, const uint32_t text_fbo) {
@@ -272,35 +284,33 @@ void Render(
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, shadow_width, shadow_height); //Cambiamos tamaño de pantalla a pantalla de sombra
-	RenderScene(depthShader, cubeVAO, quadVAO, 0, 0);
+	RenderScene(depthShader, lightShader, cubeVAO, quadVAO, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glViewport(0, 0, screen_width, screen_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	lighingShader.Use();
+	shader.Use();
 	lightProjection = glm::perspective(radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 100.0f);
 	mat4 view = camera.GetViewMatrix();
-	lighingShader.Set("projection", lightProjection);
-	lighingShader.Set("view", view);
-	lighingShader.Set("viewPos", camera.GetPosition());
-	lighingShader.Set("lightPos", lightPos);
-	lighingShader.Set("lightSpaceMatrix", lightSpaceMatrix);
+	shader.Set("projection", lightProjection);
+	shader.Set("view", view);
+	shader.Set("viewPos", camera.GetPosition());
+	shader.Set("lightPos", lightPos);
+	shader.Set("lightSpaceMatrix", lightSpaceMatrix);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, text_fbo);
-	lighingShader.Set("depthMap", 1);
-	RenderScene(lighingShader, cubeVAO, quadVAO, tex1, tex2);
+	shader.Set("depthMap", 1);
+	RenderScene(shader, lightShader, cubeVAO, quadVAO, tex1, tex2);
 
 
-	debugShader.Use();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, text_fbo);
-	debugShader.Set("depthMap", 0);
-	debugShader.Set("near_plane", shadow_near);
-	debugShader.Set("far_plane", shadow_far);
+	//debugShader.Use();
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, text_fbo);
+	//debugShader.Set("depthMap", 0);
 
-	glBindVertexArray(screenQuadVAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//glBindVertexArray(screenQuadVAO);
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 
@@ -398,6 +408,13 @@ int main(int argc, char* argv[]) {
 	string fragmentPathDebugString = utils.GetFinalPath(pathProyecto, "Shaders/debug.fs");
 	const char* debugFS = fragmentPathDebugString.c_str();
 	///////////////////////////////////////////////////////////////////////////////////////////////
+
+	string vertexpathlighthStr = utils.GetFinalPath(pathProyecto, "Shaders/light.vs");
+	const char* lightVS = vertexpathlighthStr.c_str();
+
+	string fragmentPathlighthStr = utils.GetFinalPath(pathProyecto, "Shaders/light.fs");
+	const char* lightFS = fragmentPathlighthStr.c_str();
+	///////////////////////////////////////////////////////////////////////////////////////////////
 	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
 	const char* tex1Path = pathFinalImagen1String.c_str();
 
@@ -413,11 +430,12 @@ int main(int argc, char* argv[]) {
 
 	Shader depthShader = Shader(depthVS, depthFS);
 	Shader debugShader = Shader(debugVS, debugFS);
+	Shader lightShader = Shader(lightVS, lightFS);
 
 	auto fboRes = createFBO();
 
 	uint32_t VAOCubo =		 createVertexData(verticesCubo, 24, indicesCubo, 36);
-	uint32_t VAOQuad =		 createVertexData(quad_vertices, 6, quad_indices, 6);
+	uint32_t VAOQuad =		 createVertexData(quad_vertices_suelo, 6, quad_indices, 6);
 	uint32_t VAOScreenQuad = createVertexData(quad_screen_vertices, 6, indicesQuadScreeen, 6);
 
 
@@ -429,7 +447,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(shader, depthShader, debugShader, VAOCubo, VAOQuad, VAOScreenQuad, text1, text2, fboRes.first, fboRes.second);
+		Render(shader, depthShader, debugShader, lightShader, VAOCubo, VAOQuad, VAOScreenQuad, text1, text2, fboRes.first, fboRes.second);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
