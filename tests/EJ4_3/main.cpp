@@ -24,10 +24,11 @@ uint32_t elementsVertexs = 20;
 
 float vertexs[]{
 	// Position					// UVs
-	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
+	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,	//Front	
+	 0.5f, -0.5f, 0.0f,		2.0f, 0.0f,
+	 0.5f, 0.5f, 0.0f,		2.0f, 2.0f,
+	-0.5f, 0.5f, 0.0f,		0.0f, 2.0f 
+};
 
 
 uint32_t numeroIndicesCubo = 6;
