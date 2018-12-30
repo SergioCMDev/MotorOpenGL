@@ -133,10 +133,11 @@ void Projection3D(const Shader & shader, uint32_t numeroRepeticionesElemento, gl
 		for (uint32_t i = 0; i < numeroRepeticionesElemento; i++) {
 			glm::mat4 model = glm::mat4(1.0f);
 			glm::vec3 vector = cubePositions[i];
-			model = glm::translate(model, vector);
 			float angle;
 			angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
 			model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+			//Al cambiar el orden, rota toda la imagen
+			model = glm::translate(model, vector);
 			glm::mat4 view = glm::mat4(1.0f);
 			//alejamos el mundo 3D
 			//view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); //Se quedaria dentro de un cubo
