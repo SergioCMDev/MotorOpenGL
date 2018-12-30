@@ -23,11 +23,11 @@ const char* pathProyecto = "../tests/EJ4_1/";
 uint32_t elementsVertexs = 20;
 
 float vertexs[] {
-	// Position					// UVs
-	-0.5f, -0.5f, 0.5f, 0.0f, 0.0f,	//Front	
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f };
+	// Position					// Color
+	-0.5f, -0.5f, 0.5f,		1.0f, 0.0f, 0.0f,	//Front	
+	 0.5f, -0.5f, 0.5f,		0.0f, 1.0f, 0.0f,
+	 0.5f, 0.5f, 0.5f,		1.0f, 0.0f, 1.0f,
+	-0.5f, 0.5f, 0.5f,		0.0f, 1.0f, 0.0f };
 
 
 uint32_t numeroIndicesCubo = 6;
@@ -78,17 +78,14 @@ int Inicializacion() {
 
 
 
-void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1, uint32_t texture2) {
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shader.Use();
-	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
-
-	shader.Set("texture1", 0);
-	shader.Set("texture2", 1);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
@@ -124,7 +121,7 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 	//Bindeamos el VAO
 	glBindVertexArray(VAO);
 
-	uint32_t _numberOfElementsPerLine = 5;
+	uint32_t _numberOfElementsPerLine = 6;
 
 	//Bindeamos buffer vertices
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -142,8 +139,8 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 	glEnableVertexAttribArray(0);
 
 
-	//Vertices de textura
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
+	//Vertices de color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 
@@ -171,11 +168,6 @@ int main(int argc, char* argv[]) {
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
-	string textureString1 = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
-	const char* pathFinalImagen1 = textureString1.c_str();
-
-	string textureString2 = utils.GetFinalPath(pathProyecto, "Textures/texture2.jpg");
-	const char* pathFinalImagen2 = textureString2.c_str();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
 	int program = shader.GetIdProgram();
@@ -195,16 +187,13 @@ int main(int argc, char* argv[]) {
 
 	uint32_t VAO = createVertexData(vertexs, elementsVertexs, indicesQuadFrontal, numeroIndicesCubo);
 
-	uint32_t texture1 = createTexture(pathFinalImagen1, true);
-	uint32_t texture2 = createTexture(pathFinalImagen2, true);
-
 
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
 
-		Render(VAO, shader, numberOfElementsToDraw, texture1, texture2);
+		Render(VAO, shader, numberOfElementsToDraw);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
