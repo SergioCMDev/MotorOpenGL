@@ -21,7 +21,7 @@ float lastFrame = 0.0f;
 bool firstMouse = true;
 
 const int widht = 800, height = 600;
-const char* pathProyecto = "../tests/EJ5_6/";
+const char* pathProyecto = "../tests/EJ5_8/";
 const uint32_t screen_width = 800, screen_height = 600;
 
 float lastX = (float)screen_width / 2.0f;
@@ -217,7 +217,8 @@ void RenderCubo(uint32_t VAO, const Shader& shader, const uint32_t numberOfEleme
 	shader.Set("texture2", 1);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-	shader.Set("view", camera.GetViewMatrix());
+	//shader.Set("view", camera.GetViewMatrix());
+	shader.Set("view", camera.GetViewMatrixOwnCalculate());
 	shader.Set("projection", projection);	
 	glBindVertexArray(0);
 

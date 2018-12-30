@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1C21090D-8835-31BE-51B7-D41DBD8A2DEF}</ProjectGuid>
-    <RootNamespace>EJ6_3</RootNamespace>
+    <ProjectGuid>{E01C090D-4C31-31BE-15B3-D41D81862DEF}</ProjectGuid>
+    <RootNamespace>EJ5_8</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
@@ -42,15 +42,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\EJ6_3\</IntDir>
-    <TargetName>EJ6_3_d</TargetName>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\debug\EJ5_8\</IntDir>
+    <TargetName>EJ5_8_d</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
     <OutDir>..\bin\</OutDir>
-    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\EJ6_3\</IntDir>
-    <TargetName>EJ6_3_r</TargetName>
+    <IntDir>e:\Codigos Master\Programacion_1\OpenGLProject\build\obj\x64\release\EJ5_8\</IntDir>
+    <TargetName>EJ5_8_r</TargetName>
     <TargetExt>.exe</TargetExt>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
@@ -68,7 +68,7 @@
       <PrecompiledHeader></PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(IntDir)EJ6_3_d.compile.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(IntDir)EJ5_8_d.compile.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_GLFW_USE_OPENGL=1;_GLFW_WIN32;_GLFW_WGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -77,10 +77,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)EJ6_3_d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)EJ5_8_d.pdb</ProgramDatabaseFile>
       <AdditionalDependencies>OpenGL32.lib;assimp-vc140-mt.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libs\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)EJ6_3_d.exe</OutputFile>
+      <OutputFile>$(OutDir)EJ5_8_d.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -111,7 +111,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>OpenGL32.lib;assimp-vc140-mt.lib;;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\libs\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile>$(OutDir)EJ6_3_r.exe</OutputFile>
+      <OutputFile>$(OutDir)EJ5_8_r.exe</OutputFile>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -181,7 +181,7 @@
     <ClInclude Include="..\src\deps\glfw\wgl_context.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\tests\EJ6_3\main.cpp">
+    <ClCompile Include="..\tests\EJ5_8\main.cpp">
     </ClCompile>
     <ClCompile Include="..\src\Buffer.cpp">
     </ClCompile>

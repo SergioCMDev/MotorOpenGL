@@ -224,7 +224,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\tests\EJ6_3\main.cpp">
+    <ClCompile Include="..\tests\EJ5_8\main.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Buffer.cpp">

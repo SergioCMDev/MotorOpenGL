@@ -38,6 +38,9 @@ public:
 	//returns current view matrix
 	glm::mat4 GetViewMatrix() const;
 
+	//returns current view matrix
+	glm::mat4 GetViewMatrixOwnCalculate() const;
+
 	//returns the fov
 	float GetFOV() const;
 	//returns position
@@ -63,5 +66,8 @@ private:
 
 	//calculate the lookAt View matrix
 	glm::mat4 LookAt() const;
+	//calculate the lookAt View matrix 
+
+	glm::mat4 LookAtOwnCalculate() const;
 };
 #endif
