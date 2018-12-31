@@ -28,7 +28,7 @@ uint32_t Shader::CreateShader(const char *vertexPath) {
 	uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, numberOfElementsLoaded, &VertexCode, NULL);
 	glCompileShader(vertex);
-	CheckError(vertex, Shader::Type::Vertex);
+	CheckError(vertex, Shader::Type::Vertex, vertexPath);
 	return vertex;
 }
 
@@ -40,7 +40,7 @@ uint32_t Shader::CreateFragment(const char *fragmentPath) {
 	uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, numberOfElementsLoaded, &FragmentCode, NULL);
 	glCompileShader(fragment);
-	CheckError(fragment, Shader::Type::Fragment);
+	CheckError(fragment, Shader::Type::Fragment, fragmentPath);
 	return fragment;
 }
 
@@ -51,7 +51,7 @@ uint32_t Shader::CreateGeometry(const char *geometryPath) {
 	uint32_t geometry = glCreateShader(GL_GEOMETRY_SHADER);
 	glShaderSource(geometry, numberOfElementsLoaded, &GeometryCode, NULL);
 	glCompileShader(geometry);
-	CheckError(geometry, Type::Geometry);
+	CheckError(geometry, Type::Geometry, geometryPath);
 	return geometry;
 }
 
@@ -63,7 +63,7 @@ void Shader::CreateProgram(uint32_t vertex, uint32_t fragment, uint32_t geometry
 		glAttachShader(_id, geometry);
 	}
 	glLinkProgram(_id);
-	CheckError(_id, Type::Program);
+	CheckError(_id, Type::Program, 0);
 
 }
 
@@ -105,7 +105,7 @@ void Shader::loadShader(const char * path, string * code)
 }
 
 //comprobamos que se ha creado el shader correctamente
-void Shader::CheckError(const uint32_t shader, const Type type)const {
+void Shader::CheckError(const uint32_t shader, const Type type, const char * path)const {
 	int success;
 	char infoLog[512];
 	switch (type) {
@@ -115,7 +115,7 @@ void Shader::CheckError(const uint32_t shader, const Type type)const {
 		if (!success) {
 			glGetShaderInfoLog(shader, 512, NULL, infoLog);
 			//ARREGLAR
-			cout << "Error Compiling Shader " << (type == Type::Vertex ? "Vertex" : "Fragment") << endl << infoLog << endl;
+			cout << "Error Compiling Shader " << (type == Type::Vertex ? "Vertex" : "Fragment") << path <<endl << infoLog << endl;
 		}
 		break;
 	case Type::Program:

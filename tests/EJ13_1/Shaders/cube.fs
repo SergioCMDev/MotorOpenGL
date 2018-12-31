@@ -86,7 +86,7 @@ vec3 spotlightResult(SpotLight light){
 void main() {
  	vec3 color = vec3(texture(diffuseTexture, texCoord));
 	vec3 normal = normalize(normal);
-	vec3 lightColor = vec3(0.3);
+	vec3 lightColor = vec3(0.3,0.0,0.0);
 
 	vec3 ambient = 0.3 * color;
 

@@ -187,6 +187,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	glBindVertexArray(VAO);
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureAlbedo);
 

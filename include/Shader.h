@@ -48,7 +48,7 @@ public:
 	void Set(const char* name, const mat4& value) const;
 
 private:
-	void CheckError(const uint32_t shader, const Type type) const;
+	void CheckError(const uint32_t shader, const Type type, const char* path) const;
 	void loadShader(const char* path, string* code);
 	uint32_t _id;
 };
