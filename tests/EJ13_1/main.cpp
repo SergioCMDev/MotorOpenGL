@@ -15,9 +15,10 @@
 #include <stb_image.h>
 
 Utils utils;
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
+Camera camera(lightPos);
+//Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 glm::vec3 spotLightPos(-2.0f, 4.0f, -3.0f);
 float lastFrame = 0.0f;
 bool firstMouse = true;
@@ -238,13 +239,44 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
-	//Pintamos Cubos________________________________________________________________
 
-
+	//Definimos luces
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, texCubeAlbedo);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, texCubeSpecular);
+	//Luz DirLight
+	vec3 pos1 = vec3(0.0f, 2.25f, 0.5f);
+
+	shader.Set("dirLight.direction", -lightPos);
+	shader.Set("dirLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.Set("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
+	shader.Set("dirLight.specular", 1.0f, 1.0f, 1.0f);
+	shader.Set("dirLight.color", vec3(1.0f, 0.5f, 0.0f));
+
+	//Luz SpotLight
+
+	//shader.Set("spotlight.position", lightPos);
+	//shader.Set("spotlight.direction", 1.0f, 1.0f, 1.0f);
+	//shader.Set("spotlight.cutOff", cos(radians(20.0f)));
+	//shader.Set("spotlight.outerCutOff", cos(radians(25.0f)));
+	//shader.Set("spotlight.ambient", 0.2f, 0.15f, 0.1f);
+	//shader.Set("spotlight.diffuse", 0.5f, 0.5f, 0.5f);
+	//shader.Set("spotlight.constant", 1.0f);
+	//shader.Set("spotlight.linear", 0.09f);
+	//shader.Set("spotlight.cuadratic", 0.032f);
+	//shader.Set("spotlight.color", colorLuzSpotLight);
+
+	shader.Set("material.diffuse", 2);
+	shader.Set("material.specular", 3);
+
+	//shader.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
+	//shader.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
+	shader.Set("material.shininess", 65.6f);
+	//Pintamos Cubos________________________________________________________________
+
+
+
 	//Cubo 1
 	model = mat4(1.0f);
 
@@ -299,22 +331,7 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	model = scale(model, vec3(0.50f));
 	PintarCubo(shaderLight, 0, model, cubeVAO);
 
-	//Luz SpotLight
 
-	shader.Set("spotlight.position", lightPos);
-	shader.Set("spotlight.direction", 1.0f, 0.0f, 1.0f);
-	shader.Set("spotlight.cutOff", cos(radians(20.0f)));
-	shader.Set("spotlight.outerCutOff", cos(radians(25.0f)));
-	shader.Set("spotlight.ambient", 0.2f, 0.15f, 0.1f);
-	shader.Set("spotlight.diffuse", 0.5f, 0.5f, 0.5f);
-	shader.Set("spotlight.constant", 1.0f);
-	shader.Set("spotlight.linear", 0.09f);
-	shader.Set("spotlight.cuadratic", 0.032f);
-	shader.Set("spotlight.color", colorLuzSpotLight);
-
-	shader.Set("material.diffuse", 2);
-	shader.Set("material.specular", 3);
-	shader.Set("material.shininess", 25.6f);
 
 
 	glBindVertexArray(0);

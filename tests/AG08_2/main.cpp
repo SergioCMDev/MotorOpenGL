@@ -208,8 +208,10 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	shaderCube.Set("light.specular", 1.0f, 1.0f, 1.0f);
 
 	//shaderCube.Set("material.ambient", 0.2125f, 0.1275f, 0.054f);
-	shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
-	shaderCube.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
+	shaderCube.Set("material.diffuse", 0);
+	shaderCube.Set("material.specular", 1);
+	//shaderCube.Set("material.diffuse", 0.714f, 0.4284f, 0.18144f);
+	//shaderCube.Set("material.specular", 0.393548f, 0.271906f, 0.166721f);
 	shaderCube.Set("material.shininess", 25.6f);
 
 	for (uint32_t i = 0; i < 10; i++) {
