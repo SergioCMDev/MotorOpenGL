@@ -98,8 +98,6 @@ uint32_t indicesCubo[]{
 };
 
 
-
-
 using namespace std;
 
 const string pathProyecto = "../tests/EJ13_1/";
@@ -206,8 +204,23 @@ pair<uint32_t, uint32_t> createFBO() {
 	return make_pair(fbo, depthMap);
 }
 
+void PintarCubo(const Shader &shader, const uint32_t texture, mat4 model, const uint32_t vao) {
+
+	if (texture > 0) {
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		shader.Set("diffuseTexture", 0);
+	}
+
+	shader.Set("model", model);
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
+
+
 void RenderScene(const Shader &shader, const Shader &shaderLight,
-	const uint32_t cubeVAO, const uint32_t quadVAO, 
+	const uint32_t cubeVAO, const uint32_t quadVAO,
 	const uint32_t text1, const uint32_t text2) {
 
 
@@ -222,46 +235,50 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	glBindVertexArray(quadVAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	//Pintamos Cubos
+
+	//Pintamos Cubos________________________________________________________________
 	//Cubo 1
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, text2);
-	shader.Set("diffuseTexture", 0);
 	model = mat4(1.0f);
-	model = translate(model, vec3(0.0f, 1.5f, 0.0f));
-	model = scale(model, vec3(0.5f));
-	shader.Set("model", model);
-	glBindVertexArray(cubeVAO);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	vec3 pos = vec3(0.0f, 2.25f, 0.5f);
+	vec3 scaleValues(0.5f);
+	model = mat4(1.0f);
+	model = translate(model, pos);
+	model = scale(model, scaleValues);
+	PintarCubo(shader, text2, model, cubeVAO);
+
 
 	//Cubo 2
 	model = mat4(1.0f);
-	model = translate(model, vec3(0.5f, -0.25f, 0.5f));
-	model = scale(model, vec3(0.5f));
-	shader.Set("model", model);
-	glBindVertexArray(cubeVAO);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	pos = vec3(0.5f, -0.25f, 0.5f);
+	scaleValues = vec3(0.2f);
+	model = translate(model, pos);
+	model = scale(model, scaleValues);
+	PintarCubo(shader, text2, model, cubeVAO);
 
 	//Cubo 3
+	pos = vec3(-1.0f, 0.0f, 2.0f);
+	scaleValues = vec3(0.25f);
 	model = mat4(1.0f);
-	model = translate(model, vec3(-1.0f, 0.0f, 2.0f));
+	model = translate(model, pos);
 	model = rotate(model, radians(60.0f), normalize(vec3(1.0f, 0.0f, 1.0f)));
-	model = scale(model, vec3(0.25f));
-	shader.Set("model", model);
-	glBindVertexArray(cubeVAO);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	model = scale(model, scaleValues);
+	PintarCubo(shader, text2, model, cubeVAO);
 
-	glBindVertexArray(0);
 
-	//Cubo 4
+	//Cubo de luz
 	shaderLight.Use();
+	mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
+	mat4 view = camera.GetViewMatrix();
+	shaderLight.Set("projection", lightProjection);
+	shaderLight.Set("view", view);
 	vec3 lightPos = vec3(-1.0f, 5.0f, 2.0f);
 	model = mat4(1.0f);
 	model = translate(model, lightPos);
-	model = scale(model, vec3(0.25f));
-	shaderLight.Set("model", model);
-	glBindVertexArray(cubeVAO);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	model = scale(model, vec3(1.00f));
+	PintarCubo(shaderLight, 0, model, cubeVAO);
+
 
 	glBindVertexArray(0);
 }
@@ -291,7 +308,7 @@ void Render(
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	shader.Use();
-	lightProjection = glm::perspective(radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 100.0f);
+	lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
 	mat4 view = camera.GetViewMatrix();
 	shader.Set("projection", lightProjection);
 	shader.Set("view", view);
@@ -434,8 +451,8 @@ int main(int argc, char* argv[]) {
 
 	auto fboRes = createFBO();
 
-	uint32_t VAOCubo =		 createVertexData(verticesCubo, 24, indicesCubo, 36);
-	uint32_t VAOQuad =		 createVertexData(quad_vertices_suelo, 6, quad_indices, 6);
+	uint32_t VAOCubo = createVertexData(verticesCubo, 24, indicesCubo, 36);
+	uint32_t VAOQuad = createVertexData(quad_vertices_suelo, 6, quad_indices, 6);
 	uint32_t VAOScreenQuad = createVertexData(quad_screen_vertices, 6, indicesQuadScreeen, 6);
 
 
