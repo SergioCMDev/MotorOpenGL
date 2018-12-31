@@ -188,6 +188,8 @@ void Render(uint32_t VAOSuelo, const Shader& shader, const uint32_t numberOfElem
 	model = glm::scale(model, vec3{ 10.0f , 10.0f, 10.0f });
 
 	shader.Set("model", model);
+	glm::mat4 matOpenGL = camera.GetViewMatrix();
+	glm::mat4 matOwn = camera.GetViewMatrixOwnCalculate();
 	//shader.Set("view", camera.GetViewMatrix());
 	shader.Set("view", camera.GetViewMatrixOwnCalculate());
 	shader.Set("projection", projection);
