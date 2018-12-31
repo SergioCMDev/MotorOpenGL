@@ -172,10 +172,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 	//Si lo quitamos, no borra nunca la pantalla
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
 	glm::mat4 view = camera.GetViewMatrix();
-
 
 	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 10.0f);
 

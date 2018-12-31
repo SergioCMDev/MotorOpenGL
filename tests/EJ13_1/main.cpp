@@ -218,10 +218,22 @@ void PintarCubo(const Shader &shader, const uint32_t texture, mat4 model, const 
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
+void SetSpotlight(const Shader &shader) {
+
+	shader.Set("spotlight.position", lightPos);
+	shader.Set("spotlight.direction", 1.0f, 0.0f, 1.0f);
+	shader.Set("spotlight.cutOff", cos(radians(20.0f)));
+	shader.Set("spotlight.outerCutOff", cos(radians(25.0f)));
+	shader.Set("spotlight.ambient", 0.2f, 0.15f, 0.1f);
+	shader.Set("spotlight.diffuse", 0.5f, 0.5f, 0.5f);
+	shader.Set("spotlight.constant", 1.0f);
+	shader.Set("spotlight.linear", 0.09f);
+	shader.Set("spotlight.cuadratic", 0.032f);
+}
 
 void RenderScene(const Shader &shader, const Shader &shaderLight,
 	const uint32_t cubeVAO, const uint32_t quadVAO,
-	const uint32_t texLadrillo, const uint32_t textSuelo) {
+	const uint32_t texCubeAlbedo, const uint32_t texCubeSpecular, const uint32_t textSuelo) {
 
 
 	//Pintamos Suelo
@@ -237,9 +249,11 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 
 
 	//Pintamos Cubos________________________________________________________________
-	//Specular
+
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texLadrillo);
+	glBindTexture(GL_TEXTURE_2D, texCubeAlbedo);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texCubeSpecular);
 	//Cubo 1
 	model = mat4(1.0f);
 
@@ -248,7 +262,7 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	model = mat4(1.0f);
 	model = translate(model, pos);
 	model = scale(model, scaleValues);
-	PintarCubo(shader, texLadrillo, model, cubeVAO);
+	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
 
 	//Cubo 2
@@ -257,7 +271,7 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	scaleValues = vec3(0.2f);
 	model = translate(model, pos);
 	model = scale(model, scaleValues);
-	PintarCubo(shader, texLadrillo, model, cubeVAO);
+	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
 	//Cubo 3
 	pos = vec3(-1.0f, 0.0f, 2.0f);
@@ -266,7 +280,7 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	model = translate(model, pos);
 	model = rotate(model, radians(60.0f), normalize(vec3(1.0f, 0.0f, 1.0f)));
 	model = scale(model, scaleValues);
-	PintarCubo(shader, texLadrillo, model, cubeVAO);
+	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
 
 	//Cubo de luz
@@ -275,22 +289,15 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	mat4 view = camera.GetViewMatrix();
 	shaderLight.Set("projection", lightProjection);
 	shaderLight.Set("view", view);
-	vec3 lightPos = vec3(-1.0f, 5.0f, 2.0f);
+	//vec3 lightPos = vec3(-1.0f, 5.0f, 2.0f);
 	model = mat4(1.0f);
 	model = translate(model, lightPos);
-	model = scale(model, vec3(1.00f));
+	model = scale(model, vec3(0.50f));
 	PintarCubo(shaderLight, 0, model, cubeVAO);
 
-	shader.Set("light.position", lightPos);
-	shader.Set("light.direction", -1.0f, 0.0f, -1.0f);
-	shader.Set("light.cutOff", cos(radians(20.0f)));
-	shader.Set("light.outerCutOff", cos(radians(25.0f)));
-	shader.Set("light.ambient", 0.2f, 0.15f, 0.1f);
-	shader.Set("light.diffuse", 0.5f, 0.5f, 0.5f);
-	shader.Set("light.constant", 1.0f);
-	shader.Set("light.linear", 0.09f);
-	shader.Set("light.cuadratic", 0.032f);
 
+	//Luz SpotLight
+	SetSpotlight(shader);
 
 	shader.Set("material.diffuse", 0);
 	shader.Set("material.specular", 1);
@@ -300,10 +307,13 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	glBindVertexArray(0);
 }
 
+
+
+
 void Render(
 	const Shader& shader, const Shader& depthShader, const Shader& debugShader, const Shader& lightShader,
 	uint32_t cubeVAO, uint32_t quadVAO, uint32_t screenQuadVAO,
-	const uint32_t texLadrillo, const uint32_t texSuelo,
+	const uint32_t texLadrilloAlbedo, const uint32_t texLadrilloSpecular, const uint32_t texSuelo,
 	const uint32_t fbo, const uint32_t text_fbo) {
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -318,9 +328,8 @@ void Render(
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, shadow_width, shadow_height); //Cambiamos tamaño de pantalla a pantalla de sombra
-	RenderScene(depthShader, lightShader, cubeVAO, quadVAO, 0, 0);
+	RenderScene(depthShader, lightShader, cubeVAO, quadVAO, 0, 0, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 
 
 
@@ -338,7 +347,7 @@ void Render(
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, text_fbo);
 	shader.Set("depthMap", 1);
-	RenderScene(shader, lightShader, cubeVAO, quadVAO, texLadrillo, texSuelo);
+	RenderScene(shader, lightShader, cubeVAO, quadVAO, texLadrilloAlbedo, texLadrilloSpecular, texSuelo);
 
 
 	//debugShader.Use();
@@ -452,14 +461,18 @@ int main(int argc, char* argv[]) {
 	string fragmentPathlighthStr = utils.GetFinalPath(pathProyecto, "Shaders/light.fs");
 	const char* lightFS = fragmentPathlighthStr.c_str();
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/texture1.jpg");
-	const char* tex1Path = pathFinalImagen1String.c_str();
+	string pathFinalImagen1String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
+	const char* texAlbedo = pathFinalImagen1String.c_str();
 
-	string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/floor.png");
-	const char* tex3Path = pathFinalImagen3String.c_str();
+	string pathFinalImagen2String = utils.GetFinalPath(pathProyecto, "Textures/specular.png");
+	const char* texSpecular = pathFinalImagen2String.c_str();
+
+	string pathFinalImagen3String = utils.GetFinalPath(pathProyecto, "Textures/albedo.png");
+	const char* tex3Floor = pathFinalImagen3String.c_str();
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	uint32_t textLadrillo = createTexture(tex1Path, true);
-	uint32_t textSuelo = createTexture(tex3Path, true);
+	uint32_t textLadrilloAlbedo = createTexture(texAlbedo, true);
+	uint32_t textLadrilloSpecular = createTexture(texSpecular, true);
+	uint32_t textSuelo = createTexture(tex3Floor, true);
 
 
 
@@ -484,7 +497,9 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(shader, depthShader, debugShader, lightShader, VAOCubo, VAOQuad, VAOScreenQuad, textLadrillo, textSuelo, fboRes.first, fboRes.second);
+		Render(shader, depthShader, debugShader, lightShader, 
+			VAOCubo, VAOQuad, VAOScreenQuad, 
+			textLadrilloAlbedo, textLadrilloSpecular, textSuelo, fboRes.first, fboRes.second);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
