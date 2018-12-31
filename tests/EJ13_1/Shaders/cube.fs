@@ -12,6 +12,8 @@ uniform sampler2D depthMap;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;
+uniform vec3 lightColorNormal;
+uniform vec3 lightColorSpotLight;
 
 struct SpotLight{
 	vec3 position;
@@ -22,6 +24,7 @@ struct SpotLight{
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+	vec3 color;
 
 	float constant;
 	float linear;
@@ -71,41 +74,58 @@ vec3 spotlightResult(SpotLight light){
 	vec3 norm = normalize(normal);
 	vec3 lightDir = normalize(light.position - fragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse;
+	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse * light.color;
 
 	vec3 viewDir = normalize(viewPos - fragPos);
 
 	vec3 reflectDir = reflect(-lightDir , norm);
 	float spec =  pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular;
+	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular  * light.color;
 
-	vec3 phong = (ambient + diffuse + specular) * attenuance;
+	float theta =dot(lightDir, normalize(-light.direction));
+	float epsilon =light.cutOff - light.outerCutOff;
+	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0,1.0);
+
+	vec3 phong = (ambient + (diffuse * intensity) + (specular * intensity)) * attenuance;
 	return phong;
 }
 
-void main() {
- 	vec3 color = vec3(texture(diffuseTexture, texCoord));
+vec3 phong(){
+	 vec3 color = vec3(texture(diffuseTexture, texCoord));
 	vec3 normal = normalize(normal);
-	vec3 lightColor = vec3(0.3,0.0,0.0);
+	
 
 	vec3 ambient = 0.3 * color;
 
 	vec3 lightDir = normalize(lightPos - fragPos);
 	float diff = max(dot(lightDir, normal), 0.0);
-	vec3 diffuse = diff * lightColor;
+	//vec3 diffuse = diff * lightColorNormal;
+	vec3 diffuse = diff * (spotlight.color);
 
 	vec3 viewDir = normalize(viewPos - fragPos);
 
 	vec3 halfwayDir = normalize(lightDir +  viewDir);
 	float spec =  pow(max(dot(normal, halfwayDir), 0.0), 64);
-	vec3 specular = spec * lightColor;
+	//vec3 specular = spec * (lightColorNormal);
+	vec3 specular = spec * (spotlight.color);
 
 	float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
 
 
 	float shadow = ShadowCalculation(fragPosLightSpace, bias);
 
-	vec3 phong = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
+	//vec3 phong = (ambient + (1.0 - shadow) * (diffuse + specular)) * color; con sombras
+
+	vec3 phong = (ambient + (diffuse) + (specular)); //sin sombras
+
+	return phong;
+}
+
+void main() {
+
+
+	//vec3 phong = spotlightResult(spotlight);
+	vec3 phong = phong();
 	FragColor = vec4(phong, 1.0);
 	
 }
