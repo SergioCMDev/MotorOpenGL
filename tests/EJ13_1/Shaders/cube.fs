@@ -24,7 +24,6 @@ struct SpotLight{
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
-	vec3 color;
 
 	float constant;
 	float linear;
@@ -38,7 +37,6 @@ struct DirLight{
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
-	vec3 color;
 };
 uniform DirLight dirLight;
 
@@ -91,7 +89,7 @@ vec3 CalcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir){
 
 
 
-vec3 spotlightResult(SpotLight light){
+vec3 spotlightResult(SpotLight light, vec3 norm, vec3 viewDir){
 	float distance = length(light.position - fragPos);
 	float attenuance = 1.0 / (light.constant + 
 							  light.linear * distance + 
@@ -99,16 +97,13 @@ vec3 spotlightResult(SpotLight light){
  	
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, texCoord));
 
-	vec3 norm = normalize(normal);
 	vec3 lightDir = normalize(light.position - fragPos);
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse * light.color;
-
-	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 diffuse = diff * vec3(texture(material.diffuse, texCoord)) * light.diffuse;
 
 	vec3 reflectDir = reflect(-lightDir , norm);
 	float spec =  pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular  * light.color;
+	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular;
 
 	float theta =dot(lightDir, normalize(-light.direction));
 	float epsilon =light.cutOff - light.outerCutOff;
@@ -156,7 +151,7 @@ void main() {
 
 	//vec3 phong = phong();
 	vec3 color = CalcDirectionalLight(dirLight, norm, viewDir); 
-	//vec3 color = spotlightResult(spotlight);
+	color += spotlightResult(spotlight, norm, viewDir); 
 	FragColor = vec4(color, 1.0);
 	
 }
