@@ -255,7 +255,7 @@ void RenderScene(const Shader &shader,
 }
 
 void Render(
-	const Shader& lighingShader, const Shader& depthShader, const Shader& debugShader,
+	const Shader& shader, const Shader& depthShader, const Shader& debugShader,
 	uint32_t cubeVAO, uint32_t quadVAO, uint32_t screenQuadVAO,
 	const uint32_t tex1, const uint32_t tex2,
 	const uint32_t fbo, const uint32_t text_fbo) {
@@ -278,18 +278,18 @@ void Render(
 	glViewport(0, 0, screen_width, screen_height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	lighingShader.Use();
+	shader.Use();
 	lightProjection = glm::perspective(radians(camera.GetFOV()), (float) screen_width/ screen_height, 0.1f, 100.0f);
 	mat4 view = camera.GetViewMatrix();
-	lighingShader.Set("projection", lightProjection);
-	lighingShader.Set("view", view);
-	lighingShader.Set("viewPos", camera.GetPosition());
-	lighingShader.Set("lightPos", lightPos);
-	lighingShader.Set("lightSpaceMatrix", lightSpaceMatrix);
+	shader.Set("projection", lightProjection);
+	shader.Set("view", view);
+	shader.Set("viewPos", camera.GetPosition());
+	shader.Set("lightPos", lightPos);
+	shader.Set("lightSpaceMatrix", lightSpaceMatrix);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, text_fbo);
-	lighingShader.Set("depthMap", 1);
-	RenderScene(lighingShader, cubeVAO, quadVAO, tex1, tex2);
+	shader.Set("depthMap", 1);
+	RenderScene(shader, cubeVAO, quadVAO, tex1, tex2);
 
 
 	//debugShader.Use();
