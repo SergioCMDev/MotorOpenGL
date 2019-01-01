@@ -8,7 +8,6 @@ uniform sampler2D screenTexture;
 
 
 void main() {
-//Valor inicial
 	FragColor = texture(screenTexture, texCoords);
 
 }

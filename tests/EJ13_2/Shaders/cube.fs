@@ -12,8 +12,6 @@ uniform sampler2D depthMap;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;
-uniform vec3 lightColorNormal;
-uniform vec3 lightColorSpotLight;
 
 struct SpotLight{
 	vec3 position;

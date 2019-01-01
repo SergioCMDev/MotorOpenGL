@@ -15,7 +15,8 @@
 #include <stb_image.h>
 
 Utils utils;
-Camera camera(glm::vec3(-1.0f, 1.0f, -7.0f));
+Camera camera(glm::vec3(-1.0f, 1.0f, 3.0f));
+Camera camera2(glm::vec3(5.0f, 1.0f, -1.0f));
 
 glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
 float lastFrame = 0.0f;
@@ -27,7 +28,6 @@ float lastY = (float)screen_height / 2.0f;
 Window window;
 
 
-
 float verticesCuadrado[] = {
 	// positions		// normal coords	texture cords						
 	-0.5f, 0.5f, 0.5f,		0.0f, 1.0f, 0.0f, 		0.0f, 0.0f,				//Top
@@ -35,6 +35,7 @@ float verticesCuadrado[] = {
 	0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,		1.0f, 1.0f,
 	-0.5f, 0.5f, -0.5f,		0.0f, 1.0f, 0.0f,		0.0f, 1.0f,
 };
+
 uint32_t indicesCuadrado[] = {
 	0, 1, 2, 0, 2, 3 //Front
 };
@@ -47,10 +48,10 @@ float quad_screen_vertices[] = {
 	1.0f, 1.0f, 0.0f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
 
 };
+
 uint32_t indicesQuadScreeen[] = {
 	0, 1, 2, 0, 2, 3 //Front
 };
-
 
 uint32_t numeroElementosVerticesCubo = 192;
 
@@ -99,8 +100,6 @@ uint32_t indicesCubo[]{
 };
 
 
-
-
 using namespace std;
 
 const string pathProyecto = "../tests/EJ12_1/";
@@ -131,7 +130,6 @@ void OnMouse(GLFWwindow* window, double xpos, double ypos) {
 	camera.handleMouseMovement(xoffset, yoffset);
 }
 
-
 void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
 	camera.handleMouseScroll(yoffset);
 }
@@ -151,8 +149,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 	}
 	//Window::HandlerInput();
 }
-
-
 
 int Inicializacion() {
 	if (!glfwInit()) {
@@ -210,15 +206,15 @@ pair<uint32_t, uint32_t> createFBO() {
 	return make_pair(fbo, textureColor);
 }
 
-
-void Render(
-	const Shader& shaderCube, const Shader& shaderFBO,
+void RenderScena(Camera cameraActual, const Shader& shaderCube, const Shader& shaderFBO,
 	uint32_t VAOCubo, uint32_t VAOQuad, uint32_t VAOScreenQuad,
 	const uint32_t textureAlbedo, const uint32_t textureSpecular,
-	const uint32_t fbo, const uint32_t text_fbo) {
+	const uint32_t fbo, const uint32_t text_fbo,
+	const uint32_t fbo2, const uint32_t text_fbo2) {
 
 	glEnable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
 
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -228,7 +224,7 @@ void Render(
 	shaderCube.Use();
 	shaderCube.Set("objectColor", 1.0f, 0.5f, 0.5f);
 
-	shaderCube.Set("viewPos", camera.GetPosition());
+	shaderCube.Set("viewPos", cameraActual.GetPosition());
 	shaderCube.Set("light.position", lightPos);
 	shaderCube.Set("light.ambient", 0.2f, 0.15f, 0.1f);
 	//Valor Normal
@@ -248,9 +244,10 @@ void Render(
 	glBindTexture(GL_TEXTURE_2D, textureSpecular);
 
 
-	glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), 800.0f / 600.0f, 0.1f, 100.0f);
-	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 projection = glm::perspective(glm::radians(cameraActual.GetFOV()), 800.0f / 600.0f, 0.1f, 100.0f);
+	glm::mat4 view = cameraActual.GetViewMatrix();
 
+	//Pintamos suelo
 	shaderCube.Set("projection", projection);
 	shaderCube.Set("view", view);
 	glm::mat4 model = glm::mat4(1.0f);
@@ -263,27 +260,32 @@ void Render(
 	glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
 	shaderCube.Set("normalMat", normalMat);
 
+
 	glBindVertexArray(VAOQuad);
 
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-	////Pintamos Cubo 1
+
+
+
+
+	//////Pintamos Cubo 1
 
 	glm::mat4 model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, 2.0f);
 	scale = vec3(1.0f, 1.f, 1.0f);
-	model2 = glm::translate(model2, pos);
-	model2 = glm::scale(model2, scale);
-	shaderCube.Set("model", model2);
+	//model2 = glm::translate(model2, pos);
+	//model2 = glm::scale(model2, scale);
+	//shaderCube.Set("model", model2);
 
-	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
-	shaderCube.Set("normalMat", normalMat);
+	//normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
+	//shaderCube.Set("normalMat", normalMat);
 
-	glBindVertexArray(VAOCubo);
+	//glBindVertexArray(VAOCubo);
 
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-	//Pintamos Cubo 2
+	////Pintamos Cubo 2
 
 	model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, 0.0f);
@@ -293,13 +295,11 @@ void Render(
 
 	normalMat = glm::inverse(glm::transpose(glm::mat3(model2)));
 	shaderCube.Set("normalMat", normalMat);
-
 	glBindVertexArray(VAOCubo);
-
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
-	//Pintamos Cubo 3
+	////Pintamos Cubo 3
 
 	model2 = glm::mat4(1.0f);
 	pos = vec3(0.0f, 0.2f, -2.0f);
@@ -316,28 +316,80 @@ void Render(
 
 	glBindVertexArray(0);
 
-	//Segunda pasada
-	//Para mostrar la linea en medio
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+	if (fbo2 > 0) {
+		//Pintamos suelo
+		shaderCube.Use();
+		shaderCube.Set("projection", projection);
+		shaderCube.Set("view", view);
+		glm::mat4 model = glm::mat4(1.0f);
+		vec3 pos = vec3(3.0f, 0.2f, -2.0f);
+		vec3 scale = vec3(2.0f);
+		model = glm::translate(model, pos); //Derecha-Izq  Arriba Abajo Z	
+		model = glm::scale(model, scale);
+		shaderCube.Set("model", model);
+
+		glm::mat3 normalMat = glm::inverse(glm::transpose(glm::mat3(model)));
+		shaderCube.Set("material.diffuse", 0);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, text_fbo);
+
+		glBindVertexArray(VAOScreenQuad);
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
+
+}
+
+
+
+void Render(
+	const Shader& shaderCube, const Shader& shaderFBO,
+	uint32_t VAOCubo, uint32_t VAOQuad, uint32_t VAOScreenQuad,
+	const uint32_t textureAlbedo, const uint32_t textureSpecular,
+	const uint32_t fbo, const uint32_t text_fbo) {
+
+
+	glBindVertexArray(VAOScreenQuad);
+
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	auto fboResCamara1 = createFBO();
+	auto fboResCamara2 = createFBO();
+	RenderScena(camera2, shaderCube, shaderFBO, VAOCubo, VAOQuad, VAOScreenQuad, textureAlbedo, textureSpecular, fboResCamara2.first, fboResCamara2.second,0,0);
+	RenderScena(camera, shaderCube, shaderFBO, VAOCubo, VAOQuad, VAOScreenQuad, textureAlbedo, textureSpecular, fboResCamara1.first, fboResCamara1.second, fboResCamara2.first, fboResCamara2.second);
+
+
+
+
+	//FIN PASADA 2
+	//Para mostrar la linea en medio
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glDisable(GL_DEPTH_TEST);
 
 	//Pintamos sobre gris
 	//glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	//Pintamos sobre blanco
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	//glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shaderFBO.Use();
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, text_fbo);
+	glBindTexture(GL_TEXTURE_2D, fboResCamara1.second);
 	shaderFBO.Set("screenTexture", 0);
 
 	glBindVertexArray(VAOScreenQuad);
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	//Para mostrar la linea en medio
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glBindVertexArray(0);
 }
