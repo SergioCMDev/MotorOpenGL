@@ -29,7 +29,7 @@ struct SpotLight{
 	float linear;
 	float cuadratic;
 };
-uniform SpotLight spotlight;
+uniform SpotLight[2] spotlight;
 
 struct DirLight{
 	vec3 direction;
@@ -161,10 +161,10 @@ void main() {
 	vec3 norm = normalize(normal);
 	vec3 viewDir = normalize(viewPos - fragPos);
 
-	//vec3 phong = phong();
-	//vec3 color = CalcDirectionalLight(dirLight, norm, viewDir); 
-	//color += spotlightResult(spotlight, norm, viewDir); 
-	vec3 color = spotlightResult(spotlight, norm, viewDir); 
+
+	//vec3 color = spotlightResult(spotlight[1], norm, viewDir); 
+	vec3 color = spotlightResult(spotlight[0], norm, viewDir); 
+	color += spotlightResult(spotlight[1], norm, viewDir); 
 	FragColor = vec4(color, 1.0);
 	
 }

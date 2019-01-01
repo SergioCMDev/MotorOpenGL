@@ -19,7 +19,12 @@ Utils utils;
 glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 Camera camera(lightPos);
 //Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-glm::vec3 spotLightPos(-2.0f, 4.0f, -3.0f);
+glm::vec3 spotLightPos[] = {
+ glm::vec3(-2.0f, 4.0f, -3.0f), //ABAJO 
+ glm::vec3(0.0f, 6.0f, -3.0f), //Arriba
+};
+
+
 float lastFrame = 0.0f;
 bool firstMouse = true;
 
@@ -55,6 +60,7 @@ float quad_screen_vertices[] = {
 	1.0f, 1.0f, 0.0f,		0.0f, 0.0f, 1.0f,		1.0f, 1.0f,
 
 };
+
 uint32_t indicesQuadScreeen[] = {
 	0, 1, 2,	0, 2, 3 //Front
 };
@@ -102,7 +108,7 @@ uint32_t indicesCubo[]{
 
 using namespace std;
 
-const string pathProyecto = "../tests/EJ13_1/";
+const string pathProyecto = "../tests/EJ13_2/";
 #pragma region Cabezeras
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
 #pragma endregion
@@ -245,19 +251,10 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	//Pintamos Cubos________________________________________________________________
 	//Cubo enfrente
 	model = mat4(1.0f);
-	//IZQ
-	float posX = cos(glfwGetTime());
-	float posY = cos(glfwGetTime());
-	//vec3 pos = vec3(0.0f, posY + 4.0f, -1.0f);
-	//vec3 scaleValues(1.5f);
-	//model = mat4(1.0f);
-	//model = translate(model, pos);
-	//model = scale(model, scaleValues);
-	//PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
+	float posY = cos(glfwGetTime() * 2);
 
 	model = mat4(1.0f);
 	//IZQ DETRAS
-	posX = cos(glfwGetTime());
 	posY = cos(glfwGetTime());
 	vec3 pos = vec3(10.0f, 4.0f, -2.0f);
 	vec3 scaleValues = vec3(15.0f);
@@ -266,77 +263,46 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	model = scale(model, scaleValues);
 	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
-	////DER
-	posX = cos(glfwGetTime());
-	posY = cos(glfwGetTime());
-	pos = vec3(0.0f, posY + 4.0f, -3.0f);
+	////abajo
+	posY = cos(glfwGetTime()) + sin(glfwGetTime());
+	pos = vec3(0.0f, 4.0f, posY  -2.0f);
 	scaleValues = vec3 (0.5f);
 	model = mat4(1.0f);
 	model = translate(model, pos);
 	model = scale(model, scaleValues);
 	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
-	posX = cos(glfwGetTime());
-	posY = cos(glfwGetTime());
-	pos = vec3(0.0f, 6.0f, -3.0f);
-	scaleValues = vec3(0.5f);
-	model = mat4(1.0f);
-	model = translate(model, pos);
-	model = scale(model, scaleValues);
-	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
-
-
-	////Cubo 1
-	//model = mat4(1.0f);
-
-	//pos = vec3(-1.5f, 1.0f, -0.5f);
-	//scaleValues = vec3(0.5f);
-	//model = mat4(1.0f);
-	//model = translate(model, pos);
-	//model = scale(model, scaleValues);
-	//PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
-
-	////Cubo 2
-	//pos = vec3(-0.5f, 3.25f, -2.5f);
-	//scaleValues = vec3(0.2f);
-	//model = translate(model, pos);
-	//model = scale(model, scaleValues);
-	//PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
-
-	////Cubo 3
-	//pos = vec3(-1.0f, 0.0f, 2.0f);
-	//scaleValues = vec3(0.25f);
-	//model = mat4(1.0f);
-	//model = translate(model, pos);
-	//model = rotate(model, radians(60.0f), normalize(vec3(1.0f, 0.0f, 1.0f)));
-	//model = scale(model, scaleValues);
-	//PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
 	//Pintar cubos de luz___________________________________________________________________________
 	//Cubo de luz normal
-	//shaderLight.Use();
-	//mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
-	//mat4 view = camera.GetViewMatrix();
-	//shaderLight.Set("projection", lightProjection);
-	//shaderLight.Set("view", view);
-	//shaderLight.Set("color", vec3(1.0f));
-	//model = mat4(1.0f);
-	//model = translate(model, lightPos);
-	//model = scale(model, vec3(0.50f));
-	//PintarCubo(shaderLight, 0, model, cubeVAO);
+
 
 
 	//Cubo de luz Spotlight
+	//Arriba
+	shaderLight.Use();
+	mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
+	mat4 view = camera.GetViewMatrix();
+	shaderLight.Set("projection", lightProjection);
+	shaderLight.Set("view", view);
+	shaderLight.Set("color", colorLuzSpotLight);
+	model = mat4(1.0f);
+	model = translate(model, spotLightPos[1]);
+	model = scale(model, vec3(0.50f));
+	PintarCubo(shaderLight, 0, model, cubeVAO);
+
+	//IZQ
 	//shaderLight.Use();
-	//mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
-	//mat4 view = camera.GetViewMatrix();
-	//shaderLight.Set("projection", lightProjection);
-	//shaderLight.Set("view", view);
-	//shaderLight.Set("color", colorLuzSpotLight);
-	//model = mat4(1.0f);
-	//model = translate(model, spotLightPos);
-	//model = scale(model, vec3(0.50f));
-	//PintarCubo(shaderLight, 0, model, cubeVAO);
+	shaderLight.Set("projection", lightProjection);
+	shaderLight.Set("view", view);
+	shaderLight.Set("color", colorLuzSpotLight);
+	model = mat4(1.0f);
+	model = translate(model, spotLightPos[0]);
+	model = scale(model, vec3(0.50f));
+	PintarCubo(shaderLight, 0, model, cubeVAO);
+
+
+
 
 
 	glBindVertexArray(0);
@@ -357,10 +323,12 @@ void Render(
 	//Primera pasada
 	//para luz direccional
 	//glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, shadow_near, shadow_far);
-
+	
+	//ABAJO
+	//Primera luz
 	glm::mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, shadow_near, shadow_far);
-	vec3 pos(10.0f, 4.0f, -2.0f);
-	mat4 lightView = lookAt(spotLightPos, pos, vec3(0.0f, 1.0f, 0.0f));
+	vec3 pos(10.0f, 4.0f, -2.0f); //Pos cubo grande
+	mat4 lightView = lookAt(spotLightPos[0], pos, vec3(0.0f, 1.0f, 0.0f));
 	mat4 lightSpaceMatrix = lightProjection * lightView;
 
 	depthShader.Use();
@@ -369,6 +337,18 @@ void Render(
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glViewport(0, 0, shadow_width, shadow_height); //Cambiamos tamaño de pantalla a pantalla de sombra
+	RenderScene(depthShader, lightShader, cubeVAO, quadVAO, 0, 0, 0, colorLuzNormal, colorSpotLight);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	////Segunda luz ARRIBA
+	pos = vec3(0.0f, 0.0f, 0.0f);
+	lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, shadow_near, shadow_far);
+	lightView = lookAt(spotLightPos[1], pos, vec3(0.0f, 1.0f, 0.0f));
+	mat4 lightSpaceMatrix2 = lightProjection * lightView;
+
+	//depthShader.Use();
+	depthShader.Set("lightSpaceMatrix", lightSpaceMatrix2);
+
 	RenderScene(depthShader, lightShader, cubeVAO, quadVAO, 0, 0, 0, colorLuzNormal, colorSpotLight);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -380,25 +360,29 @@ void Render(
 	mat4 view = camera.GetViewMatrix();
 
 	//Definimos luces________________________________________________________________________________________
-//Luz DirLight
-
-	shader.Set("dirLight.direction", -lightPos);
-	shader.Set("dirLight.ambient", colorLuzNormal);
-	shader.Set("dirLight.diffuse", 0.5f, 0.5f, 0.5f);
-	shader.Set("dirLight.specular", 1.0f, 1.0f, 1.0f);
-	shader.Set("dirLight.color", vec3(1.0f, 0.5f, 0.0f));
 
 	//Luz SpotLight
 
-	shader.Set("spotlight.position", spotLightPos);
-	shader.Set("spotlight.direction", 1.0f, 0.0f, 0.0f); // y > altura 
-	shader.Set("spotlight.cutOff", cos(radians(20.0f)));
-	shader.Set("spotlight.outerCutOff", cos(radians(25.0f)));
-	shader.Set("spotlight.ambient", 0.2f, 0.2f, 0.2f);
-	shader.Set("spotlight.diffuse", 0.5f, 0.5f, 0.5f);
-	shader.Set("spotlight.constant", 1.0f);
-	shader.Set("spotlight.linear", 0.09f);
-	shader.Set("spotlight.cuadratic", 0.032f);
+	shader.Set("spotlight[0].position", spotLightPos[0]);
+	shader.Set("spotlight[0].direction", 1.0f, 0.0f, 0.0f); // y > altura 
+	shader.Set("spotlight[0].cutOff", cos(radians(20.0f)));
+	shader.Set("spotlight[0].outerCutOff", cos(radians(25.0f)));
+	shader.Set("spotlight[0].ambient", 0.2f, 0.2f, 0.2f);
+	shader.Set("spotlight[0].diffuse", 0.5f, 0.5f, 0.5f);
+	shader.Set("spotlight[0].constant", 1.0f);
+	shader.Set("spotlight[0].linear", 0.09f);
+	shader.Set("spotlight[0].cuadratic", 0.032f);
+
+
+	shader.Set("spotlight[1].position", spotLightPos[1]);
+	shader.Set("spotlight[1].direction", 0.0f, -2.0f, 0.0f); 
+	shader.Set("spotlight[1].cutOff", cos(radians(20.0f)));
+	shader.Set("spotlight[1].outerCutOff", cos(radians(25.0f)));
+	shader.Set("spotlight[1].ambient", 0.2f, 0.2f, 0.2f);
+	shader.Set("spotlight[1].diffuse", 0.5f, 0.5f, 0.5f);
+	shader.Set("spotlight[1].constant", 1.0f);
+	shader.Set("spotlight[1].linear", 0.09f);
+	shader.Set("spotlight[1].cuadratic", 0.032f);
 
 	shader.Set("material.diffuse", 2);
 	shader.Set("material.specular", 3);
@@ -408,14 +392,18 @@ void Render(
 	shader.Set("projection", lightProjection);
 	shader.Set("view", view);
 	shader.Set("viewPos", camera.GetPosition());
-	shader.Set("lightPos", lightPos);
+	shader.Set("lightPos", spotLightPos[0]);
 	shader.Set("lightSpaceMatrix", lightSpaceMatrix);
+	shader.Set("lightSpaceMatrix2", lightSpaceMatrix2);
 
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, text_fbo);
 	shader.Set("depthMap", 1);
 
+	//RenderScene(shader, lightShader, cubeVAO, quadVAO, texLadrilloAlbedo, texLadrilloSpecular, texSuelo, colorLuzNormal, colorSpotLight);
+	shader.Set("lightPos", spotLightPos[1]);
+	shader.Set("lightSpaceMatrix", lightSpaceMatrix2);
 	RenderScene(shader, lightShader, cubeVAO, quadVAO, texLadrilloAlbedo, texLadrilloSpecular, texSuelo, colorLuzNormal, colorSpotLight);
 
 	//debugShader.Use();
