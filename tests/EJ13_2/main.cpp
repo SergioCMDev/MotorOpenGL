@@ -276,6 +276,15 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 	model = scale(model, scaleValues);
 	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
 
+	posX = cos(glfwGetTime());
+	posY = cos(glfwGetTime());
+	pos = vec3(0.0f, 6.0f, -3.0f);
+	scaleValues = vec3(0.5f);
+	model = mat4(1.0f);
+	model = translate(model, pos);
+	model = scale(model, scaleValues);
+	PintarCubo(shader, texCubeAlbedo, model, cubeVAO);
+
 
 	////Cubo 1
 	//model = mat4(1.0f);
@@ -318,16 +327,16 @@ void RenderScene(const Shader &shader, const Shader &shaderLight,
 
 
 	//Cubo de luz Spotlight
-	shaderLight.Use();
-	mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
-	mat4 view = camera.GetViewMatrix();
-	shaderLight.Set("projection", lightProjection);
-	shaderLight.Set("view", view);
-	shaderLight.Set("color", colorLuzSpotLight);
-	model = mat4(1.0f);
-	model = translate(model, spotLightPos);
-	model = scale(model, vec3(0.50f));
-	PintarCubo(shaderLight, 0, model, cubeVAO);
+	//shaderLight.Use();
+	//mat4 lightProjection = glm::perspective(radians(camera.GetFOV()), (float)screen_width / screen_height, 0.1f, 100.0f);
+	//mat4 view = camera.GetViewMatrix();
+	//shaderLight.Set("projection", lightProjection);
+	//shaderLight.Set("view", view);
+	//shaderLight.Set("color", colorLuzSpotLight);
+	//model = mat4(1.0f);
+	//model = translate(model, spotLightPos);
+	//model = scale(model, vec3(0.50f));
+	//PintarCubo(shaderLight, 0, model, cubeVAO);
 
 
 	glBindVertexArray(0);
