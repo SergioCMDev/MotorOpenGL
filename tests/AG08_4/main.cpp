@@ -116,7 +116,6 @@ void OnMouse(GLFWwindow* window, double xpos, double ypos) {
 	camera.handleMouseMovement(xoffset, yoffset);
 }
 
-
 void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
 	camera.handleMouseScroll(yoffset);
 }
@@ -136,8 +135,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 	}
 	//Window::HandlerInput();
 }
-
-
 
 int Inicializacion() {
 	if (!glfwInit()) {
@@ -233,6 +230,7 @@ void Render(uint32_t VAO, const Shader& shaderCube, const Shader& shaderlight,
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
+
 uint32_t createTexture(const char* path, bool flip) {
 	uint32_t texture;
 	glGenTextures(1, &texture);
@@ -304,6 +302,7 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 
 	return VAO;
 }
+
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;

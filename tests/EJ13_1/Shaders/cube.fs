@@ -84,7 +84,14 @@ vec3 CalcDirectionalLight(DirLight light, vec3 normal, vec3 viewDir){
 	vec3 specular = spec * vec3(texture(material.specular, texCoord)) * light.specular;
 
 
-	return ambient + diffuse + specular;
+	float bias = max(0.05 * (1.0 - dot(normal, lightDir)), 0.005);
+
+
+	float shadow = ShadowCalculation(fragPosLightSpace, bias);
+
+	vec3 phong = (ambient + (1.0 - shadow) * (diffuse + specular)); //con sombras
+	return phong;
+	//return ambient + diffuse + specular;
 }
 
 
@@ -108,6 +115,8 @@ vec3 spotlightResult(SpotLight light, vec3 norm, vec3 viewDir){
 	float theta =dot(lightDir, normalize(-light.direction));
 	float epsilon =light.cutOff - light.outerCutOff;
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0,1.0);
+
+
 
 	vec3 phong = (ambient + (diffuse * intensity) + (specular * intensity)) * attenuance;
 	return phong;
@@ -150,8 +159,8 @@ void main() {
 	vec3 viewDir = normalize(viewPos - fragPos);
 
 	//vec3 phong = phong();
-	vec3 color = CalcDirectionalLight(dirLight, norm, viewDir); 
-	color += spotlightResult(spotlight, norm, viewDir); 
+	//vec3 color = CalcDirectionalLight(dirLight, norm, viewDir); 
+	vec3 color = spotlightResult(spotlight, norm, viewDir); 
 	FragColor = vec4(color, 1.0);
 	
 }
