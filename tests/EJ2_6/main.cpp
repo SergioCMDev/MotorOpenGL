@@ -1,5 +1,7 @@
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
+#define _USE_MATH_DEFINES
+#include <math.h>       /* round, floor, ceil, trunc */
 
 #include<iostream>
 #include<cstdint>
@@ -8,17 +10,18 @@
 #include "Utils.h"
 
 using namespace std;
-
 GLFWwindow* window;
 Utils utils;
 const char* pathProyecto = "../tests/EJ2_6/";
+
 uint32_t indicesFigura[] = {
-	6,0,1,
-	6,1,2,
-	6,2,3,
-	3,4,6,
-	4,5,6,
-	6,5,0
+6,0,1,
+6,1,2,
+6,2,3,
+3,4,6,
+4,5,6,
+6,5,0
+
 };
 
 #pragma region Cabezeras
@@ -27,13 +30,14 @@ void Render(GLfloat R, GLfloat G, GLfloat B, GLfloat A);
 void Render();
 void HandlerInput(GLFWwindow* window);
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height);
+void GetVerticesHexagono(float radio, glm::vec3  newVertices[7]);
 #pragma endregion
 
 
 #pragma region Metodos
 
 //Devuelve un VAO formado por todos los componentes
-uint32_t createvertexDatatriangulo1(uint32_t indices[], uint32_t sizeOfIndices,	float vertices[], uint32_t sizeOfVertices) {
+uint32_t createvertexDatatriangulo1(uint32_t indices[], uint32_t sizeOfIndices, vec3 vertices[], uint32_t sizeOfVertices) {
 	uint32_t VAO;
 	uint32_t VBO, EBO;
 	glGenVertexArrays(1, &VAO);
@@ -129,7 +133,32 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements)
 
 
 vec3 calcularSigPos(vec3 posActual, uint32_t radio) {
-	return vec3(1.0f);
+	uint32_t parteEntera1 = radio;
+	uint32_t parteEntera2 = radio;
+	float grados1;
+	float grados2;
+	uint32_t parteEntera = parteEntera1 * parteEntera2;
+	uint32_t parteGrados = grados1 + grados2;
+	float parteTotal1 = parteEntera1 * cos(parteGrados);
+	float parteTotal2 = parteEntera2 * sin(parteGrados);
+	return vec3(parteTotal1, parteTotal2, 0.0f);
+}
+
+vec2 TransformarPolarToCartesiano(vec2 ValorPolar) {
+	return vec2(
+		ValorPolar.x * cos(ValorPolar.y),
+		ValorPolar.x * sin(ValorPolar.y)
+	);
+}
+
+void GetVerticesHexagono(float radio, glm::vec3  newVertices[7])
+{
+	for (size_t i = 0; i < 6; i++)
+	{
+		vec2 ValorPolar = vec2(radio, i * (M_PI) / 3);
+		vec2 ValorCartesiano = TransformarPolarToCartesiano(ValorPolar);
+		newVertices[i + 1] = vec3(ValorCartesiano, 0.0f);
+	}
 }
 
 int main(int argc, char* argv[]) {
@@ -143,49 +172,27 @@ int main(int argc, char* argv[]) {
 	string fragmentPathString = utils.GetFinalPath(pathProyecto, "Shaders/fragment.fs");
 	const char* fragmentPath1 = fragmentPathString.c_str();
 
-	Shader shader1(vertexpath, fragmentPath1);
+	Shader shader(vertexpath, fragmentPath1);
 
-	float vertices1[] = {
-		//Pos
-	-0.2f, -0.3f, 0.0f,
-	0.2f, -0.3f, 0.0f,
-	0.3f,  0.0f, 0.0f,
-	0.2f,  0.3f, 0.0f,
-	-0.2f,  0.3f, 0.0f,
-	-0.3f,  0.0f, 0.0f,
-	0.0f,  0.0f, 0.0f,
+
+	float radio = 1.0f;
+	vec3 newVertices[7] = {
+		vec3(0.0f,0.0f,0.0f), //Centrado en el (0,0)
 	};
-
-	vec3 newVertices[7];
-
-	uint32_t radio = 2;
-	for (size_t i = 1; i <= 6; i++)
-	{
-		vec3 origen = vec3(vertices1[3 * (i-1) ], vertices1[i * 2 + i-2], 0);
-		cout << origen.x << " " << origen.y << endl;
-		newVertices[i - 1] = origen;
-		//vec3 newPos = calcularSigPos(origen, radio);
-		//cout << newPos.x << " " << newPos.y << endl;
-
-	}
-	newVertices[6] = vec3(0.0);
-	
-
+	GetVerticesHexagono(radio, newVertices);
 
 
 
 	uint32_t sizeOfIndices = sizeof(indicesFigura); //3 uint32_t * sizeofuint32_t(4) = 12
-	uint32_t sizeOfVertices = sizeof(vertices1);  //42 floats * sizeoffloat(4) = 168
 	uint32_t numberOfElements = sizeof(indicesFigura) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAOTriangules = createvertexDatatriangulo1(indicesFigura, sizeOfIndices, vertices1, sizeOfVertices);
-	//uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesFigura, sizeOfIndices, vertices1, sizeOfVertices);
+	uint32_t VAOTriangules = createvertexDatatriangulo1(indicesFigura, sizeOfIndices, newVertices, sizeof(newVertices));
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
 		HandlerInput(window);
-		shader1.Set("color", vec3(1.0f));
-		Render(VAOTriangules, shader1, numberOfElements);
+		shader.Set("color", vec3(1.0f));
+		Render(VAOTriangules, shader, numberOfElements);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -193,8 +200,7 @@ int main(int argc, char* argv[]) {
 	//Crear metodo para esto
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAOTriangules);
-
-
+	
 
 	glfwTerminate();
 	return 0;
