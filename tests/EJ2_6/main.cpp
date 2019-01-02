@@ -20,16 +20,16 @@ uint32_t indicesFigura[] = {
 	4,5,6,
 	6,5,0
 };
-float vertices1[] = {
-	//Color
--0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
-0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
--0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
--0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
- 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
-};
+//float vertices1[] = {
+//	//Color
+//-0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
+//0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
+//0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
+//0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
+//-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
+//-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
+// 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
+//};
 
 #pragma region Cabezeras
 
@@ -64,13 +64,8 @@ uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO, uint32_t indic
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndices, indices, GL_STATIC_DRAW);
 
 	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glad_glEnableVertexAttribArray(0);
-
-	//Vertices de color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	////Lo habilitamos
-	glad_glEnableVertexAttribArray(1);
 
 	//desbindeamos buffer objetos
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -96,8 +91,6 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 	//Cambio de clip scene a view scene
 	glViewport(0, 0, width, height);
 }
-
-
 
 int Inicializacion() {
 	if (!glfwInit()) {
@@ -142,6 +135,11 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements)
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
 
+
+vec3 calcularSigPos(vec3 posActual, uint32_t radio) {
+	return vec3(1.0f);
+}
+
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;
@@ -155,6 +153,25 @@ int main(int argc, char* argv[]) {
 
 	Shader shader1(vertexpath, fragmentPath1);
 
+	float vertices1[] = {
+		//Color
+	-0.2f, -0.3f, 0.0f,
+	0.2f, -0.3f, 0.0f,  
+	0.3f,  0.0f, 0.0f,
+	0.2f,  0.3f, 0.0f,
+	-0.2f,  0.3f, 0.0f,
+	-0.3f,  0.0f, 0.0f,
+	 0.0f,  0.0f, 0.0f,
+	};
+	uint32_t i = 0;
+	uint32_t radio = 2;
+	for (size_t i = 1; i < 5; i++)
+	{
+		vec3 origen = vec3(vertices1[0 * i], vertices1[1 * i], vertices1[2 * i]);
+		vec3 newPos = calcularSigPos(origen, radio);
+		cout << newPos.x << " " << newPos.y << endl;
+
+	}
 
 	uint32_t VBOTriangulo1, EBO;
 
@@ -169,10 +186,11 @@ int main(int argc, char* argv[]) {
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
-		//HandlerInput(window);
-		//Render(VAOTriangules, shader1, numberOfElements);
-		//glfwSwapBuffers(window);
-		//glfwPollEvents();
+		HandlerInput(window);
+		shader1.Set("color", vec3(1.0f));
+		Render(VAOTriangules, shader1, numberOfElements);
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
 	//Crear metodo para esto
