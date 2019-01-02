@@ -20,16 +20,6 @@ uint32_t indicesFigura[] = {
 	4,5,6,
 	6,5,0
 };
-//float vertices1[] = {
-//	//Color
-//-0.2f, -0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //0
-//0.2f, -0.3f, 0.0f,		  	1.0f, 0.0f, 0.0f, //1
-//0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //2
-//0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //3
-//-0.2f,  0.3f, 0.0f,			1.0f, 0.0f, 0.0f, //4
-//-0.3f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f, //5
-// 0.0f,  0.0f, 0.0f,			1.0f, 0.0f, 0.0f  //6
-//};
 
 #pragma region Cabezeras
 
@@ -43,24 +33,24 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 #pragma region Metodos
 
 //Devuelve un VAO formado por todos los componentes
-uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO, uint32_t indices[], uint32_t sizeOfIndices,
-	float vertices[], uint32_t sizeOfVertices) {
+uint32_t createvertexDatatriangulo1(uint32_t indices[], uint32_t sizeOfIndices,	float vertices[], uint32_t sizeOfVertices) {
 	uint32_t VAO;
+	uint32_t VBO, EBO;
 	glGenVertexArrays(1, &VAO);
 	//Generamos 2 buffer, elementos y objetos
-	glGenBuffers(1, VBO);
-	glGenBuffers(1, EBO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
 	//Bindeamos el VAO
 	glBindVertexArray(VAO);
 
 	//Bindeamos buffer vertices
-	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//Subida de vertices al buffer
 	glBufferData(GL_ARRAY_BUFFER, sizeOfVertices, vertices, GL_STATIC_DRAW);
 
 	//Bindeo buffer indices
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeOfIndices, indices, GL_STATIC_DRAW);
 
 	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
@@ -75,6 +65,8 @@ uint32_t createvertexDatatriangulo1(uint32_t *VBO, uint32_t *EBO, uint32_t indic
 
 	//desbindeamos buffer elements
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 
 	return VAO;
 }
@@ -154,26 +146,30 @@ int main(int argc, char* argv[]) {
 	Shader shader1(vertexpath, fragmentPath1);
 
 	float vertices1[] = {
-		//Color
+		//Pos
 	-0.2f, -0.3f, 0.0f,
-	0.2f, -0.3f, 0.0f,  
+	0.2f, -0.3f, 0.0f,
 	0.3f,  0.0f, 0.0f,
 	0.2f,  0.3f, 0.0f,
 	-0.2f,  0.3f, 0.0f,
 	-0.3f,  0.0f, 0.0f,
-	 0.0f,  0.0f, 0.0f,
+	0.0f,  0.0f, 0.0f,
 	};
-	uint32_t i = 0;
+
+	vec3 newVertices[7];
+
 	uint32_t radio = 2;
-	for (size_t i = 1; i < 5; i++)
+	for (size_t i = 1; i <= 6; i++)
 	{
-		vec3 origen = vec3(vertices1[0 * i], vertices1[1 * i], vertices1[2 * i]);
-		vec3 newPos = calcularSigPos(origen, radio);
-		cout << newPos.x << " " << newPos.y << endl;
+		vec3 origen = vec3(vertices1[3 * (i-1) ], vertices1[i * 2 + i-2], 0);
+		cout << origen.x << " " << origen.y << endl;
+		newVertices[i - 1] = origen;
+		//vec3 newPos = calcularSigPos(origen, radio);
+		//cout << newPos.x << " " << newPos.y << endl;
 
 	}
-
-	uint32_t VBOTriangulo1, EBO;
+	newVertices[6] = vec3(0.0);
+	
 
 
 
@@ -182,7 +178,8 @@ int main(int argc, char* argv[]) {
 	uint32_t sizeOfVertices = sizeof(vertices1);  //42 floats * sizeoffloat(4) = 168
 	uint32_t numberOfElements = sizeof(indicesFigura) / sizeof(float); //72 vertices / sizeoffloat(4) = 18
 	//El VAO Agrupa todos los VBO y EBO
-	uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesFigura, sizeOfIndices, vertices1, sizeOfVertices);
+	uint32_t VAOTriangules = createvertexDatatriangulo1(indicesFigura, sizeOfIndices, vertices1, sizeOfVertices);
+	//uint32_t VAOTriangules = createvertexDatatriangulo1(&VBOTriangulo1, &EBO, indicesFigura, sizeOfIndices, vertices1, sizeOfVertices);
 
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window)) {
@@ -196,8 +193,7 @@ int main(int argc, char* argv[]) {
 	//Crear metodo para esto
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAOTriangules);
-	glDeleteBuffers(1, &VBOTriangulo1);
-	glDeleteBuffers(1, &EBO);
+
 
 
 	glfwTerminate();
