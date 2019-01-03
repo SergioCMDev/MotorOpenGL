@@ -17,12 +17,13 @@ Window window;
 
 const int widht = 800, height = 600;
 const char* pathProyecto = "../tests/EJ5_1/";
-uint32_t elementsVertexs = 120;
+uint32_t numeroVerticesCubo = 120;
+uint32_t numeroVerticesQuad = 12;
 
 
-float vertexs[]{
+float verticesCubo[]{
 	// Position					// UVs
-	-0.5f, -0.5f, 0.5f,		 0.0f, 0.0f,	//Front	
+	-0.5f, -0.5f, 0.5f,			 0.0f, 0.0f,	//Front	
 		0.5f, -0.5f, 0.5f,		 1.0f, 0.0f,
 		0.5f, 0.5f, 0.5f,		1.0f, 1.0f,
 		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,
@@ -53,15 +54,30 @@ float vertexs[]{
 		-0.5f, 0.5f, -0.5f,		 0.0f, 1.0f
 };
 
-uint32_t numeroIndicesCubo = 36;
+float verticesQuad[]{
+	// Position					
+		-0.5f, -0.5f, 0.5f,			 0.0f, 0.0f,	//Front	
+		0.5f, -0.5f, 0.5f,		 1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f,		1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f,		0.0f, 1.0f,
+};
 
-uint32_t indicesQuadFrontal[]{
+
+uint32_t numeroIndicesCubo = 36;
+uint32_t numeroIndicesQuad = 6;
+
+
+uint32_t indicesCubo[]{
 	0, 1, 2, 0, 2, 3 //Front
 	,4, 5, 6, 4, 6, 7 //Right
 	,8, 9, 10, 8, 10, 11 //Back
 	,12, 13, 14, 12, 14, 15 //Left
 	,16, 17, 18, 16, 18, 19 //Bottom
 	,20, 21, 22, 20, 22, 23 //Top
+};
+
+uint32_t indicesQuadFrontal[]{
+	0, 1, 2, 0, 2, 3 //Front
 };
 
 
@@ -72,14 +88,11 @@ void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int3
 
 #pragma region Metodos
 
-
 void OnChangeFrameBufferSize(GLFWwindow* window, const int32_t width, const int32_t height) {
 	//redimension de pantalla 
 	//Cambio de clip scene a view scene
 	glViewport(0, 0, width, height);
 }
-
-
 
 int Inicializacion() {
 	if (!glfwInit()) {
@@ -105,8 +118,15 @@ int Inicializacion() {
 	return 1;
 };
 
-void Projection3D(const Shader & shader, bool movimiento, const uint32_t numberOfElements)
-{
+void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
+	uint32_t texture2, bool movimiento) {
+	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
+	//Si lo quitamos, no borra nunca la pantalla
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+	//Bindeamos VAO
+	glBindVertexArray(VAO);
 
 	glm::mat4 view = glm::mat4(1.0f);
 	//alejamos el mundo 3D
@@ -118,28 +138,10 @@ void Projection3D(const Shader & shader, bool movimiento, const uint32_t numberO
 
 	glm::mat4 model = glm::mat4(1.0f);
 
-	float angle;
-	if (movimiento) {
-		angle = 10.0f + (cos(glfwGetTime()) + (sin(glfwGetTime())));
-		model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-	}
 	shader.Set("model", model);
-	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
-
 	shader.Set("view", view);
 	shader.Set("projection", projection);
-}
 
-void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, bool movimiento) {
-	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
-	//Si lo quitamos, no borra nunca la pantalla
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	shader.Use();
-	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
-	//Bindeamos VAO
-	glBindVertexArray(VAO);
-	Projection3D(shader, movimiento, numberOfElements);
 	shader.Set("texture1", 0);
 	shader.Set("texture2", 1);
 
@@ -191,13 +193,11 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, n_indices * sizeof(float), indices, GL_STATIC_DRAW);
 
 	//vertices del triangulo 6 por que hay 6 elementos hasta el proximo inicio de linea
-	uint32_t atributteNumber = 0;
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-
-	//Vertices de textura
+	////Vertices de textura
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, _numberOfElementsPerLine * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
@@ -236,50 +236,32 @@ int main(int argc, char* argv[]) {
 	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
-
-
+	 
 
 	int radio = 3;
-	float origen[]{ -0.5f, -0.5f, 0.5f };
+	vec3 origen{ 0.0f, 0.0f, 0.0f };
 	//float caraFrontal[] = GenerarCaraFrontal(radio, *origen);
 
 	long sizeOfIndices, sizeOfVertices;
 
-	sizeOfIndices = numeroIndicesCubo * sizeof(float);
-	sizeOfVertices = elementsVertexs * sizeof(float);
+	sizeOfIndices = numeroIndicesQuad * sizeof(float);
+
+	uint32_t numberOfElementsToDrawForGeometry = sizeOfIndices / sizeof(float);
 
 
-	//float verticesQuad = cuadrado.GetVertexs();
-	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
-	buffer.SetStatusVerticesColor(false);
-	buffer.SetStatusVerticesTextura(true);
-	buffer.SetSizeVerticesNormal(false);
-	buffer.SetSizeVerticesTextura(2);
-	uint32_t numberOfElementsToDrawForGeometry = buffer.GetElementsToDraw();
-
-	//uint32_t VAO = buffer.CreateVAO(&VBOFigura, &EBO, indicesQuad, verticesQuad, &shader);
-	//uint32_t elementsPerLine = 5; //en caso de cubo con todos las posiciones
-	uint32_t VAO = createVertexData(vertexs, elementsVertexs, indicesQuadFrontal, numeroIndicesCubo);
+	uint32_t VAO = createVertexData(verticesQuad, numberOfElementsToDrawForGeometry, indicesQuadFrontal, numeroIndicesQuad);
 
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);
 	uint32_t texture2 = createTexture(pathFinalImagen2, true);
 
 
-	float interpolationValue = 0.6;
 	//Bucle inicial donde se realiza toda la accion del motor
 	while (!glfwWindowShouldClose(window.GetWindow())) {
 		window.HandlerInput();
-		//Si pulsamos 0 añade interpolacion
-		if (window.GetButtonMoreShiny()) {
-			interpolationValue += 0.1;
-		}
-		//Si pulsamos 1 quita interpolacion
-		if (window.GetButtonLessShiny()) {
-			interpolationValue -= 0.1;
-		}
-		Render(VAO, shader, numberOfElementsToDrawForGeometry, texture1, texture2, true);
 
+		Render(VAO, shader, numberOfElementsToDrawForGeometry, texture1, texture2, true);
+		shader.Set("color", vec3(1.0f));
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
 	}
