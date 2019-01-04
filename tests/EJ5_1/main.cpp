@@ -34,14 +34,14 @@ glm::vec3 cubePositions[] = {
  glm::vec3(1.5f, 0.2f, -1.5f),
  glm::vec3(-1.3f, 1.0f, -1.5f)
 };
-uint32_t numeroElementosVerticesCubo = 120;
+const uint32_t numeroElementosVerticesCubo = 120;
 
 float verticesCubo[]{
 	// Position					// UVs
-	-0.5f, -0.5f, 0.5f,	 0.0f, 0.0f,	//Front	
-		0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+	-0.5f, -0.5f, 0.5f,		0.0f, 0.0f,	//Front	
+		0.5f, -0.5f, 0.5f,	1.0f, 0.0f,
+		0.5f, 0.5f, 0.5f,	1.0f, 1.0f,
+		-0.5f, 0.5f, 0.5f,  0.0f, 1.0f,
 
 		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, //Right
 		0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -110,7 +110,6 @@ void OnMouse(GLFWwindow* window, double xpos, double ypos) {
 	camera.handleMouseMovement(xoffset, yoffset);
 }
 
-
 void OnScroll(GLFWwindow* window, double xoffset, double yoffset) {
 	camera.handleMouseScroll(yoffset);
 }
@@ -129,7 +128,6 @@ void HandlerInput(GLFWwindow* window, const double deltaTime) {
 		camera.HandleKeyboard(Camera::Movement::Right, deltaTime);
 	}
 }
-
 
 
 
@@ -186,11 +184,15 @@ void Projection3D(const Shader & shader, uint32_t numeroRepeticionesElemento, gl
 }
 
 void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements, uint32_t texture1,
-	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions, Camera camera) {
+	uint32_t texture2, uint32_t numeroRepeticionesElementos, glm::vec3 *cubePositions) {
 	//Renderizamos la pantalla con un color basandonos en el esquema RGBA(transparencia)
 	//Si lo quitamos, no borra nunca la pantalla
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	shader.Use();
-	glActiveTexture(GL_TEXTURE0);	glBindTexture(GL_TEXTURE_2D, texture1);	glActiveTexture(GL_TEXTURE1);	glBindTexture(GL_TEXTURE_2D, texture2);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	shader.Use();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
 	//Bindeamos VAO
 	glBindVertexArray(VAO);
 	Projection3D(shader, numeroRepeticionesElementos, cubePositions, camera, numberOfElements);
@@ -268,6 +270,24 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 }
 
 
+void HallarVertices(const vec3 Cara[], uint32_t posInicio, float verticesFinal[], uint32_t elementosPorLinea) {
+
+	for (uint32_t vertexIndex = 0; vertexIndex < 4; vertexIndex++) {
+		verticesFinal[posInicio + elementosPorLinea * vertexIndex] = Cara[vertexIndex].x;
+		verticesFinal[posInicio + elementosPorLinea * vertexIndex + 1] = Cara[vertexIndex].y;
+		verticesFinal[posInicio + elementosPorLinea * vertexIndex + 2] = Cara[vertexIndex].z;
+	}
+}
+
+void HallarTexturas(const vec2 Texturas[], uint32_t posInicio, float verticesFinal[], uint32_t elementosPorLinea) {
+
+	for (uint32_t vertexIndex = 1; vertexIndex <= 4; vertexIndex++) {
+
+		verticesFinal[posInicio + elementosPorLinea * vertexIndex - 2] = Texturas[vertexIndex - 1].x;
+		verticesFinal[posInicio + elementosPorLinea * vertexIndex - 1] = Texturas[vertexIndex - 1].y;
+	}
+}
+
 
 
 int main(int argc, char* argv[]) {
@@ -288,8 +308,6 @@ int main(int argc, char* argv[]) {
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
-	uint32_t VBOFigura, EBO;
-
 
 	long sizeOfIndices, sizeOfVertices;
 
@@ -297,12 +315,21 @@ int main(int argc, char* argv[]) {
 	sizeOfIndices = numeroIndicesCubo * sizeof(float);
 	sizeOfVertices = numeroElementosVerticesCubo * sizeof(float);
 
+	const vec3 origenInicial = vec3(0.0f);
+	const vec4 origenInicialVec4 = vec4(origenInicial, 1.0f);
+	vec4 origenTrasladadoVec4 = vec4(0.0f);
 
-
-	vec3 origen = vec3(0.0f);
+	vec3 origenDado = vec3(3.0f); //Valor Origen que nos dan para crear el cubo desde ahi
 	float radio = 0.5f;
 
+	mat4 transformationMatrix = {
+		1.0f, 0.0f, 0.0f,origenDado.x,
+		0.0f, 1.0f, 0.0f, origenDado.y,
+		0.0f, 0.0f, 1.0f, origenDado.z,
+		0.0f, 0.0f, 0.0f, 1
+	};
 
+	//Obtenemos los puntos desde el punto origen
 	//Cara delantera
 	vec3 CaraDelantera[] = {
 		vec3(-radio, -radio, radio), //Abajo izq	    1
@@ -319,6 +346,8 @@ int main(int argc, char* argv[]) {
 		vec3(radio, radio, -radio), //Arriba Dere		6
 		vec3(radio, -radio, -radio) //Arriba Izq		7
 	};
+
+
 
 	//cara superior
 	vec3 CaraSuperior[] = {
@@ -343,7 +372,6 @@ int main(int argc, char* argv[]) {
 		vec3(radio, radio, radio) //Arriba Izq		8
 	};
 
-
 	vec3 CaraIzquierda[] = {
 		vec3(-radio, -radio, radio), //Abajo izq		1
 		vec3(-radio, radio, radio), //Abajo Derecha	2
@@ -351,44 +379,46 @@ int main(int argc, char* argv[]) {
 		vec3(-radio, -radio, -radio) //Arriba Izq		8
 	};
 
-
-
-	float verticesCubo2[]{
-		// Position					
-			CaraDelantera[0].x, CaraDelantera[0].y, CaraDelantera[0].z,	0.0f, 0.0f,	//Front	
-			CaraDelantera[1].x, CaraDelantera[1].y, CaraDelantera[1].z,	1.0f, 0.0f,
-			CaraDelantera[2].x, CaraDelantera[2].y, CaraDelantera[2].z,	1.0f, 1.0f,
-			CaraDelantera[3].x, CaraDelantera[3].y, CaraDelantera[3].z,	0.0f, 1.0f,
-
-			CaraDerecha[0].x, CaraDerecha[0].y, CaraDerecha[0].z,	0.0f, 0.0f,	 //Right
-			CaraDerecha[1].x, CaraDerecha[1].y, CaraDerecha[1].z,	1.0f, 0.0f,
-			CaraDerecha[2].x, CaraDerecha[2].y, CaraDerecha[2].z,	1.0f, 1.0f,
-			CaraDerecha[3].x, CaraDerecha[3].y, CaraDerecha[3].z,	0.0f, 1.0f,
-
-			CaraTrasera[0].x, CaraTrasera[0].y, CaraTrasera[0].z,	0.0f, 0.0f,	 //Back
-			CaraTrasera[1].x, CaraTrasera[1].y, CaraTrasera[1].z,	1.0f, 0.0f,
-			CaraTrasera[2].x, CaraTrasera[2].y, CaraTrasera[2].z,	1.0f, 1.0f,
-			CaraTrasera[3].x, CaraTrasera[3].y, CaraTrasera[3].z,	0.0f, 1.0f,
-
-			CaraIzquierda[0].x, CaraIzquierda[0].y, CaraIzquierda[0].z,	0.0f, 0.0f,	 //Left
-			CaraIzquierda[1].x, CaraIzquierda[1].y, CaraIzquierda[1].z,	1.0f, 0.0f,
-			CaraIzquierda[2].x, CaraIzquierda[2].y, CaraIzquierda[2].z,	1.0f, 1.0f,
-			CaraIzquierda[3].x, CaraIzquierda[3].y, CaraIzquierda[3].z,	0.0f, 1.0f,
-
-			CaraInferior[0].x, CaraInferior[0].y, CaraInferior[0].z,	0.0f, 0.0f,	 //Bottom
-			CaraInferior[1].x, CaraInferior[1].y, CaraInferior[1].z,	1.0f, 0.0f,
-			CaraInferior[2].x, CaraInferior[2].y, CaraInferior[2].z,	1.0f, 1.0f,
-			CaraInferior[3].x, CaraInferior[3].y, CaraInferior[3].z,	0.0f, 1.0f,
-
-			CaraSuperior[0].x, CaraSuperior[0].y, CaraSuperior[0].z,	0.0f, 0.0f, //Top
-			CaraSuperior[1].x, CaraSuperior[1].y, CaraSuperior[1].z,	1.0f, 0.0f,
-			CaraSuperior[2].x, CaraSuperior[2].y, CaraSuperior[2].z,	1.0f, 1.0f,
-			CaraSuperior[3].x, CaraSuperior[3].y, CaraSuperior[3].z,	0.0f, 1.0f
+	vec2 TexturasCaraDelantera[] = {
+		vec2(0.0f, 0.0f),
+		vec2(1.0f, 0.0f),
+		vec2(1.0f, 1.0f),
+		vec2(0.0f, 1.0f)
 	};
+
+	float verticesCuboMetodo[numeroElementosVerticesCubo];
+
+	uint32_t numElementosCara = numeroElementosVerticesCubo / 6;
+	uint32_t verticesIndex = 0;
+	uint32_t elementosPorLinea = numElementosCara / sizeof(float);
+
+	HallarVertices(CaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	HallarTexturas(TexturasCaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	verticesIndex++;
+
+	HallarVertices(CaraDerecha, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	HallarTexturas(TexturasCaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	verticesIndex++;
+
+	HallarVertices(CaraTrasera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	HallarTexturas(TexturasCaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	verticesIndex++;
+
+	HallarVertices(CaraIzquierda, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	HallarTexturas(TexturasCaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	verticesIndex++;
+
+	HallarVertices(CaraInferior, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	HallarTexturas(TexturasCaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	verticesIndex++;
+
+	HallarVertices(CaraSuperior, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	HallarTexturas(TexturasCaraDelantera, numElementosCara * verticesIndex, verticesCuboMetodo, elementosPorLinea);
+	verticesIndex++;
 
 
 	//float verticesQuad = cuadrado.GetVertexs();
-	uint32_t VAO = createVertexData(verticesCubo2, sizeOfIndices, indicesCubo, sizeOfVertices);
+	uint32_t VAO = createVertexData(verticesCuboMetodo, sizeOfIndices, indicesCubo, sizeOfVertices);
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);
 	uint32_t texture2 = createTexture(pathFinalImagen2, true);
@@ -402,7 +432,7 @@ int main(int argc, char* argv[]) {
 		HandlerInput(window.GetWindow(), deltaTime);
 		window.HandlerInput();
 
-		Render(VAO, shader, 36, texture1, texture2, 10, cubePositions, camera);
+		Render(VAO, shader, 36, texture1, texture2, 10, cubePositions);
 
 		glfwSwapBuffers(window.GetWindow());
 		glfwPollEvents();
@@ -410,8 +440,6 @@ int main(int argc, char* argv[]) {
 
 	//Si se han linkado bien los shaders, los borramos ya que estan linkados
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBOFigura);
-	glDeleteBuffers(1, &EBO);
 
 
 	glfwTerminate();
