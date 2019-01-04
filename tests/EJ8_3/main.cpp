@@ -287,6 +287,7 @@ uint32_t createTexture(const char* path, bool flip) {
 	stbi_image_free(data);
 	return texture;
 }
+
 uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const uint32_t* indices, const uint32_t n_indices) {
 	unsigned int VAO, VBO, EBO;
 
@@ -335,6 +336,8 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 
 	return VAO;
 }
+
+
 int main(int argc, char* argv[]) {
 	if (!Inicializacion()) {
 		return -1;

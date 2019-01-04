@@ -199,6 +199,7 @@ void Render(uint32_t VAO, const Shader& shader, const uint32_t numberOfElements,
 
 	glDrawElements(GL_TRIANGLES, numberOfElements, GL_UNSIGNED_INT, 0);
 }
+
 uint32_t createTexture(const char* path, bool flip) {
 	uint32_t texture;
 	glGenTextures(1, &texture);
@@ -238,7 +239,6 @@ int main(int argc, char* argv[]) {
 	const char* pathFinalImagen2 = pathFinalImagen2String.c_str();
 
 	Shader shader = Shader(vertexpath, fragmentPath1);
-	int program = shader.GetIdProgram();
 	uint32_t VBOFigura, EBO;
 
 
