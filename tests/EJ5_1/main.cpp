@@ -270,17 +270,6 @@ uint32_t createVertexData(const float* vertices, const uint32_t n_verts, const u
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 int main(int argc, char* argv[]) {
 
 	if (!Inicializacion()) {
@@ -311,7 +300,7 @@ int main(int argc, char* argv[]) {
 
 
 	vec3 origen = vec3(0.0f);
-	int radio = 1.0f;
+	float radio = 0.5f;
 
 
 	//Cara delantera
@@ -399,10 +388,7 @@ int main(int argc, char* argv[]) {
 
 
 	//float verticesQuad = cuadrado.GetVertexs();
-	Buffer buffer = Buffer(sizeOfIndices, sizeOfVertices);
-
 	uint32_t VAO = createVertexData(verticesCubo2, sizeOfIndices, indicesCubo, sizeOfVertices);
-
 
 	uint32_t texture1 = createTexture(pathFinalImagen1, true);
 	uint32_t texture2 = createTexture(pathFinalImagen2, true);
